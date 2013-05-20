@@ -1,0 +1,9 @@
+{
+  "name": "passport-azure-ad-login-wsfed",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "3.x",
+    "ejs": ">= 0.0.0",
+    "ejs-locals": ">= 0.0.0"
+  }
+}
