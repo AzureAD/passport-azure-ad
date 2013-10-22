@@ -1,6 +1,6 @@
 {
   "name": "passport-azure-ad",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "licenses": [
     {
       "type": "Apache 2.0",
@@ -25,7 +25,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com:MSOpenTech/passport-azure-ad.git"
+    "url": "http://github.com/MSOpenTech/passport-azure-ad.git"
   },
   "main": "./lib/passport-azure-ad",
   "dependencies": {
