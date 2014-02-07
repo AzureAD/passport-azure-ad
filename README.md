@@ -66,9 +66,7 @@ app.post('/login/callback', passport.authenticate('wsfed-saml2', { failureRedire
     res.redirect('/');
 });
 
-http.createServer(app).listen(app.get('port'), function(){
-    console.log('Express server listening on port ' + app.get('port'));
-});
+app.listen(process.env.PORT || 3000)
 ```
 
 ## License
