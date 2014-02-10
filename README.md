@@ -1,5 +1,4 @@
 # Windows Azure Active Directory Passport.js Plug-In
-=============
 
 [Passport](http://passportjs.org/) is authentication middleware for Node.js. Passport can be used in any Express-based web application. A comprehensive and large set of strategies support authentication using a username and password, Facebook, Twitter, and more. In order to enable you to quickly integrate Windows Azure Active Directory in to your website quickly, we have developed a strategy for Windows Azure Active Directory.
 
@@ -14,70 +13,61 @@ For a detailed walkthrough of using Passport.js to add web single sign-on to a N
 
 ## Installation
 
-    $ npm install passport-azure-ad
+```
+$ npm install passport-azure-ad
+```
 
 ## Usage
 
-### Configure strategy
-
-This sample uses a WS-Federation protocol:
+This sample uses a WS-Federation protocol with express:
 
 ```javascript
-	var config = {
-	realm: 'http://localhost:3000',
+var express = require('express');
+var passport = require('passport');
+var wsfedsaml2 = require('passport-azure-ad').WsfedStrategy
+var app = express();
+
+// configure express
+app.use(express.cookieParser());
+app.use(express.bodyParser());
+app.use(express.session({ secret: 'keyboard cat' }));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(app.router);
+
+var config = {
+	realm: 'http://localhost:3000/',
 	identityProviderUrl: 'https://login.windows.net/ad0ffc54-96b9-4757-bbb0-fcc293e2f4aa/wsfed',
 	identityMetadata: 'https://login.windows.net/ad0ffc54-96b9-4757-bbb0-fcc293e2f4aa/federationmetadata/2007-06/federationmetadata.xml'
-				};
+	logoutUrl:'http://localhost:3000/'
+};
 
-	var wsfedStrategy = new wsfedsaml2(config,
-    	function(profile, done) {
-    	if (!profile.email) {
-    	return done(new Error("No email found"), null);
-    	}
-    	// asynchronous verification, for effect...
-    	process.nextTick(function () {
-    	findByEmail(profile.email, function(err, user) {
-        	if (err) {
-        	return done(err);
-        	}
-        	if (!user) {
-        	// "Auto-registration"
-        	users.push(profile);
-        	return done(null, profile);
-        	}
-        	return done(null, user);
-    	});
-    	});
-	});
+var wsfedStrategy = new wsfedsaml2(config, function(profile, done) {
+    if (!profile.email) {
+        done(new Error("No email found"));
+        return;
+    }
+    // validate the user here
+    done(null, profile);
+});
 
+passport.use(wsfedStrategy);
 
-	passport.use(wsfedStrategy);
+// implement your user session strategy here
+passport.serializeUser(function(user,cb){ ... });
+passport.deserializeUser(function(userid,cb){ ... });
 
-	var users = [];
+// send the user to WAAD to authenticate	
+app.get('/login', passport.authenticate('wsfed-saml2', { failureRedirect: '/', failureFlash: true }), function(req, res) {
+    res.redirect('/');
+});
 
-	function findByEmail(email, fn) {
-	for (var i = 0, len = users.length; i < len; i++) {
-	var user = users[i];
-	if (user.email === email) {
-	return fn(null, user);
-	}
-	}
-	return fn(null, null);
-	}
-```
+// callback from WAAD with a token
+app.post('/login/callback', passport.authenticate('wsfed-saml2', { failureRedirect: '/', failureFlash: true }), function(req, res) {
+    res.redirect('/');
+});
 
-### Provide the authentication callback
-
-To complete the sample, provide a route that corresponds to the path configuration parameter that is sent to the strategy:
-
-```javascript
-	// what to do when Azure Active Directory sends us back a token
-
-	app.post('/login/callback',
-	passport.authenticate('wsfed-saml2', { failureRedirect: '/', failureFlash: true }),
-	function(req, res) {
-	res.redirect('/');
-	});
+app.listen(process.env.PORT || 3000)
 ```
 
 ## License
