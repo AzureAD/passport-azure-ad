@@ -17,7 +17,8 @@
 
 'use strict';
 
-var WsfedStrategy = require('../lib/passport-azure-ad/index').WsfedStrategy;
+var WsfedStrategy = require('../lib/passport-azure-ad/index').WsfedStrategy,
+  wsfed = require('../lib/passport-azure-ad/wsfederation');
 
 /*
  ======== A Handy Little Nodeunit Reference ========
@@ -180,6 +181,38 @@ exports['wsfed'] = {
       'Should fail with missing identityMetadata and cert options'
     );
 
+    test.done();
+  },
+  'Validate extractToken using request body': function(test) {
+    test.expect(1);
+	var fakeReq = {
+		body: {
+			wresult: '<t:RequestSecurityTokenResponse xmlns:t="http://schemas.xmlsoap.org/ws/2005/02/trust"><t:RequestedSecurityToken><Assertion ID="12234" IssueInstant="2014-08-26T20:35:09.656Z" Version="2.0" xmlns="urn:oasis:names:tc:SAML:2.0:assertion"></Assertion></t:RequestedSecurityToken></t:RequestSecurityTokenResponse>'
+		}
+	}, 
+      expected = '<Assertion ID="12234" IssueInstant="2014-08-26T20:35:09.656Z" Version="2.0" xmlns="urn:oasis:names:tc:SAML:2.0:assertion"/>', 
+      WSFED = new wsfed({}),
+      actual;
+	
+	actual = WSFED.extractToken(fakeReq);
+    test.equal(actual, expected, 'Extracted body from body wresult should equal the expected value');
+   
+    test.done();
+  },
+  'Validate extractToken using request params': function(test) {
+    test.expect(1);
+	var fakeReq = {
+		params: {
+			wresult: '<t:RequestSecurityTokenResponse xmlns:t="http://schemas.xmlsoap.org/ws/2005/02/trust"><t:RequestedSecurityToken><Assertion ID="12234" IssueInstant="2014-08-26T20:35:09.656Z" Version="2.0" xmlns="urn:oasis:names:tc:SAML:2.0:assertion"></Assertion></t:RequestedSecurityToken></t:RequestSecurityTokenResponse>'
+		}
+	}, 
+      expected = '<Assertion ID="12234" IssueInstant="2014-08-26T20:35:09.656Z" Version="2.0" xmlns="urn:oasis:names:tc:SAML:2.0:assertion"/>', 
+      WSFED = new wsfed({}),
+      actual;
+	
+	actual = WSFED.extractToken(fakeReq);
+    test.equal(actual, expected, 'Extracted body from body wresult should equal the expected value');
+   
     test.done();
   }
 
