@@ -1,6 +1,6 @@
 {
   "name": "passport-azure-ad",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "licenses": [
     {
       "type": "Apache 2.0",
