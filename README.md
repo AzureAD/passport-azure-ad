@@ -23,17 +23,23 @@ This sample uses a WS-Federation protocol with express:
 
 ```javascript
 var express = require('express');
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var passport = require('passport');
-var wsfedsaml2 = require('passport-azure-ad').WsfedStrategy
+var wsfedsaml2 = require('passport-azure-ad').WsfedStrategy;
+
+// create app
 var app = express();
 
-// configure express
-app.use(express.cookieParser());
-app.use(express.bodyParser());
-app.use(express.session({ secret: 'keyboard cat' }));
+// add peer dependencies middleware
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: false }));
+
+// add passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(app.router);
 
 var config = {
 	realm: 'http://localhost:3000/',
@@ -54,8 +60,16 @@ var wsfedStrategy = new wsfedsaml2(config, function(profile, done) {
 passport.use(wsfedStrategy);
 
 // implement your user session strategy here
-passport.serializeUser(function(user,cb){ ... });
-passport.deserializeUser(function(userid,cb){ ... });
+// http://passportjs.org/guide/configure/
+passport.serializeUser(function(user,cb){
+	// TODO: save the user to a persistence layer (in-memory, redis cache, etc)
+	// cb([err], [userId])
+});
+
+passport.deserializeUser(function(userId,cb){
+	// TODO: load a user from the persistence layer
+	// cb([err], [user])
+});
 
 // send the user to WAAD to authenticate	
 app.get('/login', passport.authenticate('wsfed-saml2', { failureRedirect: '/', failureFlash: true }), function(req, res) {
