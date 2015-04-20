@@ -17,6 +17,14 @@ For a detailed walkthrough of using Passport.js to add web single sign-on to a N
 $ npm install passport-azure-ad
 ```
 
+## Dependencies
+
+**Important:** make sure you add the following middleware modules to your application stack:
+
+- [cookie-parser](https://github.com/expressjs/cookie-parser)
+- [body-parser](https://github.com/expressjs/body-parser)
+- [express-session](https://github.com/expressjs/session)
+
 ## Usage
 
 This sample uses a WS-Federation protocol with express:
