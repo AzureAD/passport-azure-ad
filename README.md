@@ -17,31 +17,25 @@ For a detailed walkthrough of using Passport.js to add web single sign-on to a N
 $ npm install passport-azure-ad
 ```
 
-## Dependencies
-
-**Important:** make sure you add the following middleware modules to your application stack:
-
-- [cookie-parser](https://github.com/expressjs/cookie-parser)
-- [body-parser](https://github.com/expressjs/body-parser)
-- [express-session](https://github.com/expressjs/session)
-
 ## Usage
 
 This sample uses a WS-Federation protocol with express:
 
 ```javascript
 var express = require('express');
+var cookieParser = require('cookie-parser');
+var expressSession = require('express-session');
+var bodyParser = require('body-parser');
 var passport = require('passport');
 var wsfedsaml2 = require('passport-azure-ad').WsfedStrategy
 var app = express();
 
 // configure express
-app.use(express.cookieParser());
-app.use(express.bodyParser());
-app.use(express.session({ secret: 'keyboard cat' }));
+app.use(cookieParser());
+app.use(expressSession({ secret: 'keyboard cat', resave: true, saveUninitialized: false }));
+app.use(bodyParser.urlencoded({ extended : true }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(app.router);
 
 var config = {
 	realm: 'http://localhost:3000/',
@@ -75,7 +69,7 @@ app.post('/login/callback', passport.authenticate('wsfed-saml2', { failureRedire
     res.redirect('/');
 });
 
-app.listen(process.env.PORT || 3000)
+app.listen(process.env.PORT || 3000);
 ```
 
 ## License

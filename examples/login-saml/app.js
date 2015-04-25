@@ -21,6 +21,9 @@
  * Module dependencies.
  */
 var express = require('express');
+var cookieParser = require('cookie-parser');
+var expressSession = require('express-session');
+var bodyParser = require('body-parser');
 var passport = require('passport');
 var http = require('http');
 var SamlStrategy = require('../../lib/passport-azure-ad/index').SamlStrategy;
@@ -98,13 +101,12 @@ app.configure(function() {
   app.set('view engine', 'ejs');
   app.use(express.favicon());
   app.use(express.logger('dev'));
-  app.use(express.cookieParser());
-  app.use(express.bodyParser());
+  app.use(cookieParser());
+  app.use(expressSession({ secret: 'keyboard cat', resave: true, saveUninitialized: false }));
+  app.use(bodyParser.urlencoded({ extended : true }));
   app.use(express.methodOverride());
-  app.use(express.session({ secret: 'keyboard cat' }));
   app.use(passport.initialize());
   app.use(passport.session());
-  app.use(app.router);
   app.use(express.static(PATH.join(__dirname, 'public')));
 });
 
