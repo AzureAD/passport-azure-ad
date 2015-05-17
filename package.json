@@ -11,21 +11,24 @@
     "saml",
     "samlp",
     "wsfed",
+    "odic",
+    "open id connect",
     "azure active directory",
+    "azure",
     "aad",
     "adfs",
     "sso",
     "shibboleth"
   ],
-  "description": "WSFED/SAMLP 2.0 authentication Passport strategies for Windows Azure Active Directory",
+  "description": "WSFED/SAMLP 2.0/ODIC authentication Passport strategies for Azure Active Directory",
   "author": {
-    "name": "Microsoft Open Technologies Inc",
-    "email": "msopentech@microsoft.com",
-    "url": "http://msopentech.com/"
+    "name": "Microsoft Corp",
+    "email": "brandon.werner@microsoft.com",
+    "url": "http://microsoft.com/"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com:MSOpenTech/passport-azure-ad.git"
+    "url": "git@github.com:AzureAD/passport-azure-ad.git"
   },
   "main": "./lib/passport-azure-ad",
   "dependencies": {
@@ -35,14 +38,20 @@
     "xmldom": "0.1.x",
     "async": "~0.2.7",
     "request": "~2.16.6",
+    "querystring": "~0.2.0",
     "underscore": "~1.4.4",
-    "xtend": "~2.0.3"
+    "xtend": "~2.0.3",
+    "passport-http-bearer": "~1.0.1",
+    "ursa": "~0.8.4",
+    "jwt": "~0.2.0",
+    "jws": "~3.0.0"
   },
   "devDependencies": {
     "grunt-contrib-jshint": "~0.1.1",
     "grunt-contrib-nodeunit": "~0.1.2",
     "grunt-contrib-watch": "~0.2.0",
-    "grunt": "~0.4.1"
+    "grunt": "~0.4.1",
+    "bunyan": "~1.3.5"
   },
   "scripts": {
     "test": "grunt nodeunit"
