@@ -80,7 +80,7 @@ exports['oidc'] = {
         new OIDCStrategy({}, function(){});
       },
       Error,
-      'Should fail with no SAML config options'
+      'Should fail with no OIDC config options'
     );
 
     test.done();
@@ -97,7 +97,7 @@ exports['oidc'] = {
 
     test.doesNotThrow(
       function() {
-        new OIDCStrategy(oidcConfig, function(){});
+        new OidcStrategy(oidcConfig, function(){});
       },
       Error,
       'Should not fail with proper OIDC config options'

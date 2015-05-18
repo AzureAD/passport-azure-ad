@@ -8,6 +8,7 @@
     "restify": "*",
     "mongoose": "*",
     "bunyan": "*",
-    "assert-plus": "*"
+    "assert-plus": "*",
+    "passport": "*"
   }
 }

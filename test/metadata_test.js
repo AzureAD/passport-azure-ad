@@ -87,7 +87,7 @@ exports['metadata'] = {
     test.done();
   },
   'fetch metadata saml': function(test) {
-    test.expect(7);
+    test.expect(5);
     // tests here
 
     test.doesNotThrow(
@@ -106,7 +106,7 @@ exports['metadata'] = {
     );
   },
   'fetch metadata wsfed': function(test) {
-    test.expect(7);
+    test.expect(4);
     // tests here
 
     test.doesNotThrow(
@@ -123,17 +123,17 @@ exports['metadata'] = {
       'Should not fail with url present and auth type wsfed'
     );
   },
-'fetch metadata oidc': function(test) {
-    test.expect(7);
+  'fetch metadata oidc': function(test) {
+    test.expect(4);
     // tests here
 
     test.doesNotThrow(
       function() {
-        var m = new Metadata(metadataUrl, 'oidc');
+        var m = new Metadata(oidcMetadataUrl, 'oidc');
         m.fetch(function(err) {
           test.ifError(err);
           test.ok(m.oidc.algorithms, 'fetch algorithms');
-          test.ok(m.odic.issuer), 'fetch issuer');
+          test.ok(m.oidc.issuer, 'fetch issuer');
           test.done();
         });
       },

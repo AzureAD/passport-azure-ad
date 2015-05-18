@@ -29,14 +29,17 @@
     var bunyan = require('bunyan');
     var restify = require('restify');
     var config = require('./config');
-    var OIDCStrategy = require('../../lib/passport-azure-ad/index').OIDCStrategy;
+    var passport = require('passport');
+    var OIDCBearerStrategy = require('../../lib/passport-azure-ad/index').OIDCStrategy;
 
 
     // We pass these options in to the ODICBearerStrategy.
 
     var options = {
    // The URL of the metadata document for your app. We will put the keys for token validation from the URL found in the jwks_uri tag of the in the metadata.
-  metadataurl: config.creds.openid_configuration
+  identityMetadata: config.creds.identityMetadata,
+  issuer: config.creds.issuer,
+  audience: config.creds.audience
 
 };
 
@@ -45,14 +48,6 @@
 
     // Our logger
     var log = bunyan.createLogger({name: 'Windows Azure Active Directory Sample'});
-
-/**
-* Load Passport for OAuth2 flows
-*/
-
- var passport = require('passport');
-
-
 
 // MongoDB setup
 // Setup some configuration

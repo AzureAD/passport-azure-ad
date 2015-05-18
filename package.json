@@ -44,7 +44,8 @@
     "passport-http-bearer": "~1.0.1",
     "ursa": "~0.8.4",
     "jwt": "~0.2.0",
-    "jws": "~3.0.0"
+    "jws": "~3.0.0",
+    "jsonwebtoken": "~5.0.1"
   },
   "devDependencies": {
     "grunt-contrib-jshint": "~0.1.1",
