@@ -1,19 +1,23 @@
-/*
- Copyright (c) Microsoft Corporation
- All Rights Reserved
- Apache License 2.0
+/**
+* Copyright (c) Microsoft Corporation
+*  All Rights Reserved
+*  Apache License 2.0
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+* @flow
+*/
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
- http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
 
  'use strict';
 
@@ -21,8 +25,6 @@
     * Module dependencies.
     */
 
-    var fs = require('fs');
-    var path = require('path');
     var util = require('util');
     var assert = require('assert-plus');
     var mongoose = require('mongoose/');
@@ -161,7 +163,7 @@ function getTask(req, res, next) {
 }
 
  /// Simple returns the list of TODOs that were loaded.
- 
+
 function listTasks(req, res, next) {
   // Resitify currently has a bug which doesn't allow you to set default headers
   // This headers comply with CORS and allow us to mongodbServer our response to any origin
@@ -173,8 +175,9 @@ function listTasks(req, res, next) {
 
   Task.find().limit(20).sort('date').exec(function (err,data) {
 
-    if (err)
+    if (err) {
       return next(err);
+    }
 
     if (data.length > 0) {
             log.info(data);
@@ -284,7 +287,7 @@ var server = restify.createServer({
         /**
         /*
         /* Calling the OIDCBearerStrategy and managing users
-        /* 
+        /*
         /* Passport pattern provides the need to manage users and info tokens
         /* with a FindorCreate() method that must be provided by the implementor.
         /* Here we just autoregister any user and implement a FindById().
@@ -311,7 +314,7 @@ var server = restify.createServer({
 
                  if (!user) {
           // "Auto-registration"
-          log.info('User was added automatically as they were new. Their sub is: ', token.sub)
+          log.info('User was added automatically as they were new. Their sub is: ', token.sub);
           users.push(token);
           return done(null, token);
         }
@@ -327,7 +330,7 @@ var server = restify.createServer({
         /**
         /*
         /* Each of these handlers are protected by our OIDCBearerStrategy by invoking 'oidc-bearer'
-        /* in the pasport.authenticate() method. We set 'session: false' as REST is stateless and 
+        /* in the pasport.authenticate() method. We set 'session: false' as REST is stateless and
         /* we don't need to maintain session state. You can experiement removing API protection
         /* by removing the passport.authenticate() method like so:
         /*
@@ -366,13 +369,13 @@ var server = restify.createServer({
 
   server.listen(serverPort, function() {
 
-  var consoleMessage = '\n Windows Azure Active Directory Tutorial'
-  consoleMessage += '\n +++++++++++++++++++++++++++++++++++++++++++++++++++++'
+  var consoleMessage = '\n Windows Azure Active Directory Tutorial';
+  consoleMessage += '\n +++++++++++++++++++++++++++++++++++++++++++++++++++++';
   consoleMessage += '\n %s server is listening at %s';
   consoleMessage += '\n Open your browser to %s/tasks\n';
-  consoleMessage += '+++++++++++++++++++++++++++++++++++++++++++++++++++++ \n'
-  consoleMessage += '\n !!! why not try a $curl -isS %s | json to get some ideas? \n'
-  consoleMessage += '+++++++++++++++++++++++++++++++++++++++++++++++++++++ \n\n'
+  consoleMessage += '+++++++++++++++++++++++++++++++++++++++++++++++++++++ \n';
+  consoleMessage += '\n !!! why not try a $curl -isS %s | json to get some ideas? \n';
+  consoleMessage += '+++++++++++++++++++++++++++++++++++++++++++++++++++++ \n\n';
 
   //log.info(consoleMessage, server.name, server.url, server.url, server.url);
 
