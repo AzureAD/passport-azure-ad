@@ -77,7 +77,7 @@ exports['oidc'] = {
 
     test.throws(
       function() {
-        new OIDCStrategy({}, function(){});
+        new OIDCStrategy({}, function() {});
       },
       Error,
       'Should fail with no OIDC config options'
@@ -92,12 +92,12 @@ exports['oidc'] = {
     var oidcConfig = {
       // required options
       identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
-      issuer: 'http://localhost:3000'  // this is the URI you entered for APP ID URI when configuring SSO for you app on Azure AAD
+      issuer: 'http://localhost:3000' // this is the URI you entered for APP ID URI when configuring SSO for you app on Azure AAD
     };
 
     test.doesNotThrow(
       function() {
-        new OidcStrategy(oidcConfig, function(){});
+        new OidcStrategy(oidcConfig, function() {});
       },
       Error,
       'Should not fail with proper OIDC config options'
