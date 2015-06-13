@@ -22,38 +22,25 @@ For a detailed walkthrough of using Passport.js to add web single sign-on to a N
 This sample uses the OpenID Connect protocol:
 
 ```javascript
-	var options = {
-	identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration'
-				};
-
 var oidcStrategy = new OIDCBearerStrategy(options,
-          function(token, done) {
-             findById(token.sub, function (err, user) {
-               if (err) { return done(err); }
-                 if (!user) {
-          // "Auto-registration"
-          log.info('User was added automatically as they were new. Their sub is: ', token.sub)
-          users.push(token);
-          return done(null, token);
-        }
-               return done(null, user, token);
-             });
-          });
-
-        passport.use(oidcStrategy);
-
-
-	var users = [];
-
-  var findById = function (id, fn) {
-    for (var i = 0, len = users.length; i < len; i++) {
-      var user = users[i];
-      if (user.id === id) {
-        return fn(null, user);
+  function(token, done) {
+    log.info('verifying the user');
+    log.info(token, 'was the token retreived');
+    findById(token.sub, function(err, user) {
+      if (err) {
+        return done(err);
       }
-    }
-    return fn(null, null);
-  };
+
+      if (!user) {
+        // "Auto-registration"
+        log.info('User was added automatically as they were new. Their sub is: ', token.sub);
+        users.push(token);
+        return done(null, token);
+      }
+      return done(null, user, token);
+    });
+  }
+);
 ```
 
 ### Provide the authentication callback
