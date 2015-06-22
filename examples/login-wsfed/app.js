@@ -42,8 +42,13 @@ var config = {
   // Note: This field is ignored if you specify an identityMetadata url
   identityProviderUrl: 'https://login.windows.net/GraphDir1.OnMicrosoft.com/wsfed',
 
+  // This is the URL that Active Directory will redirect to with the token after the login process.
+  // Ensure this is an HTTPS endpoint and is included in the Reply URL list in Active Directory -> Application -> Configuration -> Reply URL
+  wreply: 'https://localhost:3000/login/callback',
+
   // Enter the logout url of your application. The user will be redirected to this endpoint after
   // the auth token has been revoked by the WSFed endpoint.
+  // Ensure this URL is included in the Reply URL list in Active Directory -> Application -> Configuration -> Reply URL
   logoutUrl: 'http://localhost:3000/',
 
   // Enter the URL of the federation metadata document for your app or the cert of the X.509 certificate found
