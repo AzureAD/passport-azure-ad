@@ -44,7 +44,8 @@ app.use(passport.session());
 var config = {
 	realm: 'http://localhost:3000/',
 	identityProviderUrl: 'https://login.windows.net/ad0ffc54-96b9-4757-bbb0-fcc293e2f4aa/wsfed',
-	identityMetadata: 'https://login.windows.net/ad0ffc54-96b9-4757-bbb0-fcc293e2f4aa/federationmetadata/2007-06/federationmetadata.xml'
+	identityMetadata: 'https://login.windows.net/ad0ffc54-96b9-4757-bbb0-fcc293e2f4aa/federationmetadata/2007-06/federationmetadata.xml',
+	wreply: 'https://localhost:3000/login/callback',
 	logoutUrl:'http://localhost:3000/'
 };
 
