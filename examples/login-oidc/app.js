@@ -295,7 +295,7 @@ server.use(passport.session()); // Provides session support
 /* Calling the OIDCBearerStrategy and managing users
 /*
 /* Passport pattern provides the need to manage users and info tokens
-/* with a FindorCreate() method that must be provided by the implementor.
+/* with a FindOrCreate() method that must be provided by the implementor.
 /* Here we just autoregister any user and implement a FindById().
 /* You'll want to do something smarter.
 **/
