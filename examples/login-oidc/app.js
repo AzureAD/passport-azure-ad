@@ -38,24 +38,25 @@ var OIDCBearerStrategy = require('../../lib/passport-azure-ad/index').OIDCStrate
 // We pass these options in to the ODICBearerStrategy.
 
 var options = {
-  // The URL of the metadata document for your app. We will put the keys for token validation from the URL found in the jwks_uri tag of the in the metadata.
-  identityMetadata: config.creds.identityMetadata,
-  issuer: config.creds.issuer,
-  audience: config.creds.audience
+    // The URL of the metadata document for your app. We will put the keys for token validation from the URL found in the jwks_uri tag of the in the metadata.
+    identityMetadata: config.creds.identityMetadata,
+    issuer: config.creds.issuer,
+    audience: config.creds.audience
 
 };
 
 // array to hold logged in users
 var users = [];
+var owner = null;
 
 // Our logger
 var log = bunyan.createLogger({
-  name: 'Windows Azure Active Directory Sample'
+    name: 'Windows Azure Active Directory Sample'
 });
 
 // MongoDB setup
 // Setup some configuration
-var serverPort = process.env.PORT || 8888;
+var serverPort = process.env.PORT || 8080;
 var serverURI = (process.env.PORT) ? config.creds.mongoose_auth_mongohq : config.creds.mongoose_auth_local;
 
 // Connect to MongoDB
@@ -65,10 +66,10 @@ log.info('MongoDB Schema loaded');
 
 // Here we create a schema to store our tasks and users. Pretty simple schema for now.
 var TaskSchema = new Schema({
-  owner: String,
-  task: String,
-  completed: Boolean,
-  date: Date
+    owner: String,
+    task: String,
+    completed: Boolean,
+    date: Date
 });
 
 // Use the schema to register a model
@@ -86,38 +87,38 @@ var Task = mongoose.model('Task');
 
 function createTask(req, res, next) {
 
-  // Resitify currently has a bug which doesn't allow you to set default headers
-  // This headers comply with CORS and allow us to mongodbServer our response to any origin
+    // Resitify currently has a bug which doesn't allow you to set default headers
+    // This headers comply with CORS and allow us to mongodbServer our response to any origin
 
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
-  // Create a new task model, fill it up and save it to Mongodb
-  var _task = new Task();
+    // Create a new task model, fill it up and save it to Mongodb
+    var _task = new Task();
 
-  if (!req.params.task) {
-    req.log.warn({
-      params: p
-    }, 'createTodo: missing task');
-    next(new MissingTaskError());
-    return;
-  }
-
-  _task.owner = req.params.owner;
-  _task.task = req.params.task;
-  _task.date = new Date();
-
-  _task.save(function(err) {
-    if (err) {
-      req.log.warn(err, 'createTask: unable to save');
-      next(err);
-    } else {
-      res.send(201, _task);
-
+    if (!req.params.task) {
+        req.log.warn({
+            params: p
+        }, 'createTodo: missing task');
+        next(new MissingTaskError());
+        return;
     }
-  });
 
-  return next();
+    _task.owner = owner;
+    _task.task = req.params.task;
+    _task.date = new Date();
+
+    _task.save(function(err) {
+        if (err) {
+            req.log.warn(err, 'createTask: unable to save');
+            next(err);
+        } else {
+            res.send(201, _task);
+
+        }
+    });
+
+    return next();
 
 }
 
@@ -126,27 +127,29 @@ function createTask(req, res, next) {
 
 function removeTask(req, res, next) {
 
-  Task.remove({
-    task: req.params.task
-  }, function(err) {
-    if (err) {
-      req.log.warn(err,
-        'removeTask: unable to delete %s',
-        req.params.task);
-      next(err);
-    } else {
-      res.send(204);
-      next();
-    }
-  });
+    Task.remove({
+        task: req.params.task,
+        owner: owner
+    }, function(err) {
+        if (err) {
+            req.log.warn(err,
+                'removeTask: unable to delete %s',
+                req.params.task);
+            next(err);
+        } else {
+            log.info('Deleted task:', req.params.task);
+            res.send(204);
+            next();
+        }
+    });
 }
 
 // Delete all tasks
 
 function removeAll(req, res, next) {
-  Task.remove();
-  res.send(204);
-  return next();
+    Task.remove();
+    res.send(204);
+    return next();
 }
 
 
@@ -154,94 +157,101 @@ function removeAll(req, res, next) {
 
 function getTask(req, res, next) {
 
-  log.info('getTask was called');
-  Task.find(req.params.owner, function(err, data) {
-    if (err) {
-      req.log.warn(err, 'get: unable to read %s', req.params.owner);
-      next(err);
-      return;
-    }
+    log.info('getTask was called for: ', owner);
+    Task.find({
+        owner: owner
+    }, function(err, data) {
+        if (err) {
+            req.log.warn(err, 'get: unable to read %s', owner);
+            next(err);
+            return;
+        }
 
-    res.json(data);
-  });
+        res.json(data);
+    });
 
-  return next();
+    return next();
 }
 
 /// Simple returns the list of TODOs that were loaded.
 
 function listTasks(req, res, next) {
-  // Resitify currently has a bug which doesn't allow you to set default headers
-  // This headers comply with CORS and allow us to mongodbServer our response to any origin
+    // Resitify currently has a bug which doesn't allow you to set default headers
+    // This headers comply with CORS and allow us to mongodbServer our response to any origin
 
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
-  log.info("listTasks was called");
+    log.info("listTasks was called for: ", owner);
 
-  Task.find().limit(20).sort('date').exec(function(err, data) {
+    Task.find({
+        owner: owner
+    }).limit(20).sort('date').exec(function(err, data) {
 
-    if (err) {
-      return next(err);
-    }
+        if (err)
+            return next(err);
 
-    if (data.length > 0) {
-      log.info(data);
-    }
+        if (data.length > 0) {
+            log.info(data);
+        }
 
-    if (!data.length) {
-      log.warn(err, "There is no tasks in the database. Did you initalize the database as stated in the README?");
-    } else {
+        if (!data.length) {
+            log.warn(err, "There is no tasks in the database. Did you initalize the database as stated in the README?");
+        }
 
-      res.json(data);
+        if (!owner) {
+            log.warn(err, "You did not pass an owner when listing tasks.");
+        } else {
 
-    }
-  });
+            res.json(data);
 
-  return next();
+        }
+    });
+
+    return next();
 }
 
 ///--- Errors for communicating something interesting back to the client
 
 function MissingTaskError() {
-  restify.RestError.call(this, {
-    statusCode: 409,
-    restCode: 'MissingTask',
-    message: '"task" is a required parameter',
-    constructorOpt: MissingTaskError
-  });
+    restify.RestError.call(this, {
+        statusCode: 409,
+        restCode: 'MissingTask',
+        message: '"task" is a required parameter',
+        constructorOpt: MissingTaskError
+    });
 
-  this.name = 'MissingTaskError';
+    this.name = 'MissingTaskError';
 }
 util.inherits(MissingTaskError, restify.RestError);
 
 
 function TaskExistsError(owner) {
-  assert.string(owner, 'owner');
+    assert.string(owner, 'owner');
 
-  restify.RestError.call(this, {
-    statusCode: 409,
-    restCode: 'TaskExists',
-    message: owner + ' already exists',
-    constructorOpt: TaskExistsError
-  });
+    restify.RestError.call(this, {
+        statusCode: 409,
+        restCode: 'TaskExists',
+        message: owner + ' already exists',
+        constructorOpt: TaskExistsError
+    });
 
-  this.name = 'TaskExistsError';
+    this.name = 'TaskExistsError';
 }
 util.inherits(TaskExistsError, restify.RestError);
 
 
 function TaskNotFoundError(owner) {
-  assert.string(owner, 'owner');
+    assert.string(owner, 'owner');
 
-  restify.RestError.call(this, {
-    statusCode: 404,
-    restCode: 'TaskNotFound',
-    message: owner + ' was not found',
-    constructorOpt: TaskNotFoundError
-  });
+    restify.RestError.call(this, {
+        statusCode: 404,
+        restCode: 'TaskNotFound',
+        message: owner + ' was not found',
+        constructorOpt: TaskNotFoundError
+    });
 
-  this.name = 'TaskNotFoundError';
+    this.name = 'TaskNotFoundError';
 }
 
 util.inherits(TaskNotFoundError, restify.RestError);
@@ -252,8 +262,8 @@ util.inherits(TaskNotFoundError, restify.RestError);
 
 
 var server = restify.createServer({
-  name: "Windows Azure Active Directroy TODO Server",
-  version: "2.0.1"
+    name: "Windows Azure Active Directroy TODO Server",
+    version: "2.0.1"
 });
 
 // Ensure we don't drop data on uploads
@@ -270,9 +280,9 @@ server.use(restify.requestLogger());
 
 // Allow 5 requests/second by IP, and burst to 10
 server.use(restify.throttle({
-  burst: 10,
-  rate: 5,
-  ip: true,
+    burst: 10,
+    rate: 5,
+    ip: true,
 }));
 
 // Use the common stuff you probably want
@@ -281,7 +291,7 @@ server.use(restify.dateParser());
 server.use(restify.queryParser());
 server.use(restify.gzipResponse());
 server.use(restify.bodyParser({
-  mapParams: true
+    mapParams: true
 })); // Allows for JSON mapping to REST
 server.use(restify.authorizationParser()); // Looks for authorization headers
 
@@ -301,34 +311,35 @@ server.use(passport.session()); // Provides session support
 **/
 
 var findById = function(id, fn) {
-  for (var i = 0, len = users.length; i < len; i++) {
-    var user = users[i];
-    if (user.id === id) {
-      return fn(null, user);
+    for (var i = 0, len = users.length; i < len; i++) {
+        var user = users[i];
+        if (user.id === id) {
+            return fn(null, user);
+        }
     }
-  }
-  return fn(null, null);
+    return fn(null, null);
 };
 
 
 var oidcStrategy = new OIDCBearerStrategy(options,
-  function(token, done) {
-    log.info('verifying the user');
-    log.info(token, 'was the token retreived');
-    findById(token.sub, function(err, user) {
-      if (err) {
-        return done(err);
-      }
+    function(token, done) {
+        log.info('verifying the user');
+        log.info(token, 'was the token retreived');
+        findById(token.sub, function(err, user) {
+            if (err) {
+                return done(err);
+            }
 
-      if (!user) {
-        // "Auto-registration"
-        log.info('User was added automatically as they were new. Their sub is: ', token.sub);
-        users.push(token);
-        return done(null, token);
-      }
-      return done(null, user, token);
-    });
-  }
+            if (!user) {
+                // "Auto-registration"
+                log.info('User was added automatically as they were new. Their sub is: ', token.sub);
+                users.push(token);
+                owner = token.sub;
+                return done(null, token);
+            }
+            return done(null, user, token);
+        });
+    }
 );
 
 passport.use(oidcStrategy);
@@ -347,67 +358,67 @@ passport.use(oidcStrategy);
 **/
 
 server.get('/tasks', passport.authenticate('oidc-bearer', {
-  session: false
+    session: false
 }), listTasks);
 server.get('/tasks', passport.authenticate('oidc-bearer', {
-  session: false
+    session: false
 }), listTasks);
 server.get('/tasks/:owner', passport.authenticate('oidc-bearer', {
-  session: false
+    session: false
 }), getTask);
 server.head('/tasks/:owner', passport.authenticate('oidc-bearer', {
-  session: false
+    session: false
 }), getTask);
 server.post('/tasks/:owner/:task', passport.authenticate('oidc-bearer', {
-  session: false
+    session: false
 }), createTask);
 server.post('/tasks', passport.authenticate('oidc-bearer', {
-  session: false
+    session: false
 }), createTask);
 server.del('/tasks/:owner/:task', passport.authenticate('oidc-bearer', {
-  session: false
+    session: false
 }), removeTask);
 server.del('/tasks/:owner', passport.authenticate('oidc-bearer', {
-  session: false
+    session: false
 }), removeTask);
 server.del('/tasks', passport.authenticate('oidc-bearer', {
-  session: false
+    session: false
 }), removeTask);
 server.del('/tasks', passport.authenticate('oidc-bearer', {
-  session: false
+    session: false
 }), removeAll, function respond(req, res, next) {
-  res.send(204);
-  next();
+    res.send(204);
+    next();
 });
 
 
 // Register a default '/' handler
 
 server.get('/', function root(req, res, next) {
-  var routes = [
-    'GET     /',
-    'POST    /tasks/:owner/:task',
-    'POST    /tasks (for JSON body)',
-    'GET     /tasks',
-    'PUT     /tasks/:owner',
-    'GET     /tasks/:owner',
-    'DELETE  /tasks/:owner/:task'
-  ];
-  res.send(200, routes);
-  next();
+    var routes = [
+        'GET     /',
+        'POST    /tasks/:owner/:task',
+        'POST    /tasks (for JSON body)',
+        'GET     /tasks',
+        'PUT     /tasks/:owner',
+        'GET     /tasks/:owner',
+        'DELETE  /tasks/:owner/:task'
+    ];
+    res.send(200, routes);
+    next();
 });
 
 
 server.listen(serverPort, function() {
 
-  var consoleMessage = '\n Windows Azure Active Directory Tutorial';
-  consoleMessage += '\n +++++++++++++++++++++++++++++++++++++++++++++++++++++';
-  consoleMessage += '\n %s server is listening at %s';
-  consoleMessage += '\n Open your browser to %s/tasks\n';
-  consoleMessage += '+++++++++++++++++++++++++++++++++++++++++++++++++++++ \n';
-  consoleMessage += '\n !!! why not try a $curl -isS %s | json to get some ideas? \n';
-  consoleMessage += '+++++++++++++++++++++++++++++++++++++++++++++++++++++ \n\n';
+    var consoleMessage = '\n Windows Azure Active Directory Tutorial';
+    consoleMessage += '\n +++++++++++++++++++++++++++++++++++++++++++++++++++++';
+    consoleMessage += '\n %s server is listening at %s';
+    consoleMessage += '\n Open your browser to %s/tasks\n';
+    consoleMessage += '+++++++++++++++++++++++++++++++++++++++++++++++++++++ \n';
+    consoleMessage += '\n !!! why not try a $curl -isS %s | json to get some ideas? \n';
+    consoleMessage += '+++++++++++++++++++++++++++++++++++++++++++++++++++++ \n\n';
 
-  //log.info(consoleMessage, server.name, server.url, server.url, server.url);
+    //log.info(consoleMessage, server.name, server.url, server.url, server.url);
 
 });
