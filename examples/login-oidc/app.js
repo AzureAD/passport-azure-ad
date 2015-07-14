@@ -42,7 +42,7 @@ var options = {
 
 };
 
-// array to hold logged in users
+// array to hold logged in users and the current logged in user (owner)
 var users = [];
 var owner = null;
 
@@ -53,7 +53,7 @@ var log = bunyan.createLogger({
 
 // MongoDB setup
 // Setup some configuration
-var serverPort = process.env.PORT || 8080;
+var serverPort = process.env.PORT || 8888;
 var serverURI = (process.env.PORT) ? config.creds.mongoose_auth_mongohq : config.creds.mongoose_auth_local;
 
 // Connect to MongoDB
@@ -302,122 +302,121 @@ server.use(passport.session()); // Provides session support
 /* Calling the OIDCBearerStrategy and managing users
 /*
 /* Passport pattern provides the need to manage users and info tokens
-/* with a FindOrCreate() method that must be provided by the implementor.
+/* with a FindorCreate() method that must be provided by the implementor.
 /* Here we just autoregister any user and implement a FindById().
 /* You'll want to do something smarter.
 **/
 
 var findById = function(id, fn) {
-        for (var i = 0, len = users.length; i < len; i++) {
-            var user = users[i];
-            if (user.sub === id) {
-                log.info('Found user: ', user);
-                if (user.id === id) {
-                    return fn(null, user);
-                }
+    for (var i = 0, len = users.length; i < len; i++) {
+        var user = users[i];
+        if (user.sub === id) {
+            log.info('Found user: ', user);
+            return fn(null, user);
+        }
+    }
+    return fn(null, null);
+};
+
+
+var oidcStrategy = new OIDCBearerStrategy(options,
+    function(token, done) {
+        log.info('verifying the user');
+        log.info(token, 'was the token retreived');
+        findById(token.sub, function(err, user) {
+            if (err) {
+                return done(err);
             }
-            return fn(null, null);
-        };
-
-
-        var oidcStrategy = new OIDCBearerStrategy(options,
-            function(token, done) {
-                log.info('verifying the user');
-                log.info(token, 'was the token retreived');
-                findById(token.sub, function(err, user) {
-                    if (err) {
-                        return done(err);
-                    }
-                    if (!user) {
-                        // "Auto-registration"
-                        log.info('User was added automatically as they were new. Their sub is: ', token.sub);
-                        users.push(token);
-                        owner = token.sub;
-                        return done(null, token);
-                    }
-                    owner = token.sub;
-                    return done(null, user, token);
-                });
+            if (!user) {
+                // "Auto-registration"
+                log.info('User was added automatically as they were new. Their sub is: ', token.sub);
+                users.push(token);
+                owner = token.sub;
+                return done(null, token);
             }
-        );
-
-        passport.use(oidcStrategy);
-
-        /// Now the real handlers. Here we just CRUD
-
-        /**
-        /*
-        /* Each of these handlers are protected by our OIDCBearerStrategy by invoking 'oidc-bearer'
-        /* in the pasport.authenticate() method. We set 'session: false' as REST is stateless and
-        /* we don't need to maintain session state. You can experiement removing API protection
-        /* by removing the passport.authenticate() method like so:
-        /*
-        /* server.get('/tasks', listTasks);
-        /*
-        **/
-
-        server.get('/tasks', passport.authenticate('oidc-bearer', {
-            session: false
-        }), listTasks);
-        server.get('/tasks', passport.authenticate('oidc-bearer', {
-            session: false
-        }), listTasks);
-        server.get('/tasks/:owner', passport.authenticate('oidc-bearer', {
-            session: false
-        }), getTask);
-        server.head('/tasks/:owner', passport.authenticate('oidc-bearer', {
-            session: false
-        }), getTask);
-        server.post('/tasks/:owner/:task', passport.authenticate('oidc-bearer', {
-            session: false
-        }), createTask);
-        server.post('/tasks', passport.authenticate('oidc-bearer', {
-            session: false
-        }), createTask);
-        server.del('/tasks/:owner/:task', passport.authenticate('oidc-bearer', {
-            session: false
-        }), removeTask);
-        server.del('/tasks/:owner', passport.authenticate('oidc-bearer', {
-            session: false
-        }), removeTask);
-        server.del('/tasks', passport.authenticate('oidc-bearer', {
-            session: false
-        }), removeTask);
-        server.del('/tasks', passport.authenticate('oidc-bearer', {
-            session: false
-        }), removeAll, function respond(req, res, next) {
-            res.send(204);
-            next();
+            owner = token.sub;
+            return done(null, user, token);
         });
+    }
+);
+
+passport.use(oidcStrategy);
+
+/// Now the real handlers. Here we just CRUD
+
+/**
+/*
+/* Each of these handlers are protected by our OIDCBearerStrategy by invoking 'oidc-bearer'
+/* in the pasport.authenticate() method. We set 'session: false' as REST is stateless and
+/* we don't need to maintain session state. You can experiement removing API protection
+/* by removing the passport.authenticate() method like so:
+/*
+/* server.get('/tasks', listTasks);
+/*
+**/
+
+server.get('/tasks', passport.authenticate('oidc-bearer', {
+    session: false
+}), listTasks);
+server.get('/tasks', passport.authenticate('oidc-bearer', {
+    session: false
+}), listTasks);
+server.get('/tasks/:owner', passport.authenticate('oidc-bearer', {
+    session: false
+}), getTask);
+server.head('/tasks/:owner', passport.authenticate('oidc-bearer', {
+    session: false
+}), getTask);
+server.post('/tasks/:owner/:task', passport.authenticate('oidc-bearer', {
+    session: false
+}), createTask);
+server.post('/tasks', passport.authenticate('oidc-bearer', {
+    session: false
+}), createTask);
+server.del('/tasks/:owner/:task', passport.authenticate('oidc-bearer', {
+    session: false
+}), removeTask);
+server.del('/tasks/:owner', passport.authenticate('oidc-bearer', {
+    session: false
+}), removeTask);
+server.del('/tasks', passport.authenticate('oidc-bearer', {
+    session: false
+}), removeTask);
+server.del('/tasks', passport.authenticate('oidc-bearer', {
+    session: false
+}), removeAll, function respond(req, res, next) {
+    res.send(204);
+    next();
+});
 
 
-        // Register a default '/' handler
+// Register a default '/' handler
 
-        server.get('/', function root(req, res, next) {
-            var routes = [
-                'GET     /',
-                'POST    /tasks/:owner/:task',
-                'POST    /tasks (for JSON body)',
-                'GET     /tasks',
-                'PUT     /tasks/:owner',
-                'GET     /tasks/:owner',
-                'DELETE  /tasks/:owner/:task'
-            ];
-            res.send(200, routes);
-            next();
-        });
+server.get('/', function root(req, res, next) {
+    var routes = [
+        'GET     /',
+        'POST    /tasks/:owner/:task',
+        'POST    /tasks (for JSON body)',
+        'GET     /tasks',
+        'PUT     /tasks/:owner',
+        'GET     /tasks/:owner',
+        'DELETE  /tasks/:owner/:task'
+    ];
+    res.send(200, routes);
+    next();
+});
 
 
-        server.listen(serverPort, function() {
+server.listen(serverPort, function() {
 
-            var consoleMessage = '\n Windows Azure Active Directory Tutorial';
-            consoleMessage += '\n +++++++++++++++++++++++++++++++++++++++++++++++++++++';
-            consoleMessage += '\n %s server is listening at %s';
-            consoleMessage += '\n Open your browser to %s/tasks\n';
-            consoleMessage += '+++++++++++++++++++++++++++++++++++++++++++++++++++++ \n';
-            consoleMessage += '\n !!! why not try a $curl -isS %s | json to get some ideas? \n';
-            consoleMessage += '+++++++++++++++++++++++++++++++++++++++++++++++++++++ \n\n';
+    var consoleMessage = '\n Windows Azure Active Directory Tutorial';
+    consoleMessage += '\n +++++++++++++++++++++++++++++++++++++++++++++++++++++';
+    consoleMessage += '\n %s server is listening at %s';
+    consoleMessage += '\n Open your browser to %s/tasks\n';
+    consoleMessage += '+++++++++++++++++++++++++++++++++++++++++++++++++++++ \n';
+    consoleMessage += '\n !!! why not try a $curl -isS %s | json to get some ideas? \n';
+    consoleMessage += '+++++++++++++++++++++++++++++++++++++++++++++++++++++ \n\n';
 
-            //log.info(consoleMessage, server.name, server.url, server.url, server.url);
+    //log.info(consoleMessage, server.name, server.url, server.url, server.url);
 
-        });
+});

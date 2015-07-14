@@ -18,7 +18,7 @@
 'use strict';
 
 var WsfedStrategy = require('../lib/passport-azure-ad/index').WsfedStrategy,
-  wsfed = require('../lib/passport-azure-ad/wsfederation');
+    wsfed = require('../lib/passport-azure-ad/wsfederation');
 
 /*
  ======== A Handy Little Nodeunit Reference ========
@@ -43,177 +43,177 @@ var WsfedStrategy = require('../lib/passport-azure-ad/index').WsfedStrategy,
 
 exports['wsfed'] = {
 
-  'no args': function(test) {
-    test.expect(1);
+    'no args': function(test) {
+        test.expect(1);
 
-    test.throws(
-      function() {
-        new WsfedStrategy();
-      },
-      Error,
-      'Should fail with no arguments)'
-    );
+        test.throws(
+            function() {
+                new WsfedStrategy();
+            },
+            Error,
+            'Should fail with no arguments)'
+        );
 
-    test.done();
-  },
-  'no verify function': function(test) {
-    test.expect(1);
+        test.done();
+    },
+    'no verify function': function(test) {
+        test.expect(1);
 
-    test.throws(
-      function() {
-        new WsfedStrategy({}, null);
-      },
-      Error,
-      'Should fail with no verify function (2nd argument)'
-    );
+        test.throws(
+            function() {
+                new WsfedStrategy({}, null);
+            },
+            Error,
+            'Should fail with no verify function (2nd argument)'
+        );
 
-    test.done();
-  },
+        test.done();
+    },
 
-  'no options': function(test) {
-    test.expect(1);
+    'no options': function(test) {
+        test.expect(1);
 
-    test.throws(
-      function() {
-        new WsfedStrategy({}, function(){});
-      },
-      Error,
-      'Should fail with no WSFED config options'
-    );
+        test.throws(
+            function() {
+                new WsfedStrategy({}, function() {});
+            },
+            Error,
+            'Should fail with no WSFED config options'
+        );
 
-    test.done();
-  },
-  'with options': function(test) {
-    test.expect(1);
+        test.done();
+    },
+    'with options': function(test) {
+        test.expect(1);
 
-    var config = {
-      realm: 'http://localhost:3000',
-      identityProviderUrl: 'https://login.windows.net/xxxxxxx/wsfed',
-      logoutUrl: 'http://localhost:3000/',
-      identityMetadata: 'https://login.windows.net/xxxxxxx/federationmetadata/2007-06/federationmetadata.xml',
-      cert: 'xxxxxx'
-    };
+        var config = {
+            realm: 'http://localhost:3000',
+            identityProviderUrl: 'https://login.windows.net/common/wsfed',
+            logoutUrl: 'http://localhost:3000/',
+            identityMetadata: 'https://login.windows.net/GraphDir1.OnMicrosoft.com/federationmetadata/2007-06/federationmetadata.xml',
+            cert: 'xxxxxx'
+        };
 
-    test.doesNotThrow(
-      function() {
-        new WsfedStrategy(config, function(){});
-      },
-      Error,
-      'Should not fail with correct WSFED config options'
-    );
+        test.doesNotThrow(
+            function() {
+                new WsfedStrategy(config, function() {});
+            },
+            Error,
+            'Should not fail with correct WSFED config options'
+        );
 
-    test.done();
-  },
-  'with missing option realm': function(test) {
-    test.expect(1);
+        test.done();
+    },
+    'with missing option realm': function(test) {
+        test.expect(1);
 
-    var config = {
-      identityProviderUrl: 'https://login.windows.net/xxxxxxx/wsfed', // replace the end of this URL with the WS-Fed endpoint from the Azure Portal
-      logoutUrl: 'http://localhost:3000/',
-      identityMetadata: 'https://login.windows.net/xxxxxxx/federationmetadata/2007-06/federationmetadata.xml', // replace with the Federation Metadata URL from the Azure Portal
-      cert: 'xxxxxx'
-    };
+        var config = {
+            identityProviderUrl: 'https://login.windows.net/xxxxxxx/wsfed', // replace the end of this URL with the WS-Fed endpoint from the Azure Portal
+            logoutUrl: 'http://localhost:3000/',
+            identityMetadata: 'https://login.windows.net/GraphDir1.OnMicrosoft.com/federationmetadata/2007-06/federationmetadata.xml', // replace with the Federation Metadata URL from the Azure Portal
+            cert: 'xxxxxx'
+        };
 
-    test.throws(
-      function() {
-        new WsfedStrategy(config, function(){});
-      },
-      Error,
-      'Should fail with missing realm config options'
-    );
+        test.throws(
+            function() {
+                new WsfedStrategy(config, function() {});
+            },
+            Error,
+            'Should fail with missing realm config options'
+        );
 
-    test.done();
-  },
-  'with missing option logoutUrl': function(test) {
-    test.expect(1);
+        test.done();
+    },
+    'with missing option logoutUrl': function(test) {
+        test.expect(1);
 
-    var config = {
-      realm: 'http://localhost:3000',
-      identityProviderUrl: 'https://login.windows.net/xxxxxxx/wsfed', // replace the end of this URL with the WS-Fed endpoint from the Azure Portal
-      identityMetadata: 'https://login.windows.net/xxxxxxx/federationmetadata/2007-06/federationmetadata.xml', // replace with the Federation Metadata URL from the Azure Portal
-      cert: 'xxxxxx'
-    };
+        var config = {
+            realm: 'http://localhost:3000',
+            identityProviderUrl: 'https://login.windows.net/xxxxxxx/wsfed', // replace the end of this URL with the WS-Fed endpoint from the Azure Portal
+            identityMetadata: 'https://login.windows.net/GraphDir1.OnMicrosoft.com/federationmetadata/2007-06/federationmetadata.xml', // replace with the Federation Metadata URL from the Azure Portal
+            cert: 'xxxxxx'
+        };
 
-    test.throws(
-      function() {
-        new WsfedStrategy(config, function(){});
-      },
-      Error,
-      'Should fail with missing realm config options'
-    );
+        test.throws(
+            function() {
+                new WsfedStrategy(config, function() {});
+            },
+            Error,
+            'Should fail with missing realm config options'
+        );
 
-    test.done();
-  },
-  'with valid missing option identityMetadata': function(test) {
-    test.expect(1);
+        test.done();
+    },
+    'with valid missing option identityMetadata': function(test) {
+        test.expect(1);
 
-    var config = {
-      realm: 'http://localhost:3000', // replace with your APP URI from registration
-      logoutUrl: 'http://localhost:3000/',
-      identityProviderUrl: 'https://login.windows.net/xxxxxxx/wsfed', // replace the end of this URL with the WS-Fed endpoint from the Azure Portal
-      cert: 'xxxxxx'
-    };
+        var config = {
+            realm: 'http://localhost:3000', // replace with your APP URI from registration
+            logoutUrl: 'http://localhost:3000/',
+            identityProviderUrl: 'https://login.windows.net/xxxxxxx/wsfed ', // replace the end of this URL with the WS-Fed endpoint from the Azure Portal
+            cert: 'xxxxxx'
+        };
 
-    test.doesNotThrow(
-      function() {
-        new WsfedStrategy(config, function(){});
-      },
-      Error,
-      'Should not fail with missing identityMetadata config option (other options are valid)'
-    );
+        test.doesNotThrow(
+            function() {
+                new WsfedStrategy(config, function() {});
+            },
+            Error,
+            'Should not fail with missing identityMetadata config option (other options are valid)'
+        );
 
-    test.done();
-  },
-  'with missing options identityMetadata and cert': function(test) {
-    test.expect(1);
+        test.done();
+    },
+    'with missing options identityMetadata and cert': function(test) {
+        test.expect(1);
 
-    var config = {
-      realm: 'http://localhost:3000', // replace with your APP URI from registration
-      logoutUrl: 'http://localhost:3000/',
-      identityProviderUrl: 'https://login.windows.net/xxxxxxx/wsfed' // replace the end of this URL with the WS-Fed endpoint from the Azure Portal
-    };
+        var config = {
+            realm: 'http://localhost:3000', // replace with your APP URI from registration
+            logoutUrl: 'http://localhost:3000/',
+            identityProviderUrl: 'https://login.windows.net/xxxxxxx/wsfed' // replace the end of this URL with the WS-Fed endpoint from the Azure Portal
+        };
 
-    test.throws(
-      function() {
-        new WsfedStrategy(config, function(){});
-      },
-      Error,
-      'Should fail with missing identityMetadata and cert options'
-    );
+        test.throws(
+            function() {
+                new WsfedStrategy(config, function() {});
+            },
+            Error,
+            'Should fail with missing identityMetadata and cert options'
+        );
 
-    test.done();
-  },
-  'Validate extractToken using request body': function(test) {
-    test.expect(1);
-	var fakeReq = {
-		body: {
-			wresult: '<t:RequestSecurityTokenResponse xmlns:t="http://schemas.xmlsoap.org/ws/2005/02/trust"><t:RequestedSecurityToken><Assertion ID="12234" IssueInstant="2014-08-26T20:35:09.656Z" Version="2.0" xmlns="urn:oasis:names:tc:SAML:2.0:assertion"></Assertion></t:RequestedSecurityToken></t:RequestSecurityTokenResponse>'
-		}
-	}, 
-      expected = '<Assertion ID="12234" IssueInstant="2014-08-26T20:35:09.656Z" Version="2.0" xmlns="urn:oasis:names:tc:SAML:2.0:assertion"/>', 
-      WSFED = new wsfed({}),
-      actual;
-	
-	actual = WSFED.extractToken(fakeReq);
-    test.equal(actual, expected, 'Extracted body from body wresult should equal the expected value');
-   
-    test.done();
-  },
-  'Validate extractToken using request params': function(test) {
-    test.expect(1);
-	var fakeReq = {
-		params: {
-			wresult: '<t:RequestSecurityTokenResponse xmlns:t="http://schemas.xmlsoap.org/ws/2005/02/trust"><t:RequestedSecurityToken><Assertion ID="12234" IssueInstant="2014-08-26T20:35:09.656Z" Version="2.0" xmlns="urn:oasis:names:tc:SAML:2.0:assertion"></Assertion></t:RequestedSecurityToken></t:RequestSecurityTokenResponse>'
-		}
-	}, 
-      expected = '<Assertion ID="12234" IssueInstant="2014-08-26T20:35:09.656Z" Version="2.0" xmlns="urn:oasis:names:tc:SAML:2.0:assertion"/>', 
-      WSFED = new wsfed({}),
-      actual;
-	
-	actual = WSFED.extractToken(fakeReq);
-    test.equal(actual, expected, 'Extracted body from body wresult should equal the expected value');
-   
-    test.done();
-  }
+        test.done();
+    },
+    'Validate extractToken using request body': function(test) {
+        test.expect(1);
+        var fakeReq = {
+                body: {
+                    wresult: '<t:RequestSecurityTokenResponse xmlns:t="http://schemas.xmlsoap.org/ws/2005/02/trust"><t:RequestedSecurityToken><Assertion ID="12234" IssueInstant="2014-08-26T20:35:09.656Z" Version="2.0" xmlns="urn:oasis:names:tc:SAML:2.0:assertion"></Assertion></t:RequestedSecurityToken></t:RequestSecurityTokenResponse>'
+                }
+            },
+            expected = '<Assertion ID="12234" IssueInstant="2014-08-26T20:35:09.656Z" Version="2.0" xmlns="urn:oasis:names:tc:SAML:2.0:assertion"/>',
+            WSFED = new wsfed({}),
+            actual;
+
+        actual = WSFED.extractToken(fakeReq);
+        test.equal(actual, expected, 'Extracted body from body wresult should equal the expected value');
+
+        test.done();
+    },
+    'Validate extractToken using request params': function(test) {
+        test.expect(1);
+        var fakeReq = {
+                params: {
+                    wresult: '<t:RequestSecurityTokenResponse xmlns:t="http://schemas.xmlsoap.org/ws/2005/02/trust"><t:RequestedSecurityToken><Assertion ID="12234" IssueInstant="2014-08-26T20:35:09.656Z" Version="2.0" xmlns="urn:oasis:names:tc:SAML:2.0:assertion"></Assertion></t:RequestedSecurityToken></t:RequestSecurityTokenResponse>'
+                }
+            },
+            expected = '<Assertion ID="12234" IssueInstant="2014-08-26T20:35:09.656Z" Version="2.0" xmlns="urn:oasis:names:tc:SAML:2.0:assertion"/>',
+            WSFED = new wsfed({}),
+            actual;
+
+        actual = WSFED.extractToken(fakeReq);
+        test.equal(actual, expected, 'Extracted body from body wresult should equal the expected value');
+
+        test.done();
+    }
 
 };
