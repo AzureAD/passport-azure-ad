@@ -91,7 +91,7 @@ exports['saml'] = {
 
         var samlConfig = {
             // required options
-            identityMetadata: 'https://login.windows.net/GraphDir1.OnMicrosoft.com/federationmetadata/2007-06/federationmetadata.xml',
+            identityMetadata: 'https://login.windows.net/xxxxxxxxx/federationmetadata.xml',
             loginCallback: 'http://localhost:3000/login/callback/',
             issuer: 'http://localhost:3000' // this is the URI you entered for APP ID URI when configuring SSO for you app on Azure AAD
         };

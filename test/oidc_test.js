@@ -80,7 +80,7 @@ exports['oidc'] = {
                 new OIDCStrategy({}, function() {});
             },
             Error,
-            'Should fail with no SAML config options'
+            'Should fail with no OIDC config options'
         );
 
         test.done();
@@ -92,7 +92,7 @@ exports['oidc'] = {
         var oidcConfig = {
             // required options
             identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
-            //issuer: 'http://localhost:3000'  // this is the URI you entered for APP ID URI when configuring SSO for you app on Azure AAD
+            issuer: 'http://localhost:3000' // this is the URI you entered for APP ID URI when configuring SSO for you app on Azure AAD
         };
 
         test.doesNotThrow(
@@ -105,5 +105,6 @@ exports['oidc'] = {
 
         test.done();
     }
+
 
 };
