@@ -77,7 +77,7 @@ exports['saml'] = {
 
     test.throws(
       function() {
-        new SamlStrategy({}, function(){});
+        new SamlStrategy({}, function() {});
       },
       Error,
       'Should fail with no SAML config options'
@@ -93,12 +93,12 @@ exports['saml'] = {
       // required options
       identityMetadata: 'https://login.windows.net/xxxxxxxxx/federationmetadata.xml',
       loginCallback: 'http://localhost:3000/login/callback/',
-      issuer: 'http://localhost:3000'  // this is the URI you entered for APP ID URI when configuring SSO for you app on Azure AAD
+      issuer: 'http://localhost:3000' // this is the URI you entered for APP ID URI when configuring SSO for you app on Azure AAD
     };
 
     test.doesNotThrow(
       function() {
-        new SamlStrategy(samlConfig, function(){});
+        new SamlStrategy(samlConfig, function() {});
       },
       Error,
       'Should not fail with proper SAML config options'
