@@ -1,5 +1,7 @@
 # Windows Azure Active Directory Passport.js Plug-In
 
+[![Join the chat at https://gitter.im/AzureAD/passport-azure-ad](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/AzureAD/passport-azure-ad?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [Passport](http://passportjs.org/) is authentication middleware for Node.js. Passport can be used in any Express-based web application. A comprehensive and large set of strategies support authentication using a username and password, Facebook, Twitter, and more. In order to enable you to quickly integrate Windows Azure Active Directory in to your website quickly, we have developed a strategy for Windows Azure Active Directory.
 
 The passport-azure-ad module is a WS-Federation / SAML-P authentication provider for Passport. This provider lets you integrate your Node app with Windows Azure AD so you can use its many features, including web single sign-on (WebSSO). 
