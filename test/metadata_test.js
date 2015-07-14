@@ -40,6 +40,7 @@ var Metadata = require('../lib/passport-azure-ad/metadata').Metadata;
  */
 
 var metadataUrl = 'https://login.windows.net/GraphDir1.OnMicrosoft.com/federationmetadata/2007-06/federationmetadata.xml';
+var oidcMetadataUrl = 'https://login.microsoftonline.com/common/.well-known/openid-configuration';
 
 exports['metadata'] = {
 
@@ -49,7 +50,7 @@ exports['metadata'] = {
 
     test.doesNotThrow(
       function() {
-        new Metadata('http://foo.com/federationmetadata.xml');
+        new Metadata('http://foo.com/federationmetadata.xml', 'wsfed');
       },
       Error,
       'Should not fail with url present'
@@ -57,7 +58,7 @@ exports['metadata'] = {
 
     test.done();
   },
-  'missing option': function(test) {
+  'missing option url': function(test) {
     test.expect(1);
     // tests here
 
@@ -66,30 +67,78 @@ exports['metadata'] = {
         new Metadata();
       },
       Error,
-      'Should  fail with url missing'
+      'Should fail with url missing'
     );
 
     test.done();
   },
-  'fetch metadata': function(test) {
+  'missing option auth': function(test) {
+    test.expect(1);
+    // tests here
+
+    test.throws(
+      function() {
+        new Metadata('http://foo.com/federationmetadata.xml');
+      },
+      Error,
+      'Should fail with auth type missing'
+    );
+
+    test.done();
+  },
+  'fetch metadata saml': function(test) {
     test.expect(7);
     // tests here
 
     test.doesNotThrow(
       function() {
-        var m = new Metadata(metadataUrl);
+        var m = new Metadata(metadataUrl, 'saml');
         m.fetch(function(err) {
           test.ifError(err);
           test.ok(m.saml.certs.length > 0, 'fetch should obtain 1 or more saml x509 certificates');
           test.ok(m.saml.loginEndpoint, 'fetch should obtain saml login endpoint');
           test.ok(m.saml.logoutEndpoint, 'fetch should obtain saml logout endpoint');
+          test.done();
+        });
+      },
+      Error,
+      'Should not fail with url present and auth type saml'
+    );
+  },
+  'fetch metadata wsfed': function(test) {
+    test.expect(7);
+    // tests here
+
+    test.doesNotThrow(
+      function() {
+        var m = new Metadata(metadataUrl, 'wsfed');
+        m.fetch(function(err) {
+          test.ifError(err);
           test.ok(m.wsfed.certs.length > 0, 'fetch should obtain 1 or more wsfed x509 certificates');
           test.ok(m.wsfed.loginEndpoint, 'fetch should obtain wsfedlogin endpoint');
           test.done();
         });
       },
       Error,
-      'Should not fail with url present'
+      'Should not fail with url present and auth type wsfed'
+    );
+  },
+'fetch metadata oidc': function(test) {
+    test.expect(7);
+    // tests here
+
+    test.doesNotThrow(
+      function() {
+        var m = new Metadata(metadataUrl, 'oidc');
+        m.fetch(function(err) {
+          test.ifError(err);
+          test.ok(m.oidc.algorithms, 'fetch algorithms');
+          test.ok(m.odic.issuer), 'fetch issuer');
+          test.done();
+        });
+      },
+      Error,
+      'Should not fail with url present and auth type oidc'
     );
   }
 };
