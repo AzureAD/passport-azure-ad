@@ -42,69 +42,69 @@ var SamlStrategy = require('../lib/passport-azure-ad/index').SamlStrategy;
 
 exports['saml'] = {
 
-  'no args': function(test) {
-    test.expect(1);
-    // tests here
+    'no args': function(test) {
+        test.expect(1);
+        // tests here
 
-    test.throws(
-      function() {
-        new SamlStrategy();
-      },
-      Error,
-      'Should fail with no arguments)'
-    );
+        test.throws(
+            function() {
+                new SamlStrategy();
+            },
+            Error,
+            'Should fail with no arguments)'
+        );
 
-    test.done();
-  },
-  'no verify function': function(test) {
-    test.expect(1);
-    // tests here
+        test.done();
+    },
+    'no verify function': function(test) {
+        test.expect(1);
+        // tests here
 
-    test.throws(
-      function() {
-        new SamlStrategy({}, null);
-      },
-      Error,
-      'Should fail with no verify function (2nd argument)'
-    );
+        test.throws(
+            function() {
+                new SamlStrategy({}, null);
+            },
+            Error,
+            'Should fail with no verify function (2nd argument)'
+        );
 
-    test.done();
-  },
+        test.done();
+    },
 
-  'no options': function(test) {
-    test.expect(1);
-    // tests here
+    'no options': function(test) {
+        test.expect(1);
+        // tests here
 
-    test.throws(
-      function() {
-        new SamlStrategy({}, function(){});
-      },
-      Error,
-      'Should fail with no SAML config options'
-    );
+        test.throws(
+            function() {
+                new SamlStrategy({}, function() {});
+            },
+            Error,
+            'Should fail with no SAML config options'
+        );
 
-    test.done();
-  },
-  'with options': function(test) {
-    test.expect(1);
-    // tests here
+        test.done();
+    },
+    'with options': function(test) {
+        test.expect(1);
+        // tests here
 
-    var samlConfig = {
-      // required options
-      identityMetadata: 'https://login.windows.net/xxxxxxxxx/federationmetadata.xml',
-      loginCallback: 'http://localhost:3000/login/callback/',
-      issuer: 'http://localhost:3000'  // this is the URI you entered for APP ID URI when configuring SSO for you app on Azure AAD
-    };
+        var samlConfig = {
+            // required options
+            identityMetadata: 'https://login.windows.net/GraphDir1.OnMicrosoft.com/federationmetadata/2007-06/federationmetadata.xml',
+            loginCallback: 'http://localhost:3000/login/callback/',
+            issuer: 'http://localhost:3000' // this is the URI you entered for APP ID URI when configuring SSO for you app on Azure AAD
+        };
 
-    test.doesNotThrow(
-      function() {
-        new SamlStrategy(samlConfig, function(){});
-      },
-      Error,
-      'Should not fail with proper SAML config options'
-    );
+        test.doesNotThrow(
+            function() {
+                new SamlStrategy(samlConfig, function() {});
+            },
+            Error,
+            'Should not fail with proper SAML config options'
+        );
 
-    test.done();
-  }
+        test.done();
+    }
 
 };

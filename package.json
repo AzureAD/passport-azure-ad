@@ -1,53 +1,58 @@
 {
-  "name": "passport-azure-ad",
-  "version": "1.0.0",
-  "licenses": [
-    {
-      "type": "Apache 2.0",
-      "url": "https://github.com/MSOpenTech/aal/raw/master/License.txt"
+    "name": "passport-azure-ad",
+    "version": "1.0.0",
+    "licenses": [{
+        "type": "Apache 2.0",
+        "url": "https://github.com/MSOpenTech/aal/raw/master/License.txt"
+    }],
+    "keywords": [
+        "saml",
+        "samlp",
+        "wsfed",
+        "azure active directory",
+        "aad",
+        "adfs",
+        "sso",
+        "oidc",
+        "bearer",
+        "shibboleth"
+    ],
+    "description": "WSFED/SAMLP/OIDC Bearer Passport strategies for Azure Active Directory",
+    "author": {
+        "name": "Brandon Werner",
+        "email": "brandwe@microsoft.com",
+        "url": "http://microsoft.com/"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:AzureAD/passport-azure-ad.git"
+    },
+    "main": "./lib/passport-azure-ad",
+    "dependencies": {
+        "passport": "*",
+        "xml2js": "*",
+        "xml-crypto": "*",
+        "xmldom": "*",
+        "async": "*",
+        "request": "*",
+        "underscore": "*",
+        "xtend": "*",
+        "passport-http-bearer": "*",
+        "ursa": "*",
+        "jws": "*",
+        "jsonwebtoken": "*"
+    },
+    "devDependencies": {
+        "grunt-contrib-jshint": "~0.1.1",
+        "grunt-contrib-nodeunit": "~0.1.2",
+        "grunt-contrib-watch": "~0.2.0",
+        "grunt": "~0.4.1",
+        "bunyan": "*"
+    },
+    "scripts": {
+        "test": "grunt nodeunit"
+    },
+    "engines": {
+        "node": ">= 0.8.0"
     }
-  ],
-  "keywords": [
-    "saml",
-    "samlp",
-    "wsfed",
-    "azure active directory",
-    "aad",
-    "adfs",
-    "sso",
-    "shibboleth"
-  ],
-  "description": "WSFED/SAMLP 2.0 authentication Passport strategies for Windows Azure Active Directory",
-  "author": {
-    "name": "Microsoft Open Technologies Inc",
-    "email": "msopentech@microsoft.com",
-    "url": "http://msopentech.com/"
-  },
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/MSOpenTech/passport-azure-ad.git"
-  },
-  "main": "./lib/passport-azure-ad",
-  "dependencies": {
-    "passport": "0.1.x",
-    "xml2js": "0.2.6",
-    "xml-crypto": "0.0.x",
-    "xmldom": "0.1.x",
-    "async": "~0.2.7",
-    "request": "~2.16.6",
-    "underscore": "~1.4.4",
-    "xtend": "~2.0.3"
-  },
-  "devDependencies": {
-    "grunt-contrib-jshint": "~0.1.1",
-    "grunt-contrib-nodeunit": "~0.1.2",
-    "grunt-contrib-watch": "~0.2.0",
-    "grunt": "~0.4.1"
-  },
-  "scripts": {
-    "test": "grunt nodeunit"
-  },
-  "engines": {
-    "node": ">= 0.8.0"
-  }
 }

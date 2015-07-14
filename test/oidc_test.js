@@ -42,68 +42,68 @@ var OidcStrategy = require('../lib/passport-azure-ad/index').OIDCStrategy;
 
 exports['oidc'] = {
 
-  'no args': function(test) {
-    test.expect(1);
-    // tests here
+    'no args': function(test) {
+        test.expect(1);
+        // tests here
 
-    test.throws(
-      function() {
-        new OIDCStrategy();
-      },
-      Error,
-      'Should fail with no arguments)'
-    );
+        test.throws(
+            function() {
+                new OIDCStrategy();
+            },
+            Error,
+            'Should fail with no arguments)'
+        );
 
-    test.done();
-  },
-  'no verify function': function(test) {
-    test.expect(1);
-    // tests here
+        test.done();
+    },
+    'no verify function': function(test) {
+        test.expect(1);
+        // tests here
 
-    test.throws(
-      function() {
-        new OIDCStrategy({}, null);
-      },
-      Error,
-      'Should fail with no verify function (2nd argument)'
-    );
+        test.throws(
+            function() {
+                new OIDCStrategy({}, null);
+            },
+            Error,
+            'Should fail with no verify function (2nd argument)'
+        );
 
-    test.done();
-  },
+        test.done();
+    },
 
-  'no options': function(test) {
-    test.expect(1);
-    // tests here
+    'no options': function(test) {
+        test.expect(1);
+        // tests here
 
-    test.throws(
-      function() {
-        new OIDCStrategy({}, function(){});
-      },
-      Error,
-      'Should fail with no SAML config options'
-    );
+        test.throws(
+            function() {
+                new OIDCStrategy({}, function() {});
+            },
+            Error,
+            'Should fail with no SAML config options'
+        );
 
-    test.done();
-  },
-  'with options': function(test) {
-    test.expect(1);
-    // tests here
+        test.done();
+    },
+    'with options': function(test) {
+        test.expect(1);
+        // tests here
 
-    var oidcConfig = {
-      // required options
-      identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
-      issuer: 'http://localhost:3000'  // this is the URI you entered for APP ID URI when configuring SSO for you app on Azure AAD
-    };
+        var oidcConfig = {
+            // required options
+            identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
+            //issuer: 'http://localhost:3000'  // this is the URI you entered for APP ID URI when configuring SSO for you app on Azure AAD
+        };
 
-    test.doesNotThrow(
-      function() {
-        new OIDCStrategy(oidcConfig, function(){});
-      },
-      Error,
-      'Should not fail with proper OIDC config options'
-    );
+        test.doesNotThrow(
+            function() {
+                new OidcStrategy(oidcConfig, function() {});
+            },
+            Error,
+            'Should not fail with proper OIDC config options'
+        );
 
-    test.done();
-  }
+        test.done();
+    }
 
 };
