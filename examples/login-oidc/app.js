@@ -30,25 +30,40 @@ var bunyan = require('bunyan');
 var config = require('./client_config');
 var OIDCStrategy = require('../../lib/passport-azure-ad/index').OIDCStrategy;
 
+var log = bunyan.createLogger({
+    name: 'Microsoft OIDC Example Web Application'
+});
+
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
 //   serialize users into and deserialize users out of the session.  Typically,
 //   this will be as simple as storing the user ID when serializing, and finding
-//   the user by ID when deserializing.  However, since this example does not
-//   have a database of user records, the OpenID identifier is serialized and
-//   deserialized.
-//   
+//   the user by ID when deserializing.
 passport.serializeUser(function(user, done) {
-  done(null, user.identifier);
+  done(null, user._json.upn);
 });
 
-passport.deserializeUser(function(identifier, done) {
-  done(null, { identifier: identifier });
+passport.deserializeUser(function(id, done) {
+  findByEmail(id, function (err, user) {
+    done(err, user);
+  });
 });
 
+// array to hold logged in users
+var users = [];
 
-// Use the OpenIDStrategy within Passport.
+var findByEmail = function(email, fn) {
+  for (var i = 0, len = users.length; i < len; i++) {
+    var user = users[i];
+    if (user._json.upn === email) {
+      return fn(null, user);
+    }
+  }
+  return fn(null, null);
+};
+
+// Use the OIDCStrategy within Passport.
 //   Strategies in passport require a `validate` function, which accept
 //   credentials (in this case, an OpenID identifier), and invoke a callback
 //   with a user object.
@@ -59,15 +74,22 @@ passport.use(new OIDCStrategy({
     clientSecret: config.creds.clientSecret,
     identityMetadata: config.creds.identityMetadata
   },
-  function(identifier, done) {
+  function(iss, sub, profile, accessToken, refreshToken, done) {
+    log.info('We received profile of: ', profile);
+    log.info('Example: Email address we received was: ', profile._json.upn);
     // asynchronous verification, for effect...
     process.nextTick(function () {
-      
-      // To keep the example simple, the user's OpenID identifier is returned to
-      // represent the logged-in user.  In a typical application, you would want
-      // to associate the OpenID identifier with a user record in your database,
-      // and return that user instead.
-      return done(null, { identifier: identifier })
+      findByEmail(profile._json.upn, function(err, user) {
+        if (err) {
+          return done(err);
+        }
+        if (!user) {
+          // "Auto-registration"
+          users.push(profile);
+          return done(null, profile);
+        }
+        return done(null, user);
+      });
     });
   }
 ));
@@ -106,6 +128,7 @@ app.get('/account', ensureAuthenticated, function(req, res){
 app.get('/login', 
   passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
   function(req, res) {
+    log.info('Login was called in the Sample');
     res.redirect('/');
 });
 
@@ -118,6 +141,7 @@ app.get('/login',
 app.post('/auth/openid', 
   passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
   function(req, res) {
+    log.info('Authenitcation was called in the Sample');
     res.redirect('/');
   });
 
@@ -129,6 +153,7 @@ app.post('/auth/openid',
 app.get('/auth/openid/return', 
   passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
   function(req, res) {
+    log.info('We received a return from AzureAD.');
     res.redirect('/');
   });
 
