@@ -1,5 +1,8 @@
 <% if (!user) { %>
 	<h2>Welcome! Please log in.</h2>
+	<a href="/login">Log In</a>
 <% } else { %>
 	<h2>Hello, <%= user._json.given_name %>.</h2>
+	<a href="/account">Account Info</a></br>
+	<a href="/logout">Log Out</a>
 <% } %>
