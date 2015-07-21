@@ -21,6 +21,9 @@
  * Module dependencies.
  */
 var express = require('express');
+var cookieParser = require('cookie-parser');
+var expressSession = require('express-session');
+var bodyParser = require('body-parser');
 var http = require('http');
 var path = require('path');
 var passport = require('passport');
@@ -41,6 +44,10 @@ var config = {
   // Then, copy the value of the WS-Federation Sign-On Endpoint.
   // Note: This field is ignored if you specify an identityMetadata url
   identityProviderUrl: 'https://login.windows.net/GraphDir1.OnMicrosoft.com/wsfed',
+
+  // This is the URL that Active Directory will redirect to with the token after the login process.
+  // Ensure this is an HTTPS endpoint and is included in the Reply URL list in Active Directory -> Application -> Configuration -> Reply URL
+   wreply: 'https://localhost:3000/login/callback',
 
   // Enter the logout url of your application. The user will be redirected to this endpoint after
   // the auth token has been revoked by the WSFed endpoint.
@@ -64,10 +71,10 @@ app.configure(function(){
   app.set('view engine', 'ejs');
   app.use(express.favicon());
   app.use(express.logger('dev'));
-  app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(express.cookieParser('your secret here'));
-  app.use(express.session({ secret: 'keyboard cat' }));
+  app.use(cookieParser());
+  app.use(expressSession({ secret: 'keyboard cat', resave: true, saveUninitialized: false }));
+  app.use(bodyParser.urlencoded({ extended : true }));
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(app.router);
