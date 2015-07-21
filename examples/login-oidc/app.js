@@ -24,6 +24,9 @@
  */
 
 var express = require('express');
+var cookieParser = require('cookie-parser');
+var expressSession = require('express-session');
+var bodyParser = require('body-parser');
 var passport = require('passport');
 var util = require('util');
 var bunyan = require('bunyan');
@@ -105,12 +108,10 @@ app.configure(function() {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.logger());
-  app.use(express.cookieParser());
-  app.use(express.bodyParser());
+  app.use(cookieParser());
+  app.use(expressSession({ secret: 'keyboard cat', resave: true, saveUninitialized: false }));
+  app.use(bodyParser.urlencoded({ extended : true }));
   app.use(express.methodOverride());
-  app.use(express.session({ secret: 'keyboard cat' }));
-  // Initialize Passport!  Also use passport.session() middleware, to support
-  // persistent login sessions (recommended).
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(app.router);
