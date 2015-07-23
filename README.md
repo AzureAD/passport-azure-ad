@@ -1,7 +1,7 @@
-# Windows Azure Active Directory Passport.js Plug-In
+# Microsoft Azure Active Directory Passport.js Plug-In
 =============
 
-passport-azure-ad is a collection of [Passport](http://passportjs.org/) Strategies to help you integrate with Azure Active Ditectory. It includes OpenID Connect, WS-Federation, and SAML-P authentication and authorization. These providers lets you integrate your Node app with Windows Azure AD so you can use its many features, including web single sign-on (WebSSO).
+passport-azure-ad is a collection of [Passport](http://passportjs.org/) Strategies to help you integrate with Azure Active Ditectory. It includes OpenID Connect, WS-Federation, and SAML-P authentication and authorization. These providers let you integrate your Node app with Microsoft Azure AD so you can use its many features, including web single sign-on (WebSSO), Endpoint Protection with OAuth, and JWT token issuance and validation.
 
 
 The code is based on Henri Bergius's [passport-saml](https://github.com/bergie/passport-saml) library and Matias Woloski's [passport-wsfed-saml2](https://github.com/auth0/passport-wsfed-saml2) library as well as Kiyofumi Kondoh's [passport-openid-google](https://github.com/kkkon/passport-google-openidconnect).
