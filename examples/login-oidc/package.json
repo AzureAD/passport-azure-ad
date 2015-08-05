@@ -9,7 +9,6 @@
         "mongoose": "*",
         "bunyan": "*",
         "assert-plus": "*",
-        "passport": "*",
-        "passport-azure-ad": "*"
+        "passport": "*"
     }
 }
