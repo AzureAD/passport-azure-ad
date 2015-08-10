@@ -40,7 +40,6 @@
     "underscore": "*",
     "xtend": "*",
     "passport-http-bearer": "*",
-    "ursa": "*",
     "jws": "*",
     "jsonwebtoken": "*",
     "openid": "*",

@@ -417,6 +417,6 @@ server.listen(serverPort, function() {
     consoleMessage += '\n !!! why not try a $curl -isS %s | json to get some ideas? \n';
     consoleMessage += '+++++++++++++++++++++++++++++++++++++++++++++++++++++ \n\n';
 
-    //log.info(consoleMessage, server.name, server.url, server.url, server.url);
+    log.info(consoleMessage, server.name, server.url, server.url, server.url);
 
 });
