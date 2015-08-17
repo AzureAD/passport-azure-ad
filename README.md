@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/AzureAD/passport-azure-ad.png?label=ready&title=Ready)](https://waffle.io/AzureAD/passport-azure-ad)
 # Microsoft Azure Active Directory Passport.js Plug-In
 =============
 
