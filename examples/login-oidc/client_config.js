@@ -4,7 +4,10 @@
  	returnURL: 'http://localhost:3000/auth/openid/return',
  	identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration', // For using Microsoft you should never need to change this.
  	realm: 'http://localhost:3000',
- 	issuer: 'https://sts.windows.net/cff56d8f-f602-4afd-94e4-c95b76f1c81e/',
- 	clientID: 'c9655d1d-f356-46a7-afe1-431c0d6eeb37',
- 	clientSecret: 'jRXwIofdH7Hju2V1E1ab5v5uLVf68mhVgEeIRaBMXf0='
+ 	clientID: '6450da98-4793-4dbd-9945-56a26737e229',
+ 	clientSecret: 'vPSgl3vyVR8w8Ge/A8hYbhIm8eZEcAmC4JCIB5jeoI8=',
+ 	skipUserProfile: true, // for OpenID only flows this should be set to true
+ 	responseType: 'id_token code', // for login only flows
+ 	responseMode: 'form_post', // As per the OAuth 2.0 standard.
+ 	//scope: ['email', 'profile'] // additional scopes you may wish to pass
  };
