@@ -43,7 +43,7 @@
     "jws": "*",
     "jsonwebtoken": "*",
     "openid": "*",
-    "oauth": "0.9.x",
+    "oauth": "*",
     "webfinger": "0.3.x",
     "bunyan": "*"
   },
