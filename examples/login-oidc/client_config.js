@@ -3,8 +3,9 @@
  exports.creds = {
  	returnURL: 'http://localhost:3000/auth/openid/return',
  	identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration', // For using Microsoft you should never need to change this.
- 	realm: 'http://localhost:3000',
- 	issuer: 'https://sts.windows.net/cff56d8f-f602-4afd-94e4-c95b76f1c81e/',
- 	clientID: 'c9655d1d-f356-46a7-afe1-431c0d6eeb37',
- 	clientSecret: 'jRXwIofdH7Hju2V1E1ab5v5uLVf68mhVgEeIRaBMXf0='
- };
+ 	clientID: '<your application ID>',
+ 	clientSecret: '<your client secret>', // if you are doing code or id_token code
+ 	skipUserProfile: true, // for AzureAD should be set to true.
+ 	responseType: 'id_token', // for login only flows use id_token. For accessing resources use `id_token code`
+ 	responseMode: 'form_post', // For login only flows we should have token passed back to us in a POST
+ 	//scope: ['email', 'profile'] // additional scopes you may wish to pass
