@@ -30,13 +30,15 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var util = require('util');
 var bunyan = require('bunyan');
-var config = require('./client_config');
+var config = require('./client_config_v1');
 var OIDCStrategy = require('../../lib/passport-azure-ad/index').OIDCStrategy;
 
 var log = bunyan.createLogger({
     name: 'Microsoft OIDC Example Web Application'
 });
 
+// array to hold logged in users
+var users = [];
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -44,7 +46,7 @@ var log = bunyan.createLogger({
 //   this will be as simple as storing the user ID when serializing, and finding
 //   the user by ID when deserializing.
 passport.serializeUser(function(user, done) {
-  done(null, user._json.upn);
+  done(null, user.email);
 });
 
 passport.deserializeUser(function(id, done) {
@@ -53,13 +55,13 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-// array to hold logged in users
-var users = [];
+
 
 var findByEmail = function(email, fn) {
   for (var i = 0, len = users.length; i < len; i++) {
     var user = users[i];
-    if (user._json.upn === email) {
+    log.info('we are using user: ', user);
+    if (user.email === email) {
       return fn(null, user);
     }
   }
@@ -76,14 +78,18 @@ passport.use(new OIDCStrategy({
     clientID: config.creds.clientID,
     clientSecret: config.creds.clientSecret,
     oidcIssuer: config.creds.issuer,
-    identityMetadata: config.creds.identityMetadata
+    identityMetadata: config.creds.identityMetadata,
+    skipUserProfile: config.creds.skipUserProfile,
+    responseType: config.creds.responseType,
+    responseMode: config.creds.responseMode
   },
   function(iss, sub, profile, accessToken, refreshToken, done) {
-    log.info('We received profile of: ', profile);
-    log.info('Example: Email address we received was: ', profile._json.upn);
+    if (!profile.email) {
+      return done(new Error("No email found"), null);
+    }
     // asynchronous verification, for effect...
     process.nextTick(function () {
-      findByEmail(profile._json.upn, function(err, user) {
+      findByEmail(profile.email, function(err, user) {
         if (err) {
           return done(err);
         }
@@ -127,7 +133,7 @@ app.get('/account', ensureAuthenticated, function(req, res){
   res.render('account', { user: req.user });
 });
 
-app.get('/login', 
+app.get('/login',
   passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
   function(req, res) {
     log.info('Login was called in the Sample');
@@ -140,7 +146,7 @@ app.get('/login',
 //   the user to their OpenID provider.  After authenticating, the OpenID
 //   provider will redirect the user back to this application at
 //   /auth/openid/return
-app.post('/auth/openid', 
+app.post('/auth/openid',
   passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
   function(req, res) {
     log.info('Authenitcation was called in the Sample');
@@ -152,7 +158,19 @@ app.post('/auth/openid',
 //   request.  If authentication fails, the user will be redirected back to the
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
-app.get('/auth/openid/return', 
+app.get('/auth/openid/return',
+  passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
+  function(req, res) {
+    log.info('We received a return from AzureAD.');
+    res.redirect('/');
+  });
+
+// GET /auth/openid/return
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  If authentication fails, the user will be redirected back to the
+//   login page.  Otherwise, the primary route function function will be called,
+//   which, in this example, will redirect the user to the home page.
+app.post('/auth/openid/return',
   passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
   function(req, res) {
     log.info('We received a return from AzureAD.');

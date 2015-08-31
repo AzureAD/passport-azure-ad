@@ -1,6 +1,6 @@
 # SAML SSO Example  for Azure Active Directory
 
-[Passport](http://passportjs.org/) strategy for authenticating with Windows Azure Active Directory using SAML. 
+[Passport](http://passportjs.org/) strategy for authenticating with Azure Active Directory using OIDC. 
 
 ## Install
 
@@ -13,4 +13,4 @@ node app
 
 
 ## License
-Copyright (c) Microsoft Open Technologies, Inc.  All rights reserved. Licensed under the Apache License, Version 2.0 (the "License"); 
+Copyright (c) Microsoft.  All rights reserved. Licensed under the MIT License. 
