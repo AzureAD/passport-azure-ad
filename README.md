@@ -59,24 +59,24 @@ passport.use(new OIDCStrategy({
     clientSecret: config.creds.clientSecret,
     oidcIssuer: config.creds.issuer,
     identityMetadata: config.creds.identityMetadata,
+    skipUserProfile: config.creds.skipUserProfile,
     responseType: config.creds.responseType,
-    responseMode: config.creds.responseMode,
-    skipUserProfile: config.creds.skipUserProfile
-    scope: config.creds.scope
+    responseMode: config.creds.responseMode
   },
-  function(iss, sub, profile, claims, accessToken, refreshToken, params, done) {
-    log.info('We received claims of: ', claims);
-    log.info('Example: Email address we received was: ', claims.preferred_username || claims.upn);
+  function(iss, sub, profile, accessToken, refreshToken, done) {
+    if (!profile.email) {
+      return done(new Error("No email found"), null);
+    }
     // asynchronous verification, for effect...
     process.nextTick(function () {
-      findByEmail(claims.preferred_username, function(err, user) {
+      findByEmail(profile.email, function(err, user) {
         if (err) {
           return done(err);
         }
         if (!user) {
           // "Auto-registration"
-          users.push(claims);
-          return done(null, claims);
+          users.push(profile);
+          return done(null, profile);
         }
         return done(null, user);
       });

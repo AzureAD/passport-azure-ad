@@ -30,7 +30,7 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var util = require('util');
 var bunyan = require('bunyan');
-var config = require('./client_config');
+var config = require('./client_config_v1');
 var OIDCStrategy = require('../../lib/passport-azure-ad/index').OIDCStrategy;
 
 var log = bunyan.createLogger({
@@ -133,7 +133,7 @@ app.get('/account', ensureAuthenticated, function(req, res){
   res.render('account', { user: req.user });
 });
 
-app.get('/login', 
+app.get('/login',
   passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
   function(req, res) {
     log.info('Login was called in the Sample');
@@ -146,7 +146,7 @@ app.get('/login',
 //   the user to their OpenID provider.  After authenticating, the OpenID
 //   provider will redirect the user back to this application at
 //   /auth/openid/return
-app.post('/auth/openid', 
+app.post('/auth/openid',
   passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
   function(req, res) {
     log.info('Authenitcation was called in the Sample');
@@ -158,7 +158,7 @@ app.post('/auth/openid',
 //   request.  If authentication fails, the user will be redirected back to the
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
-app.get('/auth/openid/return', 
+app.get('/auth/openid/return',
   passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
   function(req, res) {
     log.info('We received a return from AzureAD.');
@@ -170,7 +170,7 @@ app.get('/auth/openid/return',
 //   request.  If authentication fails, the user will be redirected back to the
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
-app.post('/auth/openid/return', 
+app.post('/auth/openid/return',
   passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
   function(req, res) {
     log.info('We received a return from AzureAD.');
