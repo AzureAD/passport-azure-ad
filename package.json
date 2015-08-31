@@ -1,6 +1,6 @@
 {
   "name": "passport-azure-ad",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "licenses": [
     {
       "type": "Apache 2.0",
@@ -19,7 +19,7 @@
     "bearer",
     "shibboleth"
   ],
-  "description": "WSFED/SAMLP/OIDC/ Bearer Passport strategies for Azure Active Directory",
+  "description": "WSFED/SAMLP/OIDC/Bearer Passport strategies for Azure Active Directory",
   "author": {
     "name": "Brandon Werner",
     "email": "brandwe@microsoft.com",
