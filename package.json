@@ -45,7 +45,8 @@
     "openid": "*",
     "oauth": "*",
     "webfinger": "0.3.x",
-    "bunyan": "*"
+    "bunyan": "*",
+    "cache-manager": "*"
   },
   "peerDependencies": {
     "body-parser": "^1.12.3",
