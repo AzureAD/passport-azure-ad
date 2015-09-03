@@ -81,7 +81,8 @@ passport.use(new OIDCStrategy({
     identityMetadata: config.creds.identityMetadata,
     skipUserProfile: config.creds.skipUserProfile,
     responseType: config.creds.responseType,
-    responseMode: config.creds.responseMode
+    responseMode: config.creds.responseMode,
+    validateIssuer: config.creds.validateIssuer;
   },
   function(iss, sub, profile, accessToken, refreshToken, done) {
     if (!profile.email) {

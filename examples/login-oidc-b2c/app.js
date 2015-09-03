@@ -82,7 +82,8 @@ passport.use(new OIDCStrategy({
     skipUserProfile: config.creds.skipUserProfile,
     responseType: config.creds.responseType,
     responseMode: config.creds.responseMode,
-    tenantName: config.creds.tenantName
+    tenantName: config.creds.tenantName,
+    validateIssuer: config.creds.validateIssuer
   },
   function(iss, sub, profile, accessToken, refreshToken, done) {
     if (!profile.email) {

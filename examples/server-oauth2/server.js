@@ -37,7 +37,8 @@ var BearerStrategy = require('../../lib/passport-azure-ad/index').BearerStrategy
 var options = {
     // The URL of the metadata document for your app. We will put the keys for token validation from the URL found in the jwks_uri tag of the in the metadata.
     identityMetadata: config.creds.identityMetadata,
-    issuer: config.creds.issuer,
+    clientID: config.creds.clientID,
+    validateIssuer: config.creds.validateIssuer,
     audience: config.creds.audience
 
 };
