@@ -135,7 +135,7 @@ app.get('/account', ensureAuthenticated, function(req, res){
 });
 
 app.get('/login',
-  passport.authenticate('azuread-openidconnect', { failureRedirect: '/login', resourceURL: 'https://myresource.com' }),
+  passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
   function(req, res) {
     log.info('Login was called in the Sample');
     res.redirect('/');
