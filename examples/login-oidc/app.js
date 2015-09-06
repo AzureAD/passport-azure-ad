@@ -82,7 +82,7 @@ passport.use(new OIDCStrategy({
     skipUserProfile: config.creds.skipUserProfile,
     responseType: config.creds.responseType,
     responseMode: config.creds.responseMode,
-    validateIssuer: config.creds.validateIssuer;
+    validateIssuer: config.creds.validateIssuer
   },
   function(iss, sub, profile, accessToken, refreshToken, done) {
     if (!profile.email) {
@@ -135,7 +135,7 @@ app.get('/account', ensureAuthenticated, function(req, res){
 });
 
 app.get('/login',
-  passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
+  passport.authenticate('azuread-openidconnect', { failureRedirect: '/login', resourceURL: 'https://myresource.com' }),
   function(req, res) {
     log.info('Login was called in the Sample');
     res.redirect('/');

@@ -41,6 +41,7 @@ var Metadata = require('../lib/passport-azure-ad/metadata').Metadata;
 
 var metadataUrl = 'https://login.windows.net/GraphDir1.OnMicrosoft.com/federationmetadata/2007-06/federationmetadata.xml';
 var oidcMetadataUrl = 'https://login.microsoftonline.com/common/.well-known/openid-configuration';
+var oidcMetadataUrl2 = 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration';
 
 exports['metadata'] = {
 
@@ -130,6 +131,24 @@ exports['metadata'] = {
         test.doesNotThrow(
             function() {
                 var m = new Metadata(oidcMetadataUrl, 'oidc');
+                m.fetch(function(err) {
+                    test.ifError(err);
+                    test.ok(m.oidc.algorithms, 'fetch algorithms');
+                    test.ok(m.oidc.issuer, 'fetch issuer');
+                    test.done();
+                });
+            },
+            Error,
+            'Should not fail with url present and auth type oidc'
+        );
+    },
+        'fetch metadata oidc v2': function(test) {
+        test.expect(4);
+        // tests here
+
+        test.doesNotThrow(
+            function() {
+                var m = new Metadata(oidcMetadataUrl2, 'oidc');
                 m.fetch(function(err) {
                     test.ifError(err);
                     test.ok(m.oidc.algorithms, 'fetch algorithms');

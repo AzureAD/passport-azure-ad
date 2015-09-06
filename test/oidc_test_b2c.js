@@ -56,73 +56,29 @@ exports['oidc'] = {
 
         test.done();
     },
-    'no verify function': function(test) {
+
+    'no tenantName': function(test) {
         test.expect(1);
         // tests here
-
-        test.throws(
-            function() {
-                new OIDCStrategy({}, null);
-            },
-            Error,
-            'Should fail with no verify function (2nd argument)'
-        );
-
-        test.done();
-    },
-
-    'no options': function(test) {
-        test.expect(1);
-        // tests here
-
-        test.throws(
-            function() {
-                new OIDCStrategy({}, function() {});
-            },
-            Error,
-            'Should fail with no OIDC config options'
-        );
-
-        test.done();
-    },
-        'with missing option resposneType': function(test) {
-        test.expect(1);
-        // tests here
-
-var oidcConfig = {
+        // 
+        var oidcConfig = {
             // required options
-            identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
-            responseType: 'id_tokennn', // for login only flows use id_token. For accessing resources use `id_token code`
+            identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
+            tenantName: '',
+            forceB2C: true
         };
+
         test.throws(
             function() {
                 new OIDCStrategy(oidcConfig, function() {});
             },
             Error,
-            'Should fail with wrong reponses config options'
+            'Should fail with no tenantName: specified in B2C tenant options'
         );
 
         test.done();
     },
-    'with missing option resposneMode': function(test) {
-        test.expect(1);
-        // tests here
 
-var oidcConfig = {
-            // required options
-            identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
-            responseMode: 'fragment', // For login only flows we should have token passed back to us in a POST
-        };
-        test.throws(
-            function() {
-                new OIDCStrategy(oidcConfig, function() {});
-            },
-            Error,
-            'Should fail with wrong reponses config options'
-        );
-
-        test.done();
-    },
     'with options': function(test) {
         test.expect(1);
         // tests here
@@ -130,7 +86,8 @@ var oidcConfig = {
         var oidcConfig = {
             // required options
             identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
-            issuer: 'http://localhost:3000' // this is the URI you entered for APP ID URI when configuring SSO for you app on Azure AAD
+            tenantName: 'hypercubeb2c.onmicrosoft.com',
+            forceB2C: true
         };
 
         test.doesNotThrow(
