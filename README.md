@@ -2,9 +2,15 @@
 # Microsoft Azure Active Directory Passport.js Plug-In
 =============
 
-passport-azure-ad is a collection of [Passport](http://passportjs.org/) Strategies to help you integrate with Azure Active Ditectory. It includes OpenID Connect, WS-Federation, and SAML-P authentication and authorization. These providers let you integrate your Node app with Microsoft Azure AD so you can use its many features, including web single sign-on (WebSSO), Endpoint Protection with OAuth, and JWT token issuance and validation.
+_passport-azure-ad_ is a collection of [Passport](http://passportjs.org/) Strategies 
+to help you integrate with Azure Active Directory. It includes OpenID Connect, 
+WS-Federation, and SAML-P authentication and authorization. These providers let you 
+integrate your Node app with Microsoft Azure AD so you can use its many features, 
+including web single sign-on (WebSSO), Endpoint Protection with OAuth, and JWT token 
+issuance and validation.
 
-passport-azure-ad has been tested to work with both [Windows Azure Active Directory](https://www.windowsazure.com/en-us/home/features/identity/) and with [Microsoft Active Directory Federation Services](http://en.wikipedia.org/wiki/Active_Directory_Federation_Services).
+_passport-azure-ad_ has been tested to work with both [Microsoft Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) 
+and with [Microsoft Active Directory Federation Services](http://en.wikipedia.org/wiki/Active_Directory_Federation_Services).
 
 
 ## Installation
@@ -85,9 +91,11 @@ passport.use(new OIDCStrategy({
   }
 ));
 ```
+
 ### Provide the authentication callback for OIDCStrategy
 
-To complete the sample, provide a route that corresponds to the path configuration parameter that is sent to the strategy:
+To complete the sample, provide a route that corresponds to the path 
+configuration parameter that is sent to the strategy:
 
 ```javascript
 
@@ -119,9 +127,13 @@ app.post('/auth/openid/return',
 
 ## Samples and Documentation
 
-[We provide a full suite of sample applications and documentation on GitHub](https://github.com/AzureADSamples) to help you get started with learning the Azure Identity system. This includes tutorials for native clients such as Windows, Windows Phone, iOS, OSX, Android, and Linux. We also provide full walkthroughs for authentication flows such as OAuth2, OpenID Connect, Graph API, and other awesome features. 
+[We provide a full suite of sample applications and documentation on GitHub](https://azure.microsoft.com/en-us/documentation/samples/?service=active-directory) 
+to help you get started with learning the Azure Identity system. This includes 
+tutorials for native clients such as Windows, Windows Phone, iOS, OSX, Android, 
+and Linux. We also provide full walkthroughs for authentication flows such as 
+OAuth2, OpenID Connect, Graph API, and other awesome features. 
 
-Azure Identity samples for this plug-in is here: [https://github.com/AzureADSamples/WebApp-OpenIdConnect-nodejs](https://github.com/AzureADSamples/WebApp-OpenIdConnect-nodejs)
+Azure Identity samples for this plug-in is here: [https://github.com/Azure-Samples/active-directory-node-webapp-openidconnect](https://github.com/Azure-Samples/active-directory-node-webapp-openidconnect)
 
 
 ## Community Help and Support
