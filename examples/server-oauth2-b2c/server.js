@@ -77,7 +77,50 @@ var TaskSchema = new Schema({
 mongoose.model('Task', TaskSchema);
 var Task = mongoose.model('Task');
 
+///--- Errors for communicating something interesting back to the client
 
+function MissingTaskError() {
+    restify.RestError.call(this, {
+        statusCode: 409,
+        restCode: 'MissingTask',
+        message: '"task" is a required parameter',
+        constructorOpt: MissingTaskError
+    });
+
+    this.name = 'MissingTaskError';
+}
+util.inherits(MissingTaskError, restify.RestError);
+
+
+function TaskExistsError(owner) {
+    assert.string(owner, 'owner');
+
+    restify.RestError.call(this, {
+        statusCode: 409,
+        restCode: 'TaskExists',
+        message: owner + ' already exists',
+        constructorOpt: TaskExistsError
+    });
+
+    this.name = 'TaskExistsError';
+}
+util.inherits(TaskExistsError, restify.RestError);
+
+
+function TaskNotFoundError(owner) {
+    assert.string(owner, 'owner');
+
+    restify.RestError.call(this, {
+        statusCode: 404,
+        restCode: 'TaskNotFound',
+        message: owner + ' was not found',
+        constructorOpt: TaskNotFoundError
+    });
+
+    this.name = 'TaskNotFoundError';
+}
+
+util.inherits(TaskNotFoundError, restify.RestError);
 
 /**
  *
@@ -98,9 +141,7 @@ function createTask(req, res, next) {
     var _task = new Task();
 
     if (!req.params.task) {
-        req.log.warn({
-            params: p
-        }, 'createTodo: missing task');
+        req.log.warn('createTodo: missing task');
         next(new MissingTaskError());
         return;
     }
@@ -189,8 +230,9 @@ function listTasks(req, res, next) {
         owner: owner
     }).limit(20).sort('date').exec(function(err, data) {
 
-        if (err)
+        if (err) {
             return next(err);
+        }
 
         if (data.length > 0) {
             log.info(data);
@@ -212,50 +254,7 @@ function listTasks(req, res, next) {
     return next();
 }
 
-///--- Errors for communicating something interesting back to the client
 
-function MissingTaskError() {
-    restify.RestError.call(this, {
-        statusCode: 409,
-        restCode: 'MissingTask',
-        message: '"task" is a required parameter',
-        constructorOpt: MissingTaskError
-    });
-
-    this.name = 'MissingTaskError';
-}
-util.inherits(MissingTaskError, restify.RestError);
-
-
-function TaskExistsError(owner) {
-    assert.string(owner, 'owner');
-
-    restify.RestError.call(this, {
-        statusCode: 409,
-        restCode: 'TaskExists',
-        message: owner + ' already exists',
-        constructorOpt: TaskExistsError
-    });
-
-    this.name = 'TaskExistsError';
-}
-util.inherits(TaskExistsError, restify.RestError);
-
-
-function TaskNotFoundError(owner) {
-    assert.string(owner, 'owner');
-
-    restify.RestError.call(this, {
-        statusCode: 404,
-        restCode: 'TaskNotFound',
-        message: owner + ' was not found',
-        constructorOpt: TaskNotFoundError
-    });
-
-    this.name = 'TaskNotFoundError';
-}
-
-util.inherits(TaskNotFoundError, restify.RestError);
 
 /**
  * Our Server
