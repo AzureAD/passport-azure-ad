@@ -17,7 +17,7 @@
 
 'use strict';
 
-var OidcStrategy = require('../lib/passport-azure-ad/index').OIDCStrategy;
+var OIDCStrategy = require('../lib/passport-azure-ad/index').OIDCStrategy;
 
 /*
  ======== A Handy Little Nodeunit Reference ========
@@ -42,29 +42,13 @@ var OidcStrategy = require('../lib/passport-azure-ad/index').OIDCStrategy;
 
 exports['oidc'] = {
 
-    'no args': function(test) {
-        test.expect(1);
-        // tests here
-
-        test.throws(
-            function() {
-                new OIDCStrategy();
-            },
-            Error,
-            'Should fail with no arguments)'
-        );
-
-        test.done();
-    },
 
     'no tenantName': function(test) {
         test.expect(1);
         // tests here
         // 
         var oidcConfig = {
-            // required options
             identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
-            tenantName: '',
             forceB2C: true
         };
 
@@ -92,7 +76,7 @@ exports['oidc'] = {
 
         test.doesNotThrow(
             function() {
-                new OidcStrategy(oidcConfig, function() {});
+                new OIDCStrategy(oidcConfig, function() {});
             },
             Error,
             'Should not fail with proper OIDC config options'
