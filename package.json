@@ -1,12 +1,7 @@
 {
   "name": "passport-azure-ad",
   "version": "1.3.6",
-  "licenses": [
-    {
-      "type": "Apache 2.0",
-      "url": "https://github.com/MSOpenTech/aal/raw/master/License.txt"
-    }
-  ],
+ "license" : "MIT",
   "keywords": [
     "saml",
     "samlp",
