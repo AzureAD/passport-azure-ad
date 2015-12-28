@@ -39,7 +39,8 @@ var options = {
     identityMetadata: config.creds.identityMetadata,
     clientID: config.creds.clientID,
     validateIssuer: config.creds.validateIssuer,
-    audience: config.creds.audience
+    audience: config.creds.audience,
+    passReqToCallback: config.creds.passReqToCallback
 
 };
 

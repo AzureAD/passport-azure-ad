@@ -29,7 +29,7 @@ var expressSession = require('express-session');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var bunyan = require('bunyan');
-var config = require('./client_config_v2');
+var config = require('./client_config_v1');
 var OIDCStrategy = require('../../lib/passport-azure-ad/index').OIDCStrategy;
 
 var log = bunyan.createLogger({
@@ -94,9 +94,12 @@ passport.use(new OIDCStrategy({
     skipUserProfile: config.creds.skipUserProfile,
     responseType: config.creds.responseType,
     responseMode: config.creds.responseMode,
-    validateIssuer: config.creds.validateIssuer
+    validateIssuer: config.creds.validateIssuer,
+    passReqToCallback: config.creds.passReqToCallback
   },
-  function(iss, sub, profile, accessToken, refreshToken, done) {
+
+  // if you wish to receive the req, use function(req, profile, done)
+  function(profile, done) {
     if (!profile.email) {
       return done(new Error("No email found"), null);
     }

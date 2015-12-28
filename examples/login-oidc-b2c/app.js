@@ -96,9 +96,11 @@ passport.use(new OIDCStrategy({
     responseMode: config.creds.responseMode,
     tenantName: config.creds.tenantName,
     validateIssuer: config.creds.validateIssuer,
+    passReqToCallback: config.creds.passReqToCallback,
     scope: config.creds.scope
   },
-  function(iss, sub, profile, accessToken, refreshToken, done) {
+  // if you wish to receive the req, use function(req, profile, done)
+  function(profile, done) {
     if (!profile.email) {
       return done(new Error("No email found"), null);
     }

@@ -42,7 +42,8 @@ var options = {
     tenantName: config.creds.tenantName,
     policyName: config.creds.policyName,
     validateIssuer: config.creds.validateIssuer,
-    audience: config.creds.audience
+    audience: config.creds.audience,
+    passReqToCallback: config.creds.passReqToCallback
 
 };
 
