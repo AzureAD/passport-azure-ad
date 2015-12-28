@@ -28,9 +28,8 @@ var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var bodyParser = require('body-parser');
 var passport = require('passport');
-var util = require('util');
 var bunyan = require('bunyan');
-var config = require('./client_config_v1');
+var config = require('./client_config_v2');
 var OIDCStrategy = require('../../lib/passport-azure-ad/index').OIDCStrategy;
 
 var log = bunyan.createLogger({
@@ -39,6 +38,28 @@ var log = bunyan.createLogger({
 
 // array to hold logged in users
 var users = [];
+
+var findByEmail = function(email, fn) {
+  for (var i = 0, len = users.length; i < len; i++) {
+    var user = users[i];
+    log.info('we are using user: ', user);
+    if (user.email === email) {
+      return fn(null, user);
+    }
+  }
+  return fn(null, null);
+};
+
+// Simple route middleware to ensure user is authenticated.
+//   Use this route middleware on any resource that needs to be protected.  If
+//   the request is authenticated (typically via a persistent login session),
+//   the request will proceed.  Otherwise, the user will be redirected to the
+//   login page.
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/login');
+}
+
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -57,16 +78,7 @@ passport.deserializeUser(function(id, done) {
 
 
 
-var findByEmail = function(email, fn) {
-  for (var i = 0, len = users.length; i < len; i++) {
-    var user = users[i];
-    log.info('we are using user: ', user);
-    if (user.email === email) {
-      return fn(null, user);
-    }
-  }
-  return fn(null, null);
-};
+
 
 // Use the OIDCStrategy within Passport.
 //   Strategies in passport require a `validate` function, which accept
@@ -186,12 +198,4 @@ app.get('/logout', function(req, res){
 app.listen(3000);
 
 
-// Simple route middleware to ensure user is authenticated.
-//   Use this route middleware on any resource that needs to be protected.  If
-//   the request is authenticated (typically via a persistent login session),
-//   the request will proceed.  Otherwise, the user will be redirected to the
-//   login page.
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
-  res.redirect('/login')
-}
+

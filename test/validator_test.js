@@ -78,7 +78,7 @@ exports['validator'] = {
 
     test.doesNotThrow(
       function() {
-        checker = new Validator({}),
+        checker = new Validator({});
         checker.validate({});
       },
       Error,
