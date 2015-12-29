@@ -104,7 +104,6 @@ passport.use(new OIDCStrategy({
     realm: config.creds.realm,
     clientID: config.creds.clientID,
     clientSecret: config.creds.clientSecret,
-    oidcIssuer: config.creds.issuer,
     identityMetadata: config.creds.identityMetadata,
     skipUserProfile: config.creds.skipUserProfile,
     responseType: config.creds.responseType,
