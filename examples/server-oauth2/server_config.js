@@ -7,7 +7,8 @@
  	// example: https://login.microsoftonline.com/common/.well-known/openid-configuration
      identityMetadata: 'https://login.microsoftonline.com/cff56d8f-f602-4afd-94e4-c95b76f1c81e/.well-known/openid-configuration', 
      validateIssuer: true, // if you have validation on, you cannot have users from multiple tenants sign in to uyour server
-     passReqToCallback: false
+     passReqToCallback: false,
+     loggingLevel: 'info' // valid are 'info', 'warn', 'error'. Error always goes to stderr in Unix.
 
  };
 

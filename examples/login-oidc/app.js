@@ -29,12 +29,26 @@ var expressSession = require('express-session');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var bunyan = require('bunyan');
-var config = require('./client_config_v1');
+var config = require('./client_config_v2');
 var OIDCStrategy = require('../../lib/passport-azure-ad/index').OIDCStrategy;
 
 var log = bunyan.createLogger({
-    name: 'Microsoft OIDC Example Web Application'
+    name: 'Microsoft OIDC Example Web Application',
+         streams: [
+        {
+            stream: process.stderr,
+            level: "error",
+            name: "error"
+        }, 
+        {
+            stream: process.stdout,
+            level: "warn",
+            name: "console"
+        }, ]
 });
+
+  // if logging level specified, switch to it.
+  if (config.creds.loggingLevel) { log.levels("console", config.creds.loggingLevel); }
 
 // array to hold logged in users
 var users = [];
@@ -95,7 +109,8 @@ passport.use(new OIDCStrategy({
     responseType: config.creds.responseType,
     responseMode: config.creds.responseMode,
     validateIssuer: config.creds.validateIssuer,
-    passReqToCallback: config.creds.passReqToCallback
+    passReqToCallback: config.creds.passReqToCallback,
+    loggingLevel: config.creds.loggingLevel
   },
 
   // if you wish to receive the req, use function(req, profile, done)

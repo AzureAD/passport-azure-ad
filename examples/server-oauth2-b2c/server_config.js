@@ -8,7 +8,8 @@
      tenantName:'hypercubeb2c.onmicrosoft.com',
      policyName:'B2C_1_b2c_node_signin',
      validateIssuer: false,
-     passReqToCallback: false
+     passReqToCallback: false,
+     loggingLevel: 'info' // valid are 'info', 'warn', 'error'. Error always goes to stderr in Unix.
  };
 
 

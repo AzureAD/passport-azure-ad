@@ -10,5 +10,6 @@
  	//scope: ['email', 'profile'] // additional scopes you may wish to pass
  	tenantName: 'kidventusb2c.onmicrosoft', 
  	validateIssuer: true, // if you have validation on, you cannot have users from multiple tenants sign in
- 	passReqToCallback: false
+ 	passReqToCallback: false,
+ 	loggingLevel: 'info' // valid are 'info', 'warn', 'error'. Error always goes to stderr in Unix.
  	};

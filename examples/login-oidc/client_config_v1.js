@@ -10,5 +10,6 @@
  	responseMode: 'form_post', // For login only flows we should have token passed back to us in a POST
  	//scope: ['email', 'profile'], // additional scopes you may wish to pass
  	validateIssuer: true, // if you have validation on, you cannot have users from multiple tenants sign in
- 	passReqToCallback: false
+ 	passReqToCallback: false,
+ 	loggingLevel: 'info' // valid are 'info', 'warn', 'error'. Error always goes to stderr in Unix.
  	};
