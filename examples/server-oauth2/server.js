@@ -39,7 +39,9 @@ var options = {
     identityMetadata: config.creds.identityMetadata,
     clientID: config.creds.clientID,
     validateIssuer: config.creds.validateIssuer,
-    audience: config.creds.audience
+    audience: config.creds.audience,
+    passReqToCallback: config.creds.passReqToCallback,
+    loggingLevel: config.creds.loggingLevel
 
 };
 
@@ -49,8 +51,22 @@ var owner = null;
 
 // Our logger
 var log = bunyan.createLogger({
-    name: 'Windows Azure Active Directory Bearer Sample'
+    name: 'Windows Azure Active Directory Bearer Sample',
+         streams: [
+        {
+            stream: process.stderr,
+            level: "error",
+            name: "error"
+        }, 
+        {
+            stream: process.stdout,
+            level: "warn",
+            name: "console"
+        }, ]
 });
+
+  // if logging level specified, switch to it.
+  if (config.creds.loggingLevel) { log.levels("console", config.creds.loggingLevel); }
 
 // MongoDB setup
 // Setup some configuration

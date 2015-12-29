@@ -33,8 +33,22 @@ var config = require('./client_config_v2');
 var OIDCStrategy = require('../../lib/passport-azure-ad/index').OIDCStrategy;
 
 var log = bunyan.createLogger({
-    name: 'Microsoft OIDC Example Web Application'
+    name: 'Microsoft OIDC Example Web Application',
+         streams: [
+        {
+            stream: process.stderr,
+            level: "error",
+            name: "error"
+        }, 
+        {
+            stream: process.stdout,
+            level: "warn",
+            name: "console"
+        }, ]
 });
+
+  // if logging level specified, switch to it.
+  if (config.creds.loggingLevel) { log.levels("console", config.creds.loggingLevel); }
 
 // array to hold logged in users
 var users = [];
@@ -94,9 +108,13 @@ passport.use(new OIDCStrategy({
     skipUserProfile: config.creds.skipUserProfile,
     responseType: config.creds.responseType,
     responseMode: config.creds.responseMode,
-    validateIssuer: config.creds.validateIssuer
+    validateIssuer: config.creds.validateIssuer,
+    passReqToCallback: config.creds.passReqToCallback,
+    loggingLevel: config.creds.loggingLevel
   },
-  function(iss, sub, profile, accessToken, refreshToken, done) {
+
+  // if you wish to receive the req, use function(req, profile, done)
+  function(profile, done) {
     if (!profile.email) {
       return done(new Error("No email found"), null);
     }
