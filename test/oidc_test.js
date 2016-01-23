@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) Microsoft Open Technologies, Inc.
  All Rights Reserved
@@ -41,108 +42,105 @@ var OidcStrategy = require('../lib/passport-azure-ad/index').OIDCStrategy;
 
 
 exports['oidc'] = {
-
-    'no args': function(test) {
-        test.expect(1);
-        // tests here
-
-        test.throws(
-            function() {
-                new OIDCStrategy();
-            },
-            Error,
-            'Should fail with no arguments)'
-        );
-
-        test.done();
+  'no args': function (test) {
+    test.expect(1);
+    // tests here
+    test.throws(function () {
+      new OidcStrategy();
     },
-    'no verify function': function(test) {
-        test.expect(1);
-        // tests here
+      TypeError,
+      'Should fail with no arguments)'
+      );
 
-        test.throws(
-            function() {
-                new OIDCStrategy({}, null);
-            },
-            Error,
-            'Should fail with no verify function (2nd argument)'
-        );
-
-        test.done();
+    test.done();
+  },
+  'no verify function': function (test) {
+    test.expect(1);
+    // tests here
+    test.throws(function () {
+      new OidcStrategy({}, null);
     },
+      TypeError,
+      'Should fail with no verify function (2nd argument)'
+      );
 
-    'no options': function(test) {
-        test.expect(1);
-        // tests here
+    test.done();
+  },
 
-        test.throws(
-            function() {
-                new OIDCStrategy({}, function() {});
-            },
-            Error,
-            'Should fail with no OIDC config options'
-        );
+  'no options': function (test) {
+    test.expect(1);
+    // tests here
 
-        test.done();
-    },
-        'with missing option resposneType': function(test) {
-        test.expect(1);
-        // tests here
+    test.throws(
+      function () {
+        new OidcStrategy({}, function () { });
+      },
+      TypeError,
+      'Should fail with no OIDC config options'
+      );
 
-var oidcConfig = {
-            // required options
-            identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
-            responseType: 'id_tokennn', // for login only flows use id_token. For accessing resources use `id_token code`
-        };
-        test.throws(
-            function() {
-                new OIDCStrategy(oidcConfig, function() {});
-            },
-            Error,
-            'Should fail with wrong reponses config options'
-        );
+    test.done();
+  },
+  'with missing option resposneType': function (test) {
+    test.expect(1);
+    // tests here
 
-        test.done();
-    },
-    'with missing option resposneMode': function(test) {
-        test.expect(1);
-        // tests here
+    var oidcConfig = {
+      // required options
+      identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
+      responseType: 'id_tokennn', // for login only flows use id_token. For accessing resources use `id_token code`
+    };
+    test.throws(
+      function () {
+        var s = new OidcStrategy(oidcConfig, function () { });
+        s.loadOptions(oidcConfig, function () { });
+      },
+      TypeError,
+      'Should fail with wrong reponses config options'
+      );
 
-var oidcConfig = {
-            // required options
-            identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
-            responseMode: 'fragment', // For login only flows we should have token passed back to us in a POST
-        };
-        test.throws(
-            function() {
-                new OIDCStrategy(oidcConfig, function() {});
-            },
-            Error,
-            'Should fail with wrong reponses config options'
-        );
+    test.done();
+  },
+  'with missing option resposneMode': function (test) {
+    test.expect(1);
+    // tests here
 
-        test.done();
-    },
-    'with options': function(test) {
-        test.expect(1);
-        // tests here
+    var oidcConfig = {
+      // required options
+      identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
+      responseMode: 'fragment', // For login only flows we should have token passed back to us in a POST
+    };
+    test.throws(
+      function () {
+        var s = new OidcStrategy(oidcConfig, function () { });
+        s.loadOptions(oidcConfig, function () { });
+      },
+      Error,
+      'Should fail with wrong reponses config options'
+      );
 
-        var oidcConfig = {
-            // required options
-            identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
-            issuer: 'http://localhost:3000' // this is the URI you entered for APP ID URI when configuring SSO for you app on Azure AAD
-        };
+    test.done();
+  },
+  'with options': function (test) {
+    test.expect(1);
+    // tests here
 
-        test.doesNotThrow(
-            function() {
-                new OidcStrategy(oidcConfig, function() {});
-            },
-            Error,
-            'Should not fail with proper OIDC config options'
-        );
+    var oidcConfig = {
+      // required options
+      identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
+      issuer: 'http://localhost:3000' // this is the URI you entered for APP ID URI when configuring SSO for you app on Azure AAD
+    };
 
-        test.done();
-    }
+    test.doesNotThrow(
+      function () {
+        new OidcStrategy(oidcConfig, function () { });
+      },
+      Error,
+      'Should not fail with proper OIDC config options'
+      );
+
+    test.done();
+  }
 
 
 };

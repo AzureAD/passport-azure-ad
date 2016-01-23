@@ -1,12 +1,7 @@
 {
   "name": "passport-azure-ad",
   "version": "1.3.6",
-  "licenses": [
-    {
-      "type": "Apache 2.0",
-      "url": "https://github.com/MSOpenTech/aal/raw/master/License.txt"
-    }
-  ],
+ "license" : "MIT",
   "keywords": [
     "saml",
     "samlp",
@@ -31,22 +26,25 @@
   },
   "main": "./lib/passport-azure-ad",
   "dependencies": {
-    "passport": "*",
-    "xml2js": "*",
-    "xml-crypto": "*",
-    "xmldom": "*",
     "async": "*",
+    "body-parser": "^1.14.2",
+    "bunyan": "*",
+    "cache-manager": "*",
+    "cookie-parser": "^1.4.0",
+    "express-session": "^1.12.1",
+    "jsonwebtoken": "*",
+    "jws": "*",
+    "oauth": "*",
+    "openid": "*",
+    "passport": "*",
+    "passport-http-bearer": "*",
     "request": "*",
     "underscore": "*",
-    "xtend": "*",
-    "passport-http-bearer": "*",
-    "jws": "*",
-    "jsonwebtoken": "*",
-    "openid": "*",
-    "oauth": "*",
     "webfinger": "0.3.x",
-    "bunyan": "*",
-    "cache-manager": "*"
+    "xml-crypto": "*",
+    "xml2js": "*",
+    "xmldom": "*",
+    "xtend": "*"
   },
   "peerDependencies": {
     "body-parser": "^1.12.3",
@@ -54,10 +52,12 @@
     "express-session": "^1.11.1"
   },
   "devDependencies": {
-    "grunt-contrib-jshint": "~0.1.1",
-    "grunt-contrib-nodeunit": "~0.1.2",
-    "grunt-contrib-watch": "~0.2.0",
-    "grunt": "~0.4.1"
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-nodeunit": "~0.4.1",
+    "grunt-contrib-uglify": "~0.5.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "nodeunit": "^0.9.1"
   },
   "scripts": {
     "test": "grunt nodeunit"

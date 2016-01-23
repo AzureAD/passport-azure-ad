@@ -17,7 +17,7 @@
 
 'use strict';
 
-var OidcStrategy = require('../lib/passport-azure-ad/index').OIDCStrategy;
+var OIDCStrategy = require('../lib/passport-azure-ad/index').OIDCStrategy;
 
 /*
  ======== A Handy Little Nodeunit Reference ========
@@ -70,7 +70,7 @@ exports['oidc'] = {
 
         test.doesNotThrow(
             function() {
-                new OidcStrategy(oidcConfig, function() {});
+                new OIDCStrategy(oidcConfig, function() {});
             },
             Error,
             'Should not fail with proper v2 OIDC config options'
