@@ -18,7 +18,7 @@
 'use strict';
 
 var WsfedStrategy = require('../lib/passport-azure-ad/index').WsfedStrategy,
-    wsfed = require('../lib/passport-azure-ad/wsfederation');
+    Wsfed = require('../lib/passport-azure-ad/wsfederation');
 
 /*
  ======== A Handy Little Nodeunit Reference ========
@@ -191,7 +191,7 @@ exports['wsfed'] = {
                 }
             },
             expected = '<Assertion ID="12234" IssueInstant="2014-08-26T20:35:09.656Z" Version="2.0" xmlns="urn:oasis:names:tc:SAML:2.0:assertion"/>',
-            WSFED = new wsfed({}),
+            WSFED = new Wsfed({}),
             actual;
 
         actual = WSFED.extractToken(fakeReq);
@@ -207,7 +207,7 @@ exports['wsfed'] = {
                 }
             },
             expected = '<Assertion ID="12234" IssueInstant="2014-08-26T20:35:09.656Z" Version="2.0" xmlns="urn:oasis:names:tc:SAML:2.0:assertion"/>',
-            WSFED = new wsfed({}),
+            WSFED = new Wsfed({}),
             actual;
 
         actual = WSFED.extractToken(fakeReq);
