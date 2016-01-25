@@ -149,7 +149,7 @@ We recommend you use the "adal" tag so we can see it! Here is the latest Q&A on 
 
 ## Contributing
 
-All code is licensed under the Apache 2.0 license and we triage actively on GitHub. We enthusiastically welcome contributions and feedback. You can clone the repo and start contributing now. 
+All code is licensed under the MIT license and we triage actively on GitHub. We enthusiastically welcome contributions and feedback. You can clone the repo and start contributing now. 
 
 More details [about contribution](https://github.com/AzureAD/passport-azure-ad/blob/master/contributing.md) 
 
@@ -161,4 +161,4 @@ Please check the releases for updates.
 The code is based on Henri Bergius's [passport-saml](https://github.com/bergie/passport-saml) library and Matias Woloski's [passport-wsfed-saml2](https://github.com/auth0/passport-wsfed-saml2) library as well as Kiyofumi Kondoh's [passport-openid-google](https://github.com/kkkon/passport-google-openidconnect).
 
 ## License
-Copyright (c) Microsoft Corp.  All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
+Copyright (c) Microsoft Corp.  All rights reserved. Licensed under the MIT License;
