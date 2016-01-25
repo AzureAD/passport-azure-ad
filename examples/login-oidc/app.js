@@ -1,3 +1,5 @@
+/* global __dirname */
+/* global process */
 /**
  * Copyright (c) Microsoft Corporation
  *  All Rights Reserved
