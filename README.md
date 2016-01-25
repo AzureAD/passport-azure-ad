@@ -161,4 +161,4 @@ Please check the releases for updates.
 The code is based on Henri Bergius's [passport-saml](https://github.com/bergie/passport-saml) library and Matias Woloski's [passport-wsfed-saml2](https://github.com/auth0/passport-wsfed-saml2) library as well as Kiyofumi Kondoh's [passport-openid-google](https://github.com/kkkon/passport-google-openidconnect).
 
 ## License
-Copyright (c) Microsoft Corp.  All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
+Copyright (c) Microsoft Corp.  All rights reserved. Licensed under the MIT License;
