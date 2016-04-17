@@ -11,5 +11,3 @@ node_js:
   - "0.10"
   - "0.8"
   - "iojs"
-
-script: ./node_modules/.bin/jshint lib
