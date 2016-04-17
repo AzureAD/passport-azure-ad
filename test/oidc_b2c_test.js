@@ -49,26 +49,6 @@ var OIDCStrategy = require('../lib/passport-azure-ad/index').OIDCStrategy;
 exports['oidc'] = {
 
 
-    'no tenantName': function(test) {
-        test.expect(1);
-        // tests here
-        // 
-        var oidcConfig = {
-            identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
-            forceB2C: true
-        };
-
-        test.throws(
-            function() {
-                new OIDCStrategy(oidcConfig, function() {});
-            },
-            Error,
-            'Should fail with no tenantName: specified in B2C tenant options'
-        );
-
-        test.done();
-    },
-
     'with options': function(test) {
         test.expect(1);
         // tests here
