@@ -1,54 +1,48 @@
-
-
 'use strict';
 
-module.exports = function(grunt) {
-
+module.exports = function loadGrunt(grunt) {
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     nodeunit: {
-      files: ['test/**/*_test.js']
+      files: ['test/**/*_test.js'],
     },
-    jshint: {
-      options: {
-        jshintrc: '.jshintrc'
-      },
+    eslint: {
+      options: {},
       gruntfile: {
-        src: 'Gruntfile.js'
+        src: 'Gruntfile.js',
       },
       lib: {
-        src: ['lib/**/*.js']
+        src: ['lib/**/*.js'],
       },
       examples: {
-        src: ['examples/*/*.js']
+        src: ['examples/*/*.js'],
       },
       test: {
-        src: ['test/**/*.js']
-      }
+        src: ['test/**/*.js'],
+      },
     },
     watch: {
       gruntfile: {
-        files: '<%= jshint.gruntfile.src %>',
-        tasks: ['jshint:gruntfile']
+        files: '<%= eslint.gruntfile.src %>',
+        tasks: ['eslint:gruntfile'],
       },
       lib: {
-        files: '<%= jshint.lib.src %>',
-        tasks: ['jshint:lib', 'nodeunit']
+        files: '<%= eslint.lib.src %>',
+        tasks: ['eslint:lib', 'nodeunit'],
       },
       test: {
-        files: '<%= jshint.test.src %>',
-        tasks: ['jshint:test', 'nodeunit']
-      }
-    }
+        files: '<%= eslint.test.src %>',
+        tasks: ['eslint:test', 'nodeunit'],
+      },
+    },
   });
 
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default task.
-  grunt.registerTask('default', ['jshint', 'nodeunit']);
-
+  grunt.registerTask('default', ['eslint', 'nodeunit']);
 };
