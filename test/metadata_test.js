@@ -25,7 +25,7 @@
 
 'use strict';
 
-const Metadata = require('../lib/passport-azure-ad/metadata').Metadata;
+const Metadata = require('../lib/metadata').Metadata;
 
 /*
  ======== A Handy Little Nodeunit Reference ========

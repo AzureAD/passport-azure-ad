@@ -25,7 +25,7 @@
 
 'use strict';
 
-const SamlStrategy = require('../lib/passport-azure-ad/index').SamlStrategy;
+const SamlStrategy = require('../lib/index').SamlStrategy;
 
 /*
  ======== A Handy Little Nodeunit Reference ========

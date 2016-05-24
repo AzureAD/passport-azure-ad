@@ -24,7 +24,7 @@
     "type": "git",
     "url": "git@github.com:AzureAD/passport-azure-ad.git"
   },
-  "main": "./lib/passport-azure-ad",
+  "main": "./lib",
   "devDependencies": {
     "body-parser": "^1.15.0",
     "cookie-parser": "^1.4.0",

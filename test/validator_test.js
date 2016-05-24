@@ -22,7 +22,7 @@
  */
 'use strict';
 
-const Validator = require('../lib/passport-azure-ad/validator').Validator;
+const Validator = require('../lib/validator').Validator;
 
 /*
  ======== A Handy Little Nodeunit Reference ========

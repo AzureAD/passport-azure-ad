@@ -25,7 +25,7 @@
 
 'use strict';
 
-const OIDCStrategy = require('../lib/passport-azure-ad/index').OIDCStrategy;
+const OIDCStrategy = require('../lib/index').OIDCStrategy;
 
 /*
  ======== A Handy Little Nodeunit Reference ========
