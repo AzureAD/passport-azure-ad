@@ -36,8 +36,8 @@ var expressSession = require('express-session');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var bunyan = require('bunyan');
-var config = require('./client_config_v2');
-var OIDCStrategy = require('../../lib/passport-azure-ad/index').OIDCStrategy;
+var config = require('./client_config_idtoken');
+var OIDCStrategy = require('../../lib/index').OIDCStrategy;
 
 var log = bunyan.createLogger({
   name: 'Microsoft OIDC Example Web Application',
@@ -114,7 +114,18 @@ passport.use(new OIDCStrategy({
     loggingLevel: config.creds.loggingLevel
   },
 
-  // if you wish to receive the req, use function(req, profile, done)
+  // Accepted form of the verify function is one of the following:
+  //     function(profile, done)
+  //     function(iss, sub, done)
+  //     function(iss, sub, profile, done)
+  //     function(iss, sub, profile, accessToken, refreshToken, done)
+  //     function(iss, sub, profile, accessToken, refreshToken, params, done)
+  //     function(iss, sub, profile, jwtClaims, accessToken, refreshToken, params, done) 
+  //
+  // If you wish to use the req object, add a 'req' parameter as the first parameter,
+  // for example, function(req, profile, done). You also need to set passReqToCallback
+  // to be true in client_config_*.js file, so the strategy knows you want the req object in 
+  // your verify function.
   function (profile, done) {
     if (!profile.email) {
       return done(new Error("No email found"), null);
