@@ -1,5 +1,5 @@
 
-# OIDC strategy Example  for Azure Active Directory
+# OIDC Strategy Example for Azure Active Directory
 
 
 [Passport](http://passportjs.org/) strategy for authenticating with Azure 
