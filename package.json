@@ -37,7 +37,10 @@
     "grunt-contrib-uglify": "^1.0.1",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-eslint": "^18.1.0",
-    "nodeunit": "^0.9.1"
+    "nodeunit": "^0.9.1",
+    "mocha": "2.x.x",
+    "chai": "2.x.x",
+    "chai-passport-strategy": "1.x.x"
   },
   "dependencies": {
     "async": "^1.5.2",
@@ -59,7 +62,7 @@
     "xtend": "4.0.1"
   },
   "scripts": {
-    "test": "grunt nodeunit"
+    "test": "grunt nodeunit && mocha -R spec test/*_mochaTest.js"
   },
   "engines": {
     "node": ">= ~4.0.1"
