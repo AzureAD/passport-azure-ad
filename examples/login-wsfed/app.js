@@ -33,7 +33,7 @@ var bodyParser = require('body-parser');
 var http = require('http');
 var path = require('path');
 var passport = require('passport');
-var wsfedsaml2 = require('../../lib/passport-azure-ad/index').WsfedStrategy;
+var wsfedsaml2 = require('../../lib/index').WsfedStrategy;
 var engine = require('ejs-locals');
 
 var app = express();
