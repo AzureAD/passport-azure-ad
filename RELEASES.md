@@ -43,7 +43,6 @@ Example: We release ADALiOS 2.0 in the future which supports unified Auth for AA
 ## Microsoft Identity SDKs and Azure Active Directory
 
 Microsoft Identity SDKs major versions will maintain backwards compatibility with Azure Active Directory web services through the support period. This means that the API surface area defined in a MAJOR version will continue to work for 2 years after release. 
-Fixes from Partners
 
 We will respond to bugs quickly from our partners and customers submitted through GitHub and through our private alias (tellaad@microsoft.com) for security issues and update the PATCH version number. We will also submit a change summary for each PATCH number. 
 Occasionally, there will be security bugs or breaking bugs from our partners that will require an immediate fix and a publish of an update to all partners and customers. When this occurs, we will do an emergency roll up to a PATCH version number and update all our distribution methods to the latest. 
