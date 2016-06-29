@@ -1,6 +1,6 @@
 # Microsoft Identity SDK Servicing Agreement
 
-We have adopted the semantic versioning flow that is industry standard for OSS projects. It gives the maximum amount of flexibility for us and the maximum amount of control for you on what risk you take with what versions. If you know how semantic versioning works with node.js, java, and ruby none of this will be new.
+We have adopted the semantic versioning flow that is industry standard for OSS projects. It gives the maximum amount of on what risk you take with what versions. If you know how semantic versioning works with node.js, java, and ruby none of this will be new.
 
 ##Semantic Versioning and API stability promises
 
