@@ -62,34 +62,25 @@ testStrategy.configure = function(identifier, done) {
 
 // Mock `setOptions`
 // `setOptions` is used to read and save the metadata, we don't need this in test 
-testStrategy.setOptions = function(options, metadata, next) { return next();};
+testStrategy.setOptions = function(options, metadata, cachekey, next) { return next();};
 
 
 describe('OIDCStrategy error handling', function() {
   var challenge;
   var err = {error: 'my_error', error_description: 'my_error_description'};
 
-  var put_err_in_query = function(req) { req.query = err; }
-  var put_err_in_body = function(req) { req.query = {}; req.body = err; }
-
-  var testPrepare = function(put_err_callback) {
+  var testPrepare = function() {
   	return function(done) {
   		chai.passport
   		  .use(testStrategy)
   		  .fail(function(c) { challenge = c; done(); })
-  		  .req(function(req) { put_err_callback(req); })
+  		  .req(function(req) { req.session = { 'my_key' : {state: 'my_state'}}; req.query = { state: 'my_state'}; req.body = err; })
   		  .authenticate({});
   	};
   };
 
-  describe('error in query', function() {
-  	before(testPrepare(put_err_in_query));
-
-  	it('should call fail function', function() { chai.expect(challenge).to.equal('my_error'); });
-  });
-
   describe('error in body', function() {
-    before(testPrepare(put_err_in_body));
+    before(testPrepare());
 
     it('should call fail function', function() { chai.expect(challenge).to.equal('my_error'); });
   });
