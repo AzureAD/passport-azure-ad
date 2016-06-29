@@ -1,4 +1,4 @@
-# Microsoft Identity SDK Servicing Agreement
+# Microsoft Identity SDK Versioning and Servicing FAQ
 
 We have adopted the semantic versioning flow that is industry standard for OSS projects. It gives the maximum amount of control on what risk you take with what versions. If you know how semantic versioning works with node.js, java, and ruby none of this will be new.
 
@@ -36,14 +36,15 @@ version="[1.1,1.2)"
 ## Serviceability
 
 When we release a new MINOR version, the previous MINOR version is abandoned. 
+
 When we release a new MAJOR version, we will continue to apply bug fixes to the existing features in the previous MAJOR version for up to the 2 year support cycle for Azure. 
 Example: We release ADALiOS 2.0 in the future which supports unified Auth for AAD and MSA. Later, we then have a fix in Conditional Access for ADALiOS. Since that feature exists both in ADALiOS 1.1 and ADALiOS 2.0, we will fix both. It will roll up in a PATCH number for each. Customers that are still locked down on ADALiOS 1.1 will receive the benefit of this fix. 
 
-## Microsoft Identity SDKs and our STS
+## Microsoft Identity SDKs and Azure Active Directory
 
-Microsoft Identity SDKs major versions will maintain backwards compatibility with our STS web services through the support period. This means that the API surface area defined in a MAJOR version will continue to work for 2 years after release. 
+Microsoft Identity SDKs major versions will maintain backwards compatibility with Azure Active Directory web services through the support period. This means that the API surface area defined in a MAJOR version will continue to work for 2 years after release. 
 Fixes from Partners
 
-We will respond to bugs quickly from our partners and customers submitted through GitHub and through our private alias (tellaad) for security issues and update the PATCH version number. We will also submit a change summary for each PATCH number. 
+We will respond to bugs quickly from our partners and customers submitted through GitHub and through our private alias (tellaad@microsoft.com) for security issues and update the PATCH version number. We will also submit a change summary for each PATCH number. 
 Occasionally, there will be security bugs or breaking bugs from our partners that will require an immediate fix and a publish of an update to all partners and customers. When this occurs, we will do an emergency roll up to a PATCH version number and update all our distribution methods to the latest. 
 
