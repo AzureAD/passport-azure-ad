@@ -166,3 +166,7 @@ The code is based on Henri Bergius's [passport-saml](https://github.com/bergie/p
 
 ## License
 Copyright (c) Microsoft Corp.  All rights reserved. Licensed under the MIT License;
+
+## We Value and Adhere to the Microsoft Open Source Code of Conduct
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
