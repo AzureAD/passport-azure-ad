@@ -33,7 +33,7 @@ var bunyan = require('bunyan');
 var restify = require('restify');
 var config = require('./server_config');
 var passport = require('passport');
-var BearerStrategy = require('../../lib/passport-azure-ad/index').BearerStrategy;
+var BearerStrategy = require('../../lib/index').BearerStrategy;
 
 // We pass these options in to the ODICBearerStrategy.
 
