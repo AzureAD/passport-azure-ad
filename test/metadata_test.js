@@ -187,17 +187,21 @@ exports.metadata = {
     test.expect(5);
 
     const m = new Metadata('www.example.com', 'oidc', {});
+
     // example public keys from AAD
+
     var key1 = {
       e: "AQAB", 
       kid: "MnC_VZcATfM5pOYiJHMba9goEKY", 
       n: "vIqz-4-ER_vNWLON9yv8hIYV737JQ6rCl6XfzOC628seYUPf0TaGk91CFxefhzh23V9Tkq-RtwN1Vs_z57hO82kkzL-cQHZX3bMJD-GEGOKXCEXURN7VMyZWMAuzQoW9vFb1k3cR1RW_EW_P-C8bb2dCGXhBYqPfHyimvz2WarXhntPSbM5XyS5v5yCw5T_Vuwqqsio3V8wooWGMpp61y12NhN8bNVDQAkDPNu2DT9DXB1g0CeFINp_KAS_qQ2Kq6TSvRHJqxRR68RezYtje9KAqwqx4jxlmVAQy0T3-T-IAbsk1wRtWDndhO6s1Os-dck5TzyZ_dNOhfXgelixLUQ"
     };
+
     var key2 = {
       e: "AQAB",
       kid: "YbRAQRYcE_motWVJKHrwLBbd_9s",
       n: "vbcFrj193Gm6zeo5e2_y54Jx49sIgScv-2JO-n6NxNqQaKVnMkHcz-S1j2FfpFngotwGMzZIKVCY1SK8SKZMFfRTU3wvToZITwf3W1Qq6n-h-abqpyJTaqIcfhA0d6kEAM5NsQAKhfvw7fre1QicmU9LWVWUYAayLmiRX6o3tktJq6H58pUzTtx_D0Dprnx6z5sW-uiMipLXbrgYmOez7htokJVgDg8w-yDFCxZNo7KVueUkLkxhNjYGkGfnt18s7ZW036WoTmdaQmW4CChf_o4TLE5VyGpYWm7I_-nV95BBvwlzokVVKzveKf3l5UU3c6PkGy-BB3E_ChqFm6sPWw"
     };
+
     var correctPemKey2 = "-----BEGIN RSA PUBLIC KEY-----\n" + 
                      "MIIBCgKCAQEAvbcFrj193Gm6zeo5e2/y54Jx49sIgScv+2JO+n6NxNqQaKVnMkHc\n" +
                      "z+S1j2FfpFngotwGMzZIKVCY1SK8SKZMFfRTU3wvToZITwf3W1Qq6n+h+abqpyJT\n" +
@@ -206,6 +210,7 @@ exports.metadata = {
                      "NjYGkGfnt18s7ZW036WoTmdaQmW4CChf/o4TLE5VyGpYWm7I/+nV95BBvwlzokVV\n" +
                      "KzveKf3l5UU3c6PkGy+BB3E/ChqFm6sPWwIDAQAB\n" + 
                      "-----END RSA PUBLIC KEY-----\n";
+
     m.oidc = {keys: [key1, key2]};
 
     test.doesNotThrow(
@@ -232,7 +237,7 @@ exports.metadata = {
         var pem = m.generateOidcPEM(null);
       },
       Error,
-      "Should fail with 'keys or kid is missing'"
+      "Should fail with 'kid is missing'"
     );
 
     test.throws(
@@ -242,7 +247,7 @@ exports.metadata = {
         var pem = m.generateOidcPEM(key2.kid);
       },
       Error,
-      "Should fail with 'keys or kid is missing'"
+      "Should fail with 'keys is missing'"
     );
 
     test.done();
