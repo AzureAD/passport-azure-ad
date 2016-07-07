@@ -34,7 +34,7 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var bunyan = require('bunyan');
 var config = require('./client_config_b2c');
-var OIDCStrategy = require('../../lib/passport-azure-ad/index').OIDCStrategy;
+var OIDCStrategy = require('../../lib/index').OIDCStrategy;
 
 var log = bunyan.createLogger({
     name: 'Microsoft OIDC Example Web Application',
