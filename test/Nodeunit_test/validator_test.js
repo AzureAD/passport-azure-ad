@@ -20,14 +20,9 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-/* eslint-disable no-new */
-
 'use strict';
 
-const fs = require('fs');
-const pem = require('../lib/pem');
-const correctKeyOrCert = require('./resource/correctKeyOrCert');
+const Validator = require('../../lib/validator').Validator;
 
 /*
  ======== A Handy Little Nodeunit Reference ========
@@ -49,56 +44,51 @@ const correctKeyOrCert = require('./resource/correctKeyOrCert');
  test.ifError(value)
  */
 
-var extractAndCompare = function(extractFunc, pemFileName, correctValue) {
-  var pem = null;
-  var pemKeyOrCert = null;
+const checker = new Validator({ foo: Validator.isNonEmpty });
 
-  try {
-    pem = fs.readFileSync(__dirname + '/resource/' + pemFileName, 'utf8');
-  } catch (e) {
-    return { pass: false, message: e.message};
-  }
+exports.validator = {
 
-  try {
-    pemKeyOrCert = extractFunc(pem);
-  } catch (e) {
-    return { pass: false, message: e.message};
-  }
+  'has option': (test) => {
+    test.expect(1);
+    // tests here
 
-  return {pass: pemKeyOrCert === correctValue, message: 'should be the same key/certificate'};
+    test.doesNotThrow(
+      () => {
+        checker.validate({ foo: 'test' });
+      },
+      Error,
+      'Should not fail with option present'
+    );
+
+    test.done();
+  },
+  'missing option': (test) => {
+    test.expect(1);
+    // tests here
+
+    test.throws(
+      () => {
+        checker.validate({ bar: 'test' });
+      },
+      Error,
+      'Should  fail with option missing'
+    );
+
+    test.done();
+  },
+  'no options': (test) => {
+    test.expect(1);
+    // tests here
+
+    test.doesNotThrow(
+      () => {
+        const myChecker = new Validator({});
+        myChecker.validate({});
+      },
+      Error,
+      'Should not fail with no options or config'
+    );
+
+    test.done();
+  },
 };
-
-exports.pemTest = {
-
-  'get private key': (test) => {
-    test.expect(1);
-    var result = extractAndCompare(pem.getPrivateKey, 'private.pem', correctKeyOrCert.privateKey);
-    test.ok(result.pass, result.message);
-    test.done();
-  },
-
-  'get certificate': (test) => {
-    test.expect(1);
-    var result = extractAndCompare(pem.getCertificate, 'public.pem', correctKeyOrCert.certificate);
-    test.ok(result.pass, result.message);
-    test.done();
-  },
-
-  'test certToPem': (test) => {
-    test.expect(1);
-    var pemContent = pem.certToPEM('myCertificate');
-
-    var result = (function() {
-      var certificate = null;
-      try {
-        certificate = pem.getCertificate(pemContent);
-      } catch (e) {
-        return {pass: false, message: e.message};
-      }
-      return {pass: certificate === 'myCertificate', message: 'should get the same certificate'};
-    }());
-
-    test.ok(result.pass, result.message);
-    test.done();
-  }
-}

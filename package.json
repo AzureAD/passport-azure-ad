@@ -36,6 +36,7 @@
     "grunt-contrib-nodeunit": "^1.0.0",
     "grunt-contrib-uglify": "^1.0.1",
     "grunt-contrib-watch": "^1.0.0",
+    "grunt-mocha-test": "^0.12.7",
     "grunt-eslint": "^18.1.0",
     "nodeunit": "^0.9.1",
     "mocha": "2.x.x",
@@ -62,7 +63,7 @@
     "xtend": "4.0.1"
   },
   "scripts": {
-    "test": "grunt nodeunit && mocha -R spec test/*_mochaTest.js"
+    "test": "grunt run_all_tests"
   },
   "engines": {
     "node": ">= ~4.0.1"

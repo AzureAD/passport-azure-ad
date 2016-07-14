@@ -27,7 +27,7 @@
 
 var chai = require('chai');
 chai.use(require('chai-passport-strategy'));
-var BearerStrategy = require('../lib/index').BearerStrategy;
+var BearerStrategy = require('../../lib/index').BearerStrategy;
 
 var publicKeyPem = "-----BEGIN RSA PUBLIC KEY-----\n" +
                 "MIIBCgKCAQEAvbcFrj193Gm6zeo5e2/y54Jx49sIgScv+2JO+n6NxNqQaKVnMkHc\n" +

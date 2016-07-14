@@ -5,7 +5,15 @@ module.exports = function loadGrunt(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     nodeunit: {
-      files: ['test/**/*_test.js'],
+      files: ['test/Nodeunit_test/*_test.js'],
+    },
+    mochaTest: {
+      test: {
+        options: {
+          reporter: 'spec',
+        },
+        src: ['test/chai-passport_test/*_test.js'],
+      },
     },
     eslint: {
       options: {},
@@ -29,11 +37,11 @@ module.exports = function loadGrunt(grunt) {
       },
       lib: {
         files: '<%= eslint.lib.src %>',
-        tasks: ['eslint:lib', 'nodeunit'],
+        tasks: ['eslint:lib', 'nodeunit', 'mochaTest'],
       },
       test: {
         files: '<%= eslint.test.src %>',
-        tasks: ['eslint:test', 'nodeunit'],
+        tasks: ['eslint:test', 'nodeunit', 'mochaTest'],
       },
     },
   });
@@ -42,7 +50,14 @@ module.exports = function loadGrunt(grunt) {
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
   grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-mocha-test');
 
-  // Default task.
-  grunt.registerTask('default', ['eslint', 'nodeunit']);
+  grunt.registerTask('printMsg_nodeunit', () => {
+    grunt.log.writeln('\n\n\n======= Running tests in test/nodeunit_test =======\n\n\n');
+  });
+  grunt.registerTask('printMsg_chai-passport', () => {
+    grunt.log.writeln('\n\n\n======= Running tests in test/chai-passport_test =======\n\n\n');
+  });
+  grunt.registerTask('run_all_tests', ['printMsg_chai-passport', 'mochaTest', 'printMsg_nodeunit', 'nodeunit']);
+  grunt.registerTask('default', 'run_all_tests');
 };

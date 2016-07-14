@@ -1,115 +1,68 @@
-# CONTRIBUTING
+# Branch Structure
+* **master**: The latest official GA version
+* **dev**: The dev working branch of master, all contribution should be to the **dev** branch
 
-Azure Active Directory SDK projects welcomes new contributors.  This document will guide you
-through the process.
+If you would like to contribute code to this library, you should branch from **dev**, and make a pull request for your topic branch against **dev** branch.
 
-### CONTRIBUTOR LICENSE AGREEMENT
+# Releases
+All the previous releases can be found [here](https://github.com/AzureAD/passport-azure-ad/releases).
 
-Please visit [https://cla.microsoft.com/](https://cla.microsoft.com/) and sign the Contributor License
-Agreement.  You only need to do that once. We can not look at your code until you've submitted this request.
+# Filing Bugs
+Please file issues you see in the [issue tracker](https://github.com/AzureAD/passport-azure-ad/issues). Include:
 
+- The version you are using.
+- The behavior you are seeing. If at all possible, please submit a reduced repro or test that demonstrates the issue.
+- What you expect to see.
 
-### FORK
+# Instructions for Contributing Code
 
-Fork the project [on GitHub][] and check out
-your copy.
+## Contributing bug fixes
 
-Now decide if you want your feature or bug fix to go into the dev branch
-or the master branch.  **All bug fixes and new features should go into the dev branch.**
+We are currently accepting contributions in the form of bug fixes. A bug must have an issue tracking it in the issue tracker. Your pull request should include a link to the bug that you are fixing. If you've submitted a PR for a bug, please post a comment in the bug to avoid duplication of effort.
 
-The master branch is effectively frozen; patches that change the SDKs
-protocols or API surface area or affect the run-time behavior of the SDK will be rejected.
+## Contributing features
+Features (things that add new or improved functionality) may be accepted, but will need to first be approved (tagged with "enhancement") in the issue.
 
-Some of our SDKs have bundled dependencies that are not part of the project proper.  Any changes to files in those directories or its subdirectories should be sent to their respective
-projects.  Do not send your patch to us, we cannot accept it.
+## Legal
+You will need to complete a Contributor License Agreement (CLA). Briefly, this agreement testifies that you are granting us permission to use the submitted change according to the terms of the project's license, and that the work being submitted is under appropriate copyright.
 
-In case of doubt, open an issue in the [issue tracker][].
+Please submit a Contributor License Agreement (CLA) before submitting a pull request. You may visit https://cla.microsoft.com to sign digitally. You only need to do this once. Once we have received the signed CLA, we'll review the request.
 
-Especially do so if you plan to work on a major change in functionality.  Nothing is more
-frustrating than seeing your hard work go to waste because your vision
-does not align with our goals for the SDK.
+## Housekeeping
+Your pull request should:
 
+* Include a description of what your change intends to do
+* Be based on a reasonably recent pull in the **dev** branch
+    * Please rebase and squash all commits into a single one
+* Make sure both your local test run and the automatic Travis test run pass. See the test instructions section below for more details
+* Have clear commit messages
+* Include new tests for bug fixes and new features
+* To avoid line ending issues, set `autocrlf = input` and `whitespace = cr-at-eol` in your git configuration
 
-### BRANCH
+## Test instructions
 
-Okay, so you have decided on the proper branch.  Create a feature branch
-and start hacking:
+For the testing tools, we use both nodeunit and [chai-passport-strategy](https://github.com/jaredhanson/chai-passport-strategy). Nodeunit is used for general testing purposes where the passport framework is not involved, and chai-passport-strategy is used for the passport strategy workflow testing. Instructions on how to use chai-passport-strategy can be found [here](https://github.com/jaredhanson/chai-passport-strategy/blob/master/README.md).
 
-```
-$ git checkout -b my-feature-branch 
-```
+All the test files should have a _test suffix in their names and be placed in the correct subdirectory, depending on the testing tools used. The following is the rule: 
 
+* **nodeunit_test**: contains all nodeunit tests
+* **chai-passport_test**: contains all chai-passport-strategy tests
+* **resource**: contains all shared resources for testing (for example, pem key file)
 
-### COMMIT
+### How to run tests on your machine
 
-Make sure git knows your name and email address:
-
-```
-$ git config --global user.name "J. Random User"
-$ git config --global user.email "j.random.user@example.com"
-```
-
-Writing good commit logs is important.  A commit log should describe what
-changed and why.  Follow these guidelines when writing one:
-
-1. The first line should be 50 characters or less and contain a short
-   description of the change prefixed with the name of the changed
-   subsystem (e.g. "net: add localAddress and localPort to Socket").
-2. Keep the second line blank.
-3. Wrap all other lines at 72 columns.
-
-A good commit log looks like this:
+In the library root folder, type the following command to install the dependency packages:
 
 ```
-fix: explaining the commit in one line
-
-Body of commit message is a few lines of text, explaining things
-in more detail, possibly giving some background about the issue
-being fixed, etc etc.
-
-The body of the commit message can be several paragraphs, and
-please do proper word-wrap and keep columns shorter than about
-72 characters or so. That way `git log` will show things
-nicely even when it is indented.
+    $ npm install
 ```
-
-The header line should be meaningful; it is what other people see when they
-run `git shortlog` or `git log --oneline`.
-
-Check the output of `git log --oneline files_that_you_changed` to find out
-what directories your changes touch.
-
-
-### REBASE
-
-Use `git rebase` (not `git merge`) to sync your work from time to time.
+Then type the following command to run tests:
 
 ```
-$ git fetch upstream
-$ git rebase upstream/v0.1  # or upstream/master
+    $ npm test
 ```
+Tests will run automatically and in the terminal you can see how many tests are passing/failing. Ensure all tests are passing before submitting your pull request.
 
+### Automatic Travis test
 
-### TEST
-
-Bug fixes and features should come with tests.  Add your tests in the
-test directory. This varies by repository but often follows the same convention of /src/test.  Look at other tests to see how they should be
-structured (license boilerplate, common includes, etc.).
-
-
-Make sure that all tests pass.
-
-
-### PUSH
-
-```
-$ git push origin my-feature-branch
-```
-
-Go to https://github.com/username/azure-activedirectory-library-for-***.git and select your feature branch.  Click
-the 'Pull Request' button and fill out the form.
-
-Pull requests are usually reviewed within a few days.  If there are comments
-to address, apply your changes in a separate commit and push that to your
-feature branch.  Post a comment in the pull request afterwards; GitHub does
-not send out notifications when you add commits.
+After you submit your pull request, Travis test will run automatically. The status of this test can be found at the bottom of your pull request page, and it may take some time to complete. After completion, a successful test run will show a "All checks have passed" status with a green check sign.

@@ -25,7 +25,9 @@
 
 'use strict';
 
-const SamlStrategy = require('../lib/index').SamlStrategy;
+const fs = require('fs');
+const pem = require('../../lib/pem');
+const correctKeyOrCert = require('../resource/correctKeyOrCert');
 
 /*
  ======== A Handy Little Nodeunit Reference ========
@@ -47,71 +49,56 @@ const SamlStrategy = require('../lib/index').SamlStrategy;
  test.ifError(value)
  */
 
-function noop() {}
-exports.saml = {
+var extractAndCompare = function(extractFunc, pemFileName, correctValue) {
+  var pem = null;
+  var pemKeyOrCert = null;
 
-  'no args': (test) => {
-    test.expect(1);
-    // tests here
+  try {
+    pem = fs.readFileSync(__dirname + '/../resource/' + pemFileName, 'utf8');
+  } catch (e) {
+    return { pass: false, message: e.message};
+  }
 
-    test.throws(
-      () => {
-        new SamlStrategy();
-      },
-      Error,
-      'Should fail with no arguments)'
-    );
+  try {
+    pemKeyOrCert = extractFunc(pem);
+  } catch (e) {
+    return { pass: false, message: e.message};
+  }
 
-    test.done();
-  },
-  'no verify function': (test) => {
-    test.expect(1);
-    // tests here
-
-    test.throws(
-      () => {
-        new SamlStrategy({}, null);
-      },
-      Error,
-      'Should fail with no verify function (2nd argument)'
-    );
-
-    test.done();
-  },
-
-  'no options': (test) => {
-    test.expect(1);
-    // tests here
-
-    test.throws(
-      () => {
-        new SamlStrategy({}, noop);
-      },
-      Error,
-      'Should fail with no SAML config options'
-    );
-
-    test.done();
-  },
-  'with options': (test) => {
-    test.expect(1);
-    // tests here
-
-    const samlConfig = {
-      // required options
-      identityMetadata: 'https://login.windows.net/xxxxxxxxx/federationmetadata.xml',
-      loginCallback: 'http://localhost:3000/login/callback/',
-      issuer: 'http://localhost:3000', // this is the URI you entered for APP ID URI when configuring SSO for you app on Azure AAD
-    };
-
-    test.doesNotThrow(
-      () => {
-        new SamlStrategy(samlConfig, noop);
-      },
-      Error,
-      'Should not fail with proper SAML config options'
-    );
-
-    test.done();
-  },
+  return {pass: pemKeyOrCert === correctValue, message: 'should be the same key/certificate'};
 };
+
+exports.pemTest = {
+
+  'get private key': (test) => {
+    test.expect(1);
+    var result = extractAndCompare(pem.getPrivateKey, 'private.pem', correctKeyOrCert.privateKey);
+    test.ok(result.pass, result.message);
+    test.done();
+  },
+
+  'get certificate': (test) => {
+    test.expect(1);
+    var result = extractAndCompare(pem.getCertificate, 'public.pem', correctKeyOrCert.certificate);
+    test.ok(result.pass, result.message);
+    test.done();
+  },
+
+  'test certToPem': (test) => {
+    test.expect(1);
+    var pemContent = pem.certToPEM('myCertificate');
+
+    var result = (function() {
+      var certificate = null;
+      try {
+        certificate = pem.getCertificate(pemContent);
+      } catch (e) {
+        return {pass: false, message: e.message};
+      }
+      return {pass: certificate === 'myCertificate', message: 'should get the same certificate'};
+    }());
+
+    test.ok(result.pass, result.message);
+    test.done();
+  }
+}
