@@ -130,6 +130,22 @@ app.post('/auth/openid/return',
 
 ```
 
+## Test
+
+In the library root folder, type the following command to install the dependency packages:
+
+```
+    $ npm install
+```
+
+Then type the following command to run tests:
+
+```
+    $ npm test
+```
+
+Tests will run automatically and in the terminal you can see how many tests are passing/failing. More details can be found [here](https://github.com/AzureAD/passport-azure-ad/blob/master/contributing.md).
+
 ## Samples and Documentation
 
 [We provide a full suite of sample applications and documentation on GitHub](https://azure.microsoft.com/en-us/documentation/samples/?service=active-directory) 

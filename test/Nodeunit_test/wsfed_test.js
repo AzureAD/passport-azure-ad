@@ -25,8 +25,8 @@
 
 'use strict';
 
-const WsfedStrategy = require('../lib/index').WsfedStrategy;
-const Wsfed = require('../lib/wsfederation');
+const WsfedStrategy = require('../../lib/index').WsfedStrategy;
+const Wsfed = require('../../lib/wsfederation');
 
 /*
  ======== A Handy Little Nodeunit Reference ========

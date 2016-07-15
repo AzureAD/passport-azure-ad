@@ -27,7 +27,7 @@
 
 var chai = require('chai');
 chai.use(require('chai-passport-strategy'));
-var BearerStrategy = require('../lib/index').BearerStrategy;
+var BearerStrategy = require('../../lib/index').BearerStrategy;
 
 // Mock options
 var options = {

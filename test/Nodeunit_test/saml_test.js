@@ -20,9 +20,12 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
+/* eslint-disable no-new */
+
 'use strict';
 
-const Validator = require('../lib/validator').Validator;
+const SamlStrategy = require('../../lib/index').SamlStrategy;
 
 /*
  ======== A Handy Little Nodeunit Reference ========
@@ -44,49 +47,69 @@ const Validator = require('../lib/validator').Validator;
  test.ifError(value)
  */
 
-const checker = new Validator({ foo: Validator.isNonEmpty });
+function noop() {}
+exports.saml = {
 
-exports.validator = {
-
-  'has option': (test) => {
-    test.expect(1);
-    // tests here
-
-    test.doesNotThrow(
-      () => {
-        checker.validate({ foo: 'test' });
-      },
-      Error,
-      'Should not fail with option present'
-    );
-
-    test.done();
-  },
-  'missing option': (test) => {
+  'no args': (test) => {
     test.expect(1);
     // tests here
 
     test.throws(
       () => {
-        checker.validate({ bar: 'test' });
+        new SamlStrategy();
       },
       Error,
-      'Should  fail with option missing'
+      'Should fail with no arguments)'
     );
 
     test.done();
   },
+  'no verify function': (test) => {
+    test.expect(1);
+    // tests here
+
+    test.throws(
+      () => {
+        new SamlStrategy({}, null);
+      },
+      Error,
+      'Should fail with no verify function (2nd argument)'
+    );
+
+    test.done();
+  },
+
   'no options': (test) => {
     test.expect(1);
     // tests here
 
-    test.doesNotThrow(
+    test.throws(
       () => {
-        const myChecker = new Validator({});
-        myChecker.validate({});
+        new SamlStrategy({}, noop);
       },
       Error,
-      'Should not fail with no options or config'
+      'Should fail with no SAML config options'
+    );
+
+    test.done();
+  },
+  'with options': (test) => {
+    test.expect(1);
+    // tests here
+
+    const samlConfig = {
+      // required options
+      identityMetadata: 'https://login.windows.net/xxxxxxxxx/federationmetadata.xml',
+      loginCallback: 'http://localhost:3000/login/callback/',
+      issuer: 'http://localhost:3000', // this is the URI you entered for APP ID URI when configuring SSO for you app on Azure AAD
+    };
+
+    test.doesNotThrow(
+      () => {
+        new SamlStrategy(samlConfig, noop);
+      },
+      Error,
+      'Should not fail with proper SAML config options'
     );
 
     test.done();

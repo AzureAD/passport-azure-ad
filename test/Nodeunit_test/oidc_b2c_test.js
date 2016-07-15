@@ -25,7 +25,7 @@
 
 'use strict';
 
-const OIDCStrategy = require('../lib/index').OIDCStrategy;
+const OIDCStrategy = require('../../lib/index').OIDCStrategy;
 
 /*
  ======== A Handy Little Nodeunit Reference ========
@@ -51,30 +51,15 @@ function noop() {}
 
 exports.oidc = {
 
-  'no args': (test) => {
-    test.expect(1);
-    // tests here
-
-    test.throws(
-      () => {
-        new OIDCStrategy();
-      },
-      Error,
-      'Should fail with no arguments)'
-    );
-
-    test.done();
-  },
-
   'with options': (test) => {
     test.expect(1);
     // tests here
 
     const oidcConfig = {
       // required options
-      identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
-      responseType: 'id_token', // for login only flows use id_token. For accessing resources use `id_token code`
-      responseMode: 'form_post', // For login only flows we should have token passed back to us in a POST
+      identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
+      tenantName: 'hypercubeb2c.onmicrosoft.com',
+      forceB2C: true,
     };
 
     test.doesNotThrow(
@@ -82,7 +67,7 @@ exports.oidc = {
         new OIDCStrategy(oidcConfig, noop);
       },
       Error,
-      'Should not fail with proper v2 OIDC config options'
+      'Should not fail with proper OIDC config options'
     );
 
     test.done();
