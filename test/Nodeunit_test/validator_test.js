@@ -44,7 +44,7 @@ const Validator = require('../../lib/validator').Validator;
  test.ifError(value)
  */
 
-const checker = new Validator({ foo: Validator.isNonEmpty });
+const checker = new Validator({ something: Validator.isNonEmpty });
 
 exports.validator = {
 
@@ -54,7 +54,7 @@ exports.validator = {
 
     test.doesNotThrow(
       () => {
-        checker.validate({ foo: 'test' });
+        checker.validate({ something: 'test' });
       },
       Error,
       'Should not fail with option present'

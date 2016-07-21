@@ -60,7 +60,7 @@ exports.metadata = {
 
     test.doesNotThrow(
       () => {
-        new Metadata('http://foo.com/federationmetadata.xml', 'wsfed', options);
+        new Metadata('http://something.com/federationmetadata.xml', 'wsfed', options);
       },
       Error,
       'Should not fail with url present'
@@ -88,7 +88,7 @@ exports.metadata = {
 
     test.throws(
       () => {
-        new Metadata('http://foo.com/federationmetadata.xml', options);
+        new Metadata('http://something.com/federationmetadata.xml', options);
       },
       Error,
       'Should fail with auth type missing'
@@ -102,7 +102,7 @@ exports.metadata = {
 
     test.throws(
       () => {
-        new Metadata('http://foo.com/federationmetadata.xml', 'wsfed');
+        new Metadata('http://something.com/federationmetadata.xml', 'wsfed');
       },
       Error,
       'Should fail with options missing'
