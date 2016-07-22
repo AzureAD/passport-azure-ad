@@ -12,7 +12,7 @@ module.exports = function loadGrunt(grunt) {
         options: {
           reporter: 'spec',
         },
-        src: ['test/chai-passport_test/*_test.js'],
+        src: ['test/Chai-passport_test/*_test.js'],
       },
     },
     eslint: {
