@@ -61,7 +61,7 @@ exports.oidc = {
       tenantName: 'hypercubeb2c.onmicrosoft.com',
       forceB2C: true,
       clientID: '123',
-      callbackURL: 'www.example.com',
+      callbackURL: 'http://www.example.com',
       responseType: 'id_token',
       responseMode: 'form_post'
     };

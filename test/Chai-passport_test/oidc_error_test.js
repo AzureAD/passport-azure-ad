@@ -33,10 +33,10 @@ chai.use(require('chai-passport-strategy'));
 
 // Mock options required to create a OIDC strategy
 var options = {
-    callbackURL: '/returnURL',
+    callbackURL: 'http://returnURL',
     clientID: 'my_client_id',
     clientSecret: 'my_client_secret',
-    identityMetadata: 'www.example.com/metadataURL',
+    identityMetadata: 'https://www.example.com/metadataURL',
     skipUserProfile: true,
     responseType: 'id_token',
     responseMode: 'form_post',
@@ -54,8 +54,8 @@ testStrategy.configure = function(identifier, done) {
   var opt = {           
     clientID: options.clientID,
     clientSecret: options.clientSecret,
-    authorizationURL: 'www.example.com/authorizationURL',
-    tokenURL: 'www.example.com/tokenURL'
+    authorizationURL: 'https://www.example.com/authorizationURL',
+    tokenURL: 'https://www.example.com/tokenURL'
   };
   done(null, opt);
 };

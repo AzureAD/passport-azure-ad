@@ -93,7 +93,7 @@ exports.oidc = {
       // required options
       identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
       clientID: '',  // invalid
-      callbackURL: 'www.example.com',
+      callbackURL: 'http://www.example.com',
       responseType: 'id_token',
       responseMode: 'form_post'
     };
@@ -137,7 +137,7 @@ exports.oidc = {
       // required options
       identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
       clientID: '123',
-      callbackURL: 'www.example.com',
+      callbackURL: 'http://www.example.com',
       responseType: 'id_tokennn', // invalid
       responseMode: 'form_post'
     };
@@ -159,7 +159,7 @@ exports.oidc = {
       // required options
       identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
       clientID: '123',
-      callbackURL: 'www.example.com',
+      callbackURL: 'http://www.example.com',
       responseType: 'id_token',
       responseMode: 'fragment' // invalid
     };
@@ -181,7 +181,7 @@ exports.oidc = {
       // required options
       identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
       clientID: '123',
-      callbackURL: 'www.example.com',
+      callbackURL: 'http://www.example.com',
       responseType: 'id_token',
       responseMode: 'form_post'
     };
