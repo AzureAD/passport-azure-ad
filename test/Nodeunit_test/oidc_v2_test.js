@@ -73,6 +73,8 @@ exports.oidc = {
     const oidcConfig = {
       // required options
       identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
+      clientID: '123',
+      callbackURL: 'http://www.example.com',
       responseType: 'id_token', // for login only flows use id_token. For accessing resources use `id_token code`
       responseMode: 'form_post', // For login only flows we should have token passed back to us in a POST
     };

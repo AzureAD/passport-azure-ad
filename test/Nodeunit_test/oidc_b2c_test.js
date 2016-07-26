@@ -60,6 +60,10 @@ exports.oidc = {
       identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
       tenantName: 'hypercubeb2c.onmicrosoft.com',
       forceB2C: true,
+      clientID: '123',
+      callbackURL: 'http://www.example.com',
+      responseType: 'id_token',
+      responseMode: 'form_post'
     };
 
     test.doesNotThrow(

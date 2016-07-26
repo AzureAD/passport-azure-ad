@@ -85,54 +85,105 @@ exports.oidc = {
 
     test.done();
   },
-  'with missing option resposneType': (test) => {
+  'with invalid option clientID': (test) => {
     test.expect(1);
     // tests here
 
     const oidcConfig = {
       // required options
       identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
-      responseType: 'id_tokennn', // for login only flows use id_token. For accessing resources use `id_token code`
+      clientID: '',  // invalid
+      callbackURL: 'http://www.example.com',
+      responseType: 'id_token',
+      responseMode: 'form_post'
     };
     test.throws(
       () => {
         const s = new OidcStrategy(oidcConfig, noop);
-        s.loadOptions(oidcConfig, noop);
       },
       TypeError,
-      'Should fail with wrong reponses config options'
+      'Should fail with wrong response config options'
     );
 
     test.done();
   },
-  'with missing option resposneMode': (test) => {
+  'with invalid option callbackURL': (test) => {
     test.expect(1);
     // tests here
 
     const oidcConfig = {
       // required options
       identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
-      responseMode: 'fragment', // For login only flows we should have token passed back to us in a POST
+      clientID: '123',
+      callbackURL: '',  // invalid
+      responseType: 'id_tokennn',
+      responseMode: 'form_post'
     };
     test.throws(
       () => {
         const s = new OidcStrategy(oidcConfig, noop);
-        s.loadOptions(oidcConfig, noop);
       },
-      Error,
-      'Should fail with wrong reponses config options'
+      TypeError,
+      'Should fail with wrong response config options'
     );
 
     test.done();
   },
-  'with options': (test) => {
+  'with invalid option responseType': (test) => {
     test.expect(1);
     // tests here
 
     const oidcConfig = {
       // required options
-      identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
-      issuer: 'http://localhost:3000', // this is the URI you entered for APP ID URI when configuring SSO for you app on Azure AAD
+      identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
+      clientID: '123',
+      callbackURL: 'http://www.example.com',
+      responseType: 'id_tokennn', // invalid
+      responseMode: 'form_post'
+    };
+    test.throws(
+      () => {
+        const s = new OidcStrategy(oidcConfig, noop);
+      },
+      TypeError,
+      'Should fail with wrong response config options'
+    );
+
+    test.done();
+  },
+  'with invalid option responseMode': (test) => {
+    test.expect(1);
+    // tests here
+
+    const oidcConfig = {
+      // required options
+      identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
+      clientID: '123',
+      callbackURL: 'http://www.example.com',
+      responseType: 'id_token',
+      responseMode: 'fragment' // invalid
+    };
+    test.throws(
+      () => {
+        const s = new OidcStrategy(oidcConfig, noop);
+      },
+      Error,
+      'Should fail with wrong response config options'
+    );
+
+    test.done();
+  },
+  'with valid options': (test) => {
+    test.expect(1);
+    // tests here
+
+    const oidcConfig = {
+      // required options
+      identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
+      clientID: '123',
+      callbackURL: 'http://www.example.com',
+      responseType: 'id_token',
+      responseMode: 'form_post'
     };
 
     test.doesNotThrow(
