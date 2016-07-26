@@ -38,8 +38,8 @@ var options = {
     clientSecret: 'my_client_secret',
     identityMetadata: 'www.example.com/metadataURL',
     skipUserProfile: true,
-    responseType: 'form_post',
-    responseMode: 'id_token',
+    responseType: 'id_token',
+    responseMode: 'form_post',
     validateIssuer: true,
     passReqToCallback: false,
     sessionKey: 'my_key'    //optional sessionKey
