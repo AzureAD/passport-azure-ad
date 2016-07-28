@@ -19,9 +19,9 @@ and with [Microsoft Active Directory Federation Services](http://en.wikipedia.or
 [![Throughput Graph](https://graphs.waffle.io/AzureAD/passport-azure-ad/throughput.svg)](https://waffle.io/AzureAD/passport-azure-ad/metrics)
 
 ## Installation
-
+```
     $ npm install passport-azure-ad
-
+```
 ## Usage
 
 ### Configure strategy
@@ -154,7 +154,13 @@ tutorials for native clients such as Windows, Windows Phone, iOS, OSX, Android,
 and Linux. We also provide full walkthroughs for authentication flows such as 
 OAuth2, OpenID Connect, Graph API, and other awesome features. 
 
-Azure Identity samples for this plug-in is here: [https://github.com/Azure-Samples/active-directory-node-webapp-openidconnect](https://github.com/Azure-Samples/active-directory-node-webapp-openidconnect)
+Azure Identity samples for this plug-in can be found in the following links:
+
+* For [OpenID connect strategy](https://github.com/AzureAD/passport-azure-ad/blob/master/lib/oidcstrategy.js), the sample is [here](https://github.com/Azure-Samples/active-directory-node-webapp-openidconnect), and the B2C sample is [here](https://github.com/AzureADQuickStarts/B2C-WebApp-OpenIDConnect-NodeJS).
+
+* For [Bearer strategy](https://github.com/AzureAD/passport-azure-ad/blob/master/lib/bearerstrategy.js), the sample is [here](https://github.com/Azure-Samples/active-directory-node-webapi), and the B2C sample is [here](https://github.com/AzureADQuickStarts/B2C-WebApi-Nodejs). 
+
+* For [WS-Federation strategy](https://github.com/AzureAD/passport-azure-ad/blob/master/lib/wsfedstrategy.js) and [SAML strategy](https://github.com/AzureAD/passport-azure-ad/blob/master/lib/samlstrategy.js), we no longer provide and maintain samples. If you are interested in samples for these two strategies, please download a previous release version (<= 2.0.0, >= 1.4.0) from the [releases page](https://github.com/AzureAD/passport-azure-ad/releases) and go to the example folder.
 
 
 ## Community Help and Support
