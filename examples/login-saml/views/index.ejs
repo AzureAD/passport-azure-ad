@@ -1,8 +1,0 @@
-<% layout('layout') -%>
-<% if (!user) { %>
-<h2>Welcome! Please log in.</h2>
-<a href="/login">Log In</a>
-<% } else { %>
-<h2>Hello, <%= user.givenName %>.</h2>
-<a href="/logout">Log Out</a>
-<% } %>
