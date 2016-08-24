@@ -63,7 +63,8 @@ var options = {
   passReqToCallback: false,
   sessionKey: 'my_key',
   oidcIssuer: 'https://sts.windows.net/268da1a1-9db4-48b9-b1fe-683250ba90cc/',
-  ignoreExpiration: true
+  ignoreExpiration: true,
+  algorithms: ['RS256']
 };
 
 var testStrategy = new OIDCStrategy(options, function(profile, done) {
@@ -148,7 +149,7 @@ describe('OIDCStrategy implicit flow test', function() {
     before(testPrepare(id_token, nonce, [setIgnoreExpirationFalse]));
 
     it('should fail', function() {
-      chai.expect(challenge).to.equal('jwt expired');
+      chai.expect(challenge).to.equal('jwt is expired');
     });
   });
 
@@ -157,7 +158,7 @@ describe('OIDCStrategy implicit flow test', function() {
     before(testPrepare(id_token, nonce, [setIgnoreExpirationTrue, setWrongIssuer]));
 
     it('should fail', function() {
-      chai.expect(challenge).to.equal('jwt issuer invalid. expected: wrong_issuer');
+      chai.expect(challenge).to.equal('jwt issuer is invalid. expected: wrong_issuer');
     });
   });
 
@@ -166,7 +167,7 @@ describe('OIDCStrategy implicit flow test', function() {
     before(testPrepare(id_token, nonce, [rmValidateIssuer, setWrongIssuer]));
 
     it('should fail', function() {
-      chai.expect(challenge).to.equal('jwt issuer invalid. expected: wrong_issuer');
+      chai.expect(challenge).to.equal('jwt issuer is invalid. expected: wrong_issuer');
     });
   });
 });

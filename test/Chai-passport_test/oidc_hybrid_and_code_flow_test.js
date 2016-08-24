@@ -70,7 +70,8 @@ var options = {
   sessionKey: 'my_key',
   oidcIssuer: 'https://sts.windows.net/268da1a1-9db4-48b9-b1fe-683250ba90cc/',
   ignoreExpiration: true,
-  audience: null
+  audience: null,
+  algorithms: ['RS256']
 };
 
 // this is used in resetOptions
@@ -235,7 +236,7 @@ describe('OIDCStrategy hybrid flow test', function() {
       [resetOptions, setIgnoreExpirationFalse]));
 
     it('should fail with expired id_token', function() {
-      chai.expect(challenge).to.equal('jwt expired');
+      chai.expect(challenge).to.equal('jwt is expired');
     });
   });
 
@@ -253,7 +254,7 @@ describe('OIDCStrategy hybrid flow test', function() {
       [resetOptions, setWrongIssuer]));
 
     it('should fail with invalid issuer', function() {
-      chai.expect(challenge).to.equal('jwt issuer invalid. expected: wrong_issuer');
+      chai.expect(challenge).to.equal('jwt issuer is invalid. expected: wrong_issuer');
     });
   });
 
@@ -262,7 +263,7 @@ describe('OIDCStrategy hybrid flow test', function() {
       [resetOptions, setWrongAudience]));
 
     it('should fail with invalid audience', function() {
-      chai.expect(challenge).to.equal('jwt audience invalid. expected: wrong audience');
+      chai.expect(challenge).to.equal('jwt audience is invalid. expected: wrong audience');
     });
   });
 
@@ -354,7 +355,7 @@ describe('OIDCStrategy authorization code flow test', function() {
       [resetOptions, setIgnoreExpirationFalse]));
 
     it('should fail with expired id_token', function() {
-      chai.expect(challenge).to.equal('jwt expired');
+      chai.expect(challenge).to.equal('jwt is expired');
     });
   });
 
@@ -363,7 +364,7 @@ describe('OIDCStrategy authorization code flow test', function() {
       [resetOptions, setWrongIssuer]));
 
     it('should fail with invalid issuer', function() {
-      chai.expect(challenge).to.equal('jwt issuer invalid. expected: wrong_issuer');
+      chai.expect(challenge).to.equal('jwt issuer is invalid. expected: wrong_issuer');
     });
   });
 
@@ -372,7 +373,7 @@ describe('OIDCStrategy authorization code flow test', function() {
       [resetOptions, setWrongAudience]));
 
     it('should fail with invalid audience', function() {
-      chai.expect(challenge).to.equal('jwt audience invalid. expected: wrong audience');
+      chai.expect(challenge).to.equal('jwt audience is invalid. expected: wrong audience');
     });
   });
 
