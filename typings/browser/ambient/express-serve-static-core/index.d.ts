@@ -664,7 +664,7 @@ declare module "express-serve-static-core" {
             *
             * Examples:
             *
-            *    res.set('Foo', ['bar', 'baz']);
+            *    res.set('field', ['bar', 'baz']);
             *    res.set('Accept', 'application/json');
             *    res.set({ Accept: 'text/plain', 'X-API-Key': 'tobi' });
             *
@@ -724,7 +724,7 @@ declare module "express-serve-static-core" {
             *
             * Examples:
             *
-            *    res.location('/foo/bar').;
+            *    res.location('/relativePath'').;
             *    res.location('http://example.com');
             *    res.location('../login'); // /blog/post/1 -> /blog/login
             *
@@ -755,7 +755,7 @@ declare module "express-serve-static-core" {
             *
             * Examples:
             *
-            *    res.redirect('/foo/bar');
+            *    res.redirect('/relativePath');
             *    res.redirect('http://example.com');
             *    res.redirect(301, 'http://example.com');
             *    res.redirect('http://example.com', 301);
@@ -819,7 +819,7 @@ declare module "express-serve-static-core" {
             *
             * By default will `require()` the engine based on the
             * file extension. For example if you try to render
-            * a "foo.jade" file Express will invoke the following internally:
+            * a "file.jade" file Express will invoke the following internally:
             *
             *     app.engine('jade', require('jade').__express);
             *
@@ -846,11 +846,11 @@ declare module "express-serve-static-core" {
         /**
             * Assign `setting` to `val`, or return `setting`'s value.
             *
-            *    app.set('foo', 'bar');
-            *    app.get('foo');
+            *    app.set('setting', 'bar');
+            *    app.get('setting');
             *    // => "bar"
-            *    app.set('foo', ['bar', 'baz']);
-            *    app.get('foo');
+            *    app.set('setting', ['bar', 'baz']);
+            *    app.get('setting');
             *    // => ["bar", "baz"]
             *
             * Mounted servers inherit their parent server's settings.
@@ -879,11 +879,11 @@ declare module "express-serve-static-core" {
         /**
             * Check if `setting` is enabled (truthy).
             *
-            *    app.enabled('foo')
+            *    app.enabled('setting')
             *    // => false
             *
-            *    app.enable('foo')
-            *    app.enabled('foo')
+            *    app.enable('setting')
+            *    app.enabled('setting')
             *    // => true
             */
         enabled(setting: string): boolean;
@@ -891,11 +891,11 @@ declare module "express-serve-static-core" {
         /**
             * Check if `setting` is disabled.
             *
-            *    app.disabled('foo')
+            *    app.disabled('setting')
             *    // => true
             *
-            *    app.enable('foo')
-            *    app.disabled('foo')
+            *    app.enable('setting')
+            *    app.disabled('setting')
             *    // => false
             *
             * @param setting
