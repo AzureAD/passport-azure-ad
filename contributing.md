@@ -1,8 +1,9 @@
 # Branch Structure
 * **master**: The latest official GA version
-* **dev**: The dev working branch of master, all contribution should be to the **dev** branch
+* **release1x**: The latest official release of version 1.x. All 1.x contributions should be against the **release1x** branch.
+* **dev**: The dev working branch of master. All 2.x contributions should be against the **dev** branch.
 
-If you would like to contribute code to this library, you should branch from **dev**, and make a pull request for your topic branch against **dev** branch.
+If you are contributing code to 2.x, you should branch from **dev** and make a pull request for your topic branch against the **dev** branch. If you are contributing code to 1.x, you should branch from **release1x** and make a pull request for your topic branch against the **release1x** branch.
 
 # Releases
 All the previous releases can be found [here](https://github.com/AzureAD/passport-azure-ad/releases).

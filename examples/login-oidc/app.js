@@ -106,6 +106,7 @@ passport.use(new OIDCStrategy({
     clientSecret: config.creds.clientSecret,
     oidcIssuer: config.creds.issuer,
     identityMetadata: config.creds.identityMetadata,
+    scope: config.creds.scope,
     skipUserProfile: config.creds.skipUserProfile,
     responseType: config.creds.responseType,
     responseMode: config.creds.responseMode,
@@ -173,22 +174,9 @@ app.get('/account', ensureAuthenticated, function (req, res) {
 });
 
 app.get('/login',
-  passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
+  passport.authenticate('azuread-openidconnect', { failureRedirect: '/' }),
   function (req, res) {
     log.info('Login was called in the Sample');
-    res.redirect('/');
-  });
-
-// POST /auth/openid
-//   Use passport.authenticate() as route middleware to authenticate the
-//   request.  The first step in OpenID authentication will involve redirecting
-//   the user to their OpenID provider.  After authenticating, the OpenID
-//   provider will redirect the user back to this application at
-//   /auth/openid/return
-app.get('/auth/openid',
-  passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
-  function (req, res) {
-    log.info('Authenitcation was called in the Sample');
     res.redirect('/');
   });
 
@@ -198,27 +186,29 @@ app.get('/auth/openid',
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
 app.get('/auth/openid/return',
-  passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
+  passport.authenticate('azuread-openidconnect', { failureRedirect: '/' }),
   function (req, res) {
     log.info('We received a return from AzureAD.');
     res.redirect('/');
   });
 
-// GET /auth/openid/return
+// POST /auth/openid/return
 //   Use passport.authenticate() as route middleware to authenticate the
 //   request.  If authentication fails, the user will be redirected back to the
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
 app.post('/auth/openid/return',
-  passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
+  passport.authenticate('azuread-openidconnect', { failureRedirect: '/' }),
   function (req, res) {
     log.info('We received a return from AzureAD.');
     res.redirect('/');
   });
 
 app.get('/logout', function (req, res) {
-  req.logout();
-  res.redirect('/');
+  req.session.destroy(function(err) {
+    req.logOut();
+    res.redirect('https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=http://localhost:3000');
+  });
 });
 
 app.listen(3000);

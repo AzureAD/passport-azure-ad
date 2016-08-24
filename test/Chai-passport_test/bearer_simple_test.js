@@ -32,6 +32,7 @@ var BearerStrategy = require('../../lib/index').BearerStrategy;
 // Mock options
 var options = {
 	certificate: 'my_certificate',  // use certificate to bypass the metadata loading
+    clientID: 'spn:6514a8ca-d9e4-4155-b292-65258398f3aa',
     validateIssuer: true,
     passReqToCallback: false
 };

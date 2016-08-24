@@ -63,7 +63,8 @@ exports.oidc = {
       clientID: '123',
       callbackURL: 'http://www.example.com',
       responseType: 'id_token',
-      responseMode: 'form_post'
+      responseMode: 'form_post',
+      validateIssuer: false
     };
 
     test.doesNotThrow(

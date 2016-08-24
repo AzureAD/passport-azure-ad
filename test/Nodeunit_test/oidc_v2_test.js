@@ -60,7 +60,7 @@ exports.oidc = {
         new OIDCStrategy();
       },
       Error,
-      'Should fail with no arguments)'
+      'Should fail with no arguments'
     );
 
     test.done();
@@ -77,6 +77,7 @@ exports.oidc = {
       callbackURL: 'http://www.example.com',
       responseType: 'id_token', // for login only flows use id_token. For accessing resources use `id_token code`
       responseMode: 'form_post', // For login only flows we should have token passed back to us in a POST
+      validateIssuer: false
     };
 
     test.doesNotThrow(

@@ -61,8 +61,10 @@ var expired_access_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IlliUkFR
 
 var options = {
 	certificate: publicKeyPem,  // use certificate instead of metadata
+    clientID: 'spn:6514a8ca-d9e4-4155-b292-65258398f3aa',
     validateIssuer: true,
     passReqToCallback: false,
+
 };
 
 describe('test expired token using pem', function() {

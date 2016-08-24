@@ -49,10 +49,36 @@ const OidcStrategy = require('../../lib/index').OIDCStrategy;
 
 function noop() {}
 
+function setConfig(callbackURL, clientID, responseType, responseMode, validateIssuer, testCallback) {
+  var config = {
+    identityMetadata: 'https://login.microsoftonline.com/contoso.onmicrosoft.com/v2.0/.well-known/openid-configuration',
+    callbackURL: callbackURL,
+    clientID: clientID,
+    responseType: responseType,
+    responseMode: responseMode,
+    validateIssuer: validateIssuer,
+  };
+
+  testCallback(config);
+}
+
+function setConfigCommon(callbackURL, clientID, responseType, responseMode, validateIssuer, testCallback) {
+  var config = {
+    identityMetadata: 'https://login.microsoftonline.com/contoso.onmicrosoft.com/common/v2.0/.well-known/openid-configuration',
+    callbackURL: callbackURL,
+    clientID: clientID,
+    responseType: responseType,
+    responseMode: responseMode,
+    validateIssuer: validateIssuer,
+  };
+
+  testCallback(config);
+}
+
 exports.oidc = {
   'no args': (test) => {
     test.expect(1);
-    // tests here
+
     test.throws(() => { new OidcStrategy(); },
       TypeError,
       'Should fail with no arguments)'
@@ -62,7 +88,7 @@ exports.oidc = {
   },
   'no verify function': (test) => {
     test.expect(1);
-    // tests here
+
     test.throws(() => { new OidcStrategy({}, null); },
       TypeError,
       'Should fail with no verify function (2nd argument)'
@@ -73,7 +99,6 @@ exports.oidc = {
 
   'no options': (test) => {
     test.expect(1);
-    // tests here
 
     test.throws(
       () => {
@@ -85,114 +110,264 @@ exports.oidc = {
 
     test.done();
   },
-  'with invalid option clientID': (test) => {
+  'clientID (empty)': (test) => {
     test.expect(1);
-    // tests here
 
-    const oidcConfig = {
-      // required options
-      identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
-      clientID: '',  // invalid
-      callbackURL: 'http://www.example.com',
-      responseType: 'id_token',
-      responseMode: 'form_post'
-    };
-    test.throws(
-      () => {
-        const s = new OidcStrategy(oidcConfig, noop);
+    setConfig('https://www.example.com', '', 'id_token token', 'form_post', 'true', (oidcConfig) =>
+    {
+      test.throws(() => {
+        new OidcStrategy(oidcConfig, noop);
       },
       TypeError,
-      'Should fail with wrong response config options'
-    );
+        'Should have failed clientID (empty)'
+      );
+    });
 
     test.done();
   },
-  'with invalid option callbackURL': (test) => {
+  'callbackURL (empty)': (test) => {
     test.expect(1);
-    // tests here
 
-    const oidcConfig = {
-      // required options
-      identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
-      clientID: '123',
-      callbackURL: '',  // invalid
-      responseType: 'id_tokennn',
-      responseMode: 'form_post'
-    };
-    test.throws(
-      () => {
-        const s = new OidcStrategy(oidcConfig, noop);
+    setConfig('', '123', 'id_token token', 'form_post', 'true', (oidcConfig) =>
+    {
+      test.throws(() => {
+        new OidcStrategy(oidcConfig, noop);
       },
       TypeError,
-      'Should fail with wrong response config options'
-    );
+        'Should have failed: callbackURL (empty)'
+      );
+    });
 
     test.done();
   },
-  'with invalid option responseType': (test) => {
+  'responseType (unknown): id_tokennn': (test) => {
     test.expect(1);
-    // tests here
 
-    const oidcConfig = {
-      // required options
-      identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
-      clientID: '123',
-      callbackURL: 'http://www.example.com',
-      responseType: 'id_tokennn', // invalid
-      responseMode: 'form_post'
-    };
-    test.throws(
-      () => {
-        const s = new OidcStrategy(oidcConfig, noop);
+    setConfig('https://www.example.com', '123', 'id_token token', 'form_post', 'true', (oidcConfig) =>
+    {
+      test.throws(() => {
+        new OidcStrategy(oidcConfig, noop);
       },
       TypeError,
-      'Should fail with wrong response config options'
-    );
+        'Should have failed responseType (unknown): id_tokennn'
+      );
+    });
 
     test.done();
   },
-  'with invalid option responseMode': (test) => {
+  'responseType (unsupported): id_token token': (test) => {
     test.expect(1);
-    // tests here
 
-    const oidcConfig = {
-      // required options
-      identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
-      clientID: '123',
-      callbackURL: 'http://www.example.com',
-      responseType: 'id_token',
-      responseMode: 'fragment' // invalid
-    };
-    test.throws(
-      () => {
-        const s = new OidcStrategy(oidcConfig, noop);
+    setConfig('https://www.example.com', '123', 'id_token token', 'form_post', 'true', (oidcConfig) =>
+    {
+      test.throws(() => {
+        new OidcStrategy(oidcConfig, noop);
       },
-      Error,
-      'Should fail with wrong response config options'
-    );
+      TypeError,
+        'Should have failed responseType: id_token token'
+      );
+    });
 
     test.done();
   },
-  'with valid options': (test) => {
+  'responseType (unsupported): code token': (test) => {
     test.expect(1);
-    // tests here
 
-    const oidcConfig = {
-      // required options
-      identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
-      clientID: '123',
-      callbackURL: 'http://www.example.com',
-      responseType: 'id_token',
-      responseMode: 'form_post'
-    };
+    setConfig('https://www.example.com', '123', 'code token', 'form_post', 'true', (oidcConfig) =>
+    {
+      test.throws(() => {
+        new OidcStrategy(oidcConfig, noop);
+      },
+      TypeError,
+        'Should have failed responseType: code token'
+      );
+    });
 
-    test.doesNotThrow(
-      () => {
+    test.done();
+  },
+  'responseType (unsupported): id_token code token': (test) => {
+    test.expect(1);
+
+    setConfig('https://www.example.com', '123', 'id_token code token', 'form_post', 'true', (oidcConfig) =>
+    {
+      test.throws(() => {
+        new OidcStrategy(oidcConfig, noop);
+      },
+      TypeError,
+        'Should have failed responseType: id_token code token'
+      );
+    });
+
+    test.done();
+  },
+  'responseType (supported): id_token': (test) => {
+    test.expect(1);
+
+    setConfig('https://www.example.com', '123', 'id_token', 'form_post', 'true', (oidcConfig) =>
+    {
+      test.doesNotThrow(() => {
         new OidcStrategy(oidcConfig, noop);
       },
       Error,
-      'Should not fail with proper OIDC config options'
-    );
+        'Should not have failed responseType: id_token'
+      );
+    });
+
+    test.done();
+  },
+  'responseType (supported): code': (test) => {
+    test.expect(1);
+
+    setConfig('https://www.example.com', '123', 'code', 'form_post', 'true', (oidcConfig) =>
+    {
+      test.doesNotThrow(() => {
+        new OidcStrategy(oidcConfig, noop);
+      },
+      Error,
+        'Should not have failed responseType: code'
+      );
+    });
+
+    test.done();
+  },
+  'responseType (supported): id_token code': (test) => {
+    test.expect(1);
+
+    setConfig('https://www.example.com', '123', 'id_token code', 'form_post', 'true', (oidcConfig) =>
+    {
+      test.doesNotThrow(() => {
+        new OidcStrategy(oidcConfig, noop);
+      },
+      Error,
+        'Should not have failed responseType: id_token code'
+      );
+    });
+
+    test.done();
+  },
+  'responseMode (unsupported): fragment': (test) => {
+    test.expect(1);
+
+    setConfig('https://www.example.com', '123', 'id_token code', 'fragment', 'true', (oidcConfig) =>
+    {
+      test.throws(() => {
+        new OidcStrategy(oidcConfig, noop);
+      },
+      TypeError,
+        'Should have failed responseMode: fragment'
+      );
+    });
+
+    test.done();
+  },
+  'responseMode (supported): query': (test) => {
+    test.expect(1);
+
+    setConfig('https://www.example.com', '123', 'id_token code', 'query', 'true', (oidcConfig) =>
+    {
+      test.doesNotThrow(() => {
+        new OidcStrategy(oidcConfig, noop);
+      },
+      Error,
+        'Should NOT have failed responseMode: query'
+      );
+    });
+
+    test.done();
+  },
+  'responseMode (supported): form_post': (test) => {
+    test.expect(1);
+
+    setConfig('https://www.example.com', '123', 'id_token code', 'form_post', 'true', (oidcConfig) =>
+    {
+      test.doesNotThrow(() => {
+        new OidcStrategy(oidcConfig, noop);
+      },
+      Error,
+        'Should NOT have failed responseMode: form_post'
+      );
+    });
+
+    test.done();
+  },
+  'validateIssuer: should use the default value true if it is set null or not set': (test) => {
+    test.expect(2);
+
+    setConfig('https://www.example.com', '123', 'id_token code', 'form_post', undefined, (oidcConfig) =>
+    {
+      var strategy = new OidcStrategy(oidcConfig, noop);
+      test.ok(strategy._options.validateIssuer === true, 'validateIssuer should use the default value true if it is not set');
+    });
+
+    setConfig('https://www.example.com', '123', 'id_token code', 'form_post', null, (oidcConfig) =>
+    {
+      var strategy = new OidcStrategy(oidcConfig, noop);
+      test.ok(strategy._options.validateIssuer === true, 'validateIssuer should use the default value true if it is set null');
+    });
+
+    test.done();
+  },
+  'validateIssuer: should be consistent with the user input if it is not null or undefined': (test) => {
+    test.expect(2);
+
+    setConfig('https://www.example.com', '123', 'id_token code', 'form_post', false, (oidcConfig) =>
+    {
+      var strategy = new OidcStrategy(oidcConfig, noop);
+      test.ok(strategy._options.validateIssuer === false, 'validateIssuer should be consistent with the user input');
+    });
+
+    setConfig('https://www.example.com', '123', 'id_token code', 'form_post', true, (oidcConfig) =>
+    {
+      var strategy = new OidcStrategy(oidcConfig, noop);
+      test.ok(strategy._options.validateIssuer === true, 'validateIssuer should be consistent with the user input');
+    });
+
+    test.done();
+  },
+  'validateIssuer tests on v2 common endpoint': (test) => {
+    test.expect(5);
+
+    setConfigCommon('https://www.example.com', '123', 'id_token code', 'form_post', true, (oidcConfig) =>
+    {
+      test.throws(() => {
+        new OidcStrategy(oidcConfig, noop);
+      },
+      Error,
+      'Should throw with validateIssuer set true on common endpoint'
+      );
+    });
+
+    setConfigCommon('https://www.example.com', '123', 'id_token code', 'form_post', null, (oidcConfig) =>
+    {
+      test.throws(() => {
+        new OidcStrategy(oidcConfig, noop);
+      },
+      Error,
+      'Should throw with the default validateIssuer value on common endpoint'
+      );
+    });
+
+    setConfigCommon('https://www.example.com', '123', 'id_token code', 'form_post', undefined, (oidcConfig) =>
+    {
+      test.throws(() => {
+        new OidcStrategy(oidcConfig, noop);
+      },
+      Error,
+      'Should throw with the default validateIssuer value on common endpoint'
+      );
+    });
+
+    setConfigCommon('https://www.example.com', '123', 'id_token code', 'form_post', false, (oidcConfig) =>
+    {
+      var strategy;
+      test.doesNotThrow(() => {
+        strategy = new OidcStrategy(oidcConfig, noop);
+      },
+      Error,
+      'Should not throw with validateIssuer set false on common endpoint'
+      );
+      test.ok(strategy._options.validateIssuer === false, 'validateIssuer should be consistent with the user input')
+    });
 
     test.done();
   },
