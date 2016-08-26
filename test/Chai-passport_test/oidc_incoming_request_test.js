@@ -47,22 +47,18 @@ var options = {
 
 var testStrategy = new OIDCStrategy(options, function(profile, done) {});
 
-// Mock `configure`
-// `configure` is used to calculate and set the variables required by oauth2, 
-// here we just provide the variable values.
-testStrategy.configure = function(identifier, done) {
+// Mock `setOptions`
+testStrategy.setOptions = function(options, metadata, cachekey, next) {
   var opt = {           
     clientID: options.clientID,
     clientSecret: options.clientSecret,
     authorizationURL: 'https://www.example.com/authorizationURL',
     tokenURL: 'https://www.example.com/tokenURL'
   };
-  done(null, opt);
-};
 
-// Mock `setOptions`
-// `setOptions` is used to read and save the metadata, we don't need this in test 
-testStrategy.setOptions = function(options, metadata, cachekey, next) { return next();};
+  this.configOauth(opt); 
+  return next();
+};
 
 
 describe('OIDCStrategy state checking', function() {

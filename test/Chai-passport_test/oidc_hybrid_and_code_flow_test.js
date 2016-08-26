@@ -97,15 +97,15 @@ var testStrategy = new OIDCStrategy(options, function(profile, done) {
 
 // Moch configure function
 // This function is used to configure oauth2
-testStrategy.configure = function(identifier, callback) {
-  return callback(null, {
+testStrategy.configOauth = function() {
+  this._options._configForOauth = {
     authorizationURL: "https://login.microsoftonline.com/268da1a1-9db4-48b9-b1fe-683250ba90cc/oauth2/authorize",
     callbackURL: "http://localhost:3000/auth/openid/return",
     clientID: "2abf3a52-7d86-460b-a1ef-77dc43de8aad",
     identifierField: "openid_identifier",
     tokenURL: "https://login.microsoftonline.com/268da1a1-9db4-48b9-b1fe-683250ba90cc/oauth2/token",
     userInfoURL: "https://login.microsoftonline.com/268da1a1-9db4-48b9-b1fe-683250ba90cc/openid/userinfo"   , 
-  });
+  };
 };
 
 // mock the userinfo endpoint response
@@ -155,6 +155,7 @@ var setReqFromAuthRespRedirect = function(id_token_in_auth_resp, code_in_auth_re
         for (let i = 0; i < action.length; i++)
           action[i](self._options);
       }
+      self.configOauth();
       return next();
     };
 
