@@ -64,8 +64,8 @@ var options = {
     algorithms: ['RS256'],
     clientID: 'spn:6514a8ca-d9e4-4155-b292-65258398f3aa',
     validateIssuer: true,
+    issuer: 'https://sts.windows.net/268da1a1-9db4-48b9-b1fe-683250ba90cc/',
     passReqToCallback: false,
-
 };
 
 describe('test expired token using pem', function() {
