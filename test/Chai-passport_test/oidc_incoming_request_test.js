@@ -42,6 +42,7 @@ var options = {
     responseMode: 'form_post',
     validateIssuer: true,
     passReqToCallback: false,
+    algorithms: ['RS256'],
     sessionKey: 'my_key'    //optional sessionKey
 };
 
