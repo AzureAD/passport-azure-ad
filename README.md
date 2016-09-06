@@ -157,7 +157,11 @@ tutorials for native clients such as Windows, Windows Phone, iOS, OSX, Android,
 and Linux. We also provide full walkthroughs for authentication flows such as 
 OAuth2, OpenID Connect, Graph API, and other awesome features. 
 
-Azure Identity samples for this plug-in is here: [https://github.com/Azure-Samples/active-directory-node-webapp-openidconnect](https://github.com/Azure-Samples/active-directory-node-webapp-openidconnect)
+Azure Identity samples for this plug-in can be found in the following links:
+
+* For [OpenID connect strategy](https://github.com/AzureAD/passport-azure-ad/blob/master/lib/oidcstrategy.js), the sample is [here](https://github.com/Azure-Samples/active-directory-node-webapp-openidconnect), and the B2C sample is [here](https://github.com/AzureADQuickStarts/B2C-WebApp-OpenIDConnect-NodeJS).
+
+* For [Bearer strategy](https://github.com/AzureAD/passport-azure-ad/blob/master/lib/bearerstrategy.js), the sample is [here](https://github.com/Azure-Samples/active-directory-node-webapi), and the B2C sample is [here](https://github.com/AzureADQuickStarts/B2C-WebApi-Nodejs). 
 
 
 ## Community Help and Support
