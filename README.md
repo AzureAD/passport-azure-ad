@@ -18,7 +18,7 @@ _passport-azure-ad_ has a known security vulnerability affecting versions <1.4.6
 ## Versions
 Current version - 2.0.1  
 Minimum  recommended version - 1.4.6  
-[Change log](https://github.com/AzureAD/passport-azure-ad/blob/master/CHANGELOG.md)
+You can find the changes for each version in the [change log](https://github.com/AzureAD/passport-azure-ad/blob/master/CHANGELOG.md).
 
 ## Contribution History
 
