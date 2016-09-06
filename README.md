@@ -15,6 +15,11 @@ and with [Microsoft Active Directory Federation Services](http://en.wikipedia.or
 ## Security Vulnerability in Versions < 1.4.6 and 2.0.0
 _passport-azure-ad_ has a known security vulnerability affecting versions <1.4.6 and 2.0.0. Please update to >=1.4.6 or >=2.0.1 immediately. For more details, see the [security notice](https://github.com/AzureAD/passport-azure-ad/blob/master/SECURITY-NOTICE.MD).
 
+## Versions
+Current version - 2.0.1  
+Minimum  recommended version - 1.4.6  
+You can find the changes for each version in the [change log](https://github.com/AzureAD/passport-azure-ad/blob/master/CHANGELOG.md).
+
 ## Contribution History
 
 [![Stories in Ready](https://badge.waffle.io/AzureAD/passport-azure-ad.png?label=ready&title=Ready)](https://waffle.io/AzureAD/passport-azure-ad)
