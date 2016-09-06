@@ -56,7 +56,6 @@ var options = {
   callbackURL: 'http://localhost:3000/auth/openid/return',
   clientID: '2abf3a52-7d86-460b-a1ef-77dc43de8aad',
   identityMetadata: 'https://login.microsoftonline.com/sijun.onmicrosoft.com/.well-known/openid-configuration',
-  skipUserProfile: true,
   responseType: 'id_token',
   responseMode: 'form_post',
   validateIssuer: true,

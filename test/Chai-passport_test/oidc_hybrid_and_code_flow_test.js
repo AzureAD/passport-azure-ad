@@ -62,7 +62,6 @@ var options = {
   callbackURL: 'http://localhost:3000/auth/openid/return',
   clientID: '2abf3a52-7d86-460b-a1ef-77dc43de8aad',
   identityMetadata: 'https://login.microsoftonline.com/sijun.onmicrosoft.com/.well-known/openid-configuration',
-  skipUserProfile: true,
   responseType: 'id_token code',
   responseMode: 'form_post',
   validateIssuer: true,
@@ -90,7 +89,6 @@ var setIgnoreExpirationFalse = function(options) { options.ignoreExpiration = fa
 var setWrongIssuer = function(options) { options.oidcIssuer = 'wrong_issuer'; };
 var rmValidateIssuer = function(options) { options.validateIssuer = undefined; };
 var setWrongAudience = function(options) { options.audience = 'wrong audience'; };
-var setSkipUserProfileFalse = function(options) { options.skipUserProfile = false; };
 
 var testStrategy = new OIDCStrategy(options, function(profile, done) {
     done(null, profile.email);
@@ -292,7 +290,7 @@ describe('OIDCStrategy hybrid flow test', function() {
 
   describe('success', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, 
-      [resetOptions, setTokenResponse(id_token_in_token_resp, access_token), setSkipUserProfileFalse]));
+      [resetOptions, setTokenResponse(id_token_in_token_resp, access_token)]));
 
     it('should succeed with expected user', function() {
       chai.expect(user).to.equal('robot@sijun.onmicrosoft.com');
@@ -301,7 +299,7 @@ describe('OIDCStrategy hybrid flow test', function() {
 
   describe('fail: missing access_token', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, 
-      [resetOptions, setTokenResponse(id_token_in_token_resp, null), setSkipUserProfileFalse]));
+      [resetOptions, setTokenResponse(id_token_in_token_resp, null)]));
 
     it('should fail with access_token missing', function() {
       chai.expect(challenge).to.equal('we want to access userinfo endpoint, but access_token is not received');
@@ -311,7 +309,7 @@ describe('OIDCStrategy hybrid flow test', function() {
   describe('fail: invalid sub in userinfo', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, 
       [resetOptions, setTokenResponse(id_token_in_token_resp, access_token), 
-        setUserInfoResponse('use_invalid_sub'), setSkipUserProfileFalse]));
+        setUserInfoResponse('use_invalid_sub')]));
 
     it('should fail with invalid sub in userInfo', function() {
       chai.expect(challenge).to.equal('sub received in userinfo and id_token do not match');
@@ -393,7 +391,7 @@ describe('OIDCStrategy authorization code flow test', function() {
 
   describe('success', function() {
     before(setReqFromAuthRespRedirect(null, code, nonce, 
-      [resetOptions, setTokenResponse(id_token_in_token_resp, access_token), setSkipUserProfileFalse]));
+      [resetOptions, setTokenResponse(id_token_in_token_resp, access_token)]));
 
     it('should succeed with expected user', function() {
       chai.expect(user).to.equal('robot@sijun.onmicrosoft.com');
@@ -402,7 +400,7 @@ describe('OIDCStrategy authorization code flow test', function() {
 
   describe('fail: access_token is not received', function() {
     before(setReqFromAuthRespRedirect(null, code, nonce, 
-      [resetOptions, setTokenResponse(id_token_in_token_resp, null), setSkipUserProfileFalse]));
+      [resetOptions, setTokenResponse(id_token_in_token_resp, null)]));
 
     it('should fail with access_token missing', function() {
       chai.expect(challenge).to.equal('we want to access userinfo endpoint, but access_token is not received');
@@ -412,7 +410,7 @@ describe('OIDCStrategy authorization code flow test', function() {
   describe('fail: invalid sub in userinfo', function() {
     before(setReqFromAuthRespRedirect(null, code, nonce, 
       [resetOptions, setTokenResponse(id_token_in_token_resp, access_token), 
-        setUserInfoResponse('use_invalid_sub'), setSkipUserProfileFalse]));
+        setUserInfoResponse('use_invalid_sub')]));
 
     it('should fail with invalid sub in userInfo', function() {
       chai.expect(challenge).to.equal('sub received in userinfo and id_token do not match');
