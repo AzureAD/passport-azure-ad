@@ -1,4 +1,15 @@
-<a name="2.0.1"></a>
+<a name="3.0.0"></a>
+# 3.0.0
+
+## Breaking changes from 2.0.1
+
+### OIDCStrategy
+* skipUserProfile option is no longer provided. We will load 'userinfo' if AAD v1 is being used and
+if there is 'code' involved in the flow (in other words, one of the following flows: 'code', 
+'code id_token', 'id_token code'). For all other scenarios, we do an 'id_token' fallback, since we 
+cannot obtain 'userinfo' (AAD v2 doesn't have an userinfo endpoint, and 'id_token' flow doesn't yield
+ an 'access_token' to exchange for an 'userinfo' token).
+
 # 2.0.1
 
 ## Major changes from 2.0.0

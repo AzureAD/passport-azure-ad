@@ -37,7 +37,6 @@ var options = {
     clientID: 'my_client_id',
     clientSecret: 'my_client_secret',
     identityMetadata: 'https://login.microsoftonline.com/xxx.onmicrosoft.com/.well-known/openid-configuration',
-    skipUserProfile: true,
     responseType: 'id_token',
     responseMode: 'form_post',
     validateIssuer: true,
