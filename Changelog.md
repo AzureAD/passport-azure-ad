@@ -1,4 +1,8 @@
-<a name="1.4.6"></a>
+<a name="1.4.7"></a>
+# 1.4.7
+
+* Increased the size of nonce and state in OIDCStrategy.
+
 # 1.4.6
 
 ### Security Fix
