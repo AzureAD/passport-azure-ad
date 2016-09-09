@@ -1,4 +1,8 @@
-<a name="2.0.1"></a>
+<a name="2.0.2"></a>
+# 2.0.2
+
+* Increased the size of nonce and state in OIDCStrategy.
+
 # 2.0.1
 
 ## Major changes from 2.0.0
