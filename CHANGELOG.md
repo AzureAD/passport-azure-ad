@@ -46,6 +46,10 @@
 * [#112](https://github.com/AzureAD/passport-azure-ad/issues/112) done is not a function. bearerstrategy.js:149
 * [#121](https://github.com/AzureAD/passport-azure-ad/issues/121) Error with regex into pem.js
 
+# 1.4.8
+
+* Updated telemetry version.
+
 # 1.4.7
 
 * Increased the size of nonce and state in OIDCStrategy.
