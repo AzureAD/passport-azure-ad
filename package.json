@@ -51,6 +51,7 @@
     "openid": "^2.0.1",
     "passport": "~0.3.2",
     "passport-http-bearer": "~1.0.1",
+    "pkginfo": "^0.4.0",
     "request": "^2.72.0",
     "underscore": "~1.8.3",
     "valid-url": "~1.0.6",
