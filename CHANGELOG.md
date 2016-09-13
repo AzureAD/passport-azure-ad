@@ -1,4 +1,8 @@
-<a name="2.0.2"></a>
+<a name="2.0.3"></a>
+# 2.0.3
+
+* Updated telemetry version.
+
 # 2.0.2
 
 * Increased the size of nonce and state in OIDCStrategy.
