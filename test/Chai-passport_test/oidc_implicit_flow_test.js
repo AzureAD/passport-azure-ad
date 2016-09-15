@@ -107,8 +107,9 @@ var testPrepare = function(id_token_to_use, nonce_to_use, action) {
       .req(function(req) {
         // reset the value of challenge and user
         challenge = user = undefined;
+        var time = Date.now();
         // add state and nonce to session
-        req.session = {'my_key' : {'state' : 'my_state', 'nonce' : nonce_to_use}}; 
+        req.session = {'my_key' : {'state' : [{'state': 'my_state', timeStamp : time}], 'nonce' : [{'nonce' : nonce_to_use, timeStamp: time}]}}; 
         // add id_token and state to body
         req.body = {'id_token': id_token_to_use, 'state' : 'my_state'}; 
         // empty query
@@ -140,7 +141,7 @@ describe('OIDCStrategy implicit flow test', function() {
     before(testPrepare(id_token, 'wrong_nonce'));
 
     it('should fail', function() {
-      chai.expect(challenge).to.equal('invalid nonce in id_token');
+      chai.expect(challenge).to.equal('invalid nonce');
     });
   });
 
