@@ -30,26 +30,20 @@ const expect = chai.expect;
 const SessionContentHandler = require('../../lib/sessionContentHandler').SessionContentHandler; 
 
 describe('checking constructor', function() {
-  it('should throw without identifier', function(done) {
-    expect(SessionContentHandler.bind(SessionContentHandler)).
-      to.throw('identifier is required to use sessionContentHandler');
-    done();
-  });
-
   it('should throw with non-integer maxAmount', function(done) {
-    expect(SessionContentHandler.bind(SessionContentHandler, 'state', 1.1)).
+    expect(SessionContentHandler.bind(SessionContentHandler, 1.1, 1)).
       to.throw('SessionContentHandler: maxAmount must be a positive integer');
     done();
   });
 
   it('should throw with negative maxAmount', function(done) {
-    expect(SessionContentHandler.bind(SessionContentHandler, 'state', -1)).
+    expect(SessionContentHandler.bind(SessionContentHandler, -1, 1)).
       to.throw('SessionContentHandler: maxAmount must be a positive integer');
     done();
   });
 
   it('should throw with invalid maxAge', function(done) {
-    expect(SessionContentHandler.bind(SessionContentHandler, 'state', 1, -1)).
+    expect(SessionContentHandler.bind(SessionContentHandler, 1, -1)).
       to.throw('SessionContentHandler: maxAge must be a positive number');
     done();
   });
@@ -57,24 +51,43 @@ describe('checking constructor', function() {
 
 describe('checking add function', function() {
   var req = {};
-  var handler = new SessionContentHandler('state', 2, 0.1);
+  var handler = new SessionContentHandler(2, 0.1);
 
-  it('should have the items we push in', function(done) {
-    handler.add(req, 'key', 'state1');
-    handler.add(req, 'key', 'state2');
-    expect(req.session['key']['state'].length).to.equal(2);
-    expect(req.session['key']['state'][0]['state']).to.equal('state1');
-    expect(req.session['key']['state'][1]['state']).to.equal('state2');
+  it('should have the tuples we push in', function(done) {
+    handler.add(req, 'key', {'state': 'state1', 'nonce': 'nonce1', 'policy': 'policy1', 'timeStamp': Date.now()});
+    handler.add(req, 'key', {'state': 'state2', 'nonce': 'nonce2', 'policy': 'policy2', 'timeStamp': Date.now()});
+
+    expect(req.session['key']['content'].length).to.equal(2);
+
+    var tuple1 = req.session['key']['content'][0];
+    expect(tuple1['state']).to.equal('state1');   
+    expect(tuple1['nonce']).to.equal('nonce1');
+    expect(tuple1['policy']).to.equal('policy1');
+
+    var tuple2 = req.session['key']['content'][1];
+    expect(tuple2['state']).to.equal('state2');   
+    expect(tuple2['nonce']).to.equal('nonce2');
+    expect(tuple2['policy']).to.equal('policy2');
+
     done();
   });
 
   it('should not exceed the maxAmount of items', function(done) {
     // we add a third item, but the maxAmount allowed is 2, so the first
     // state should be removed automatically
-    handler.add(req, 'key', 'state3');
-    expect(req.session['key']['state'].length).to.equal(2);
-    expect(req.session['key']['state'][0]['state']).to.equal('state2');
-    expect(req.session['key']['state'][1]['state']).to.equal('state3');
+    handler.add(req, 'key', {'state': 'state3', 'nonce': 'nonce3', 'policy': 'policy3', 'timeStamp': Date.now()});
+    expect(req.session['key']['content'].length).to.equal(2);
+
+    var tuple1 = req.session['key']['content'][0];
+    expect(tuple1['state']).to.equal('state2');   
+    expect(tuple1['nonce']).to.equal('nonce2');
+    expect(tuple1['policy']).to.equal('policy2');
+
+    var tuple2 = req.session['key']['content'][1];
+    expect(tuple2['state']).to.equal('state3');   
+    expect(tuple2['nonce']).to.equal('nonce3');
+    expect(tuple2['policy']).to.equal('policy3');
+
     done();
   });
 
@@ -82,66 +95,46 @@ describe('checking add function', function() {
     // if we call 'add' function after the maxAge, all the expired ones should be
     // removed when we can 'add' function  
     setTimeout(function() {
-      handler.add(req, 'key', 'state4');
-      expect(req.session['key']['state'].length).to.equal(1);
-      expect(req.session['key']['state'][0]['state']).to.equal('state4');
+    handler.add(req, 'key', {'state': 'state4', 'nonce': 'nonce4', 'policy': 'policy4', 'timeStamp': Date.now()});
+      expect(req.session['key']['content'].length).to.equal(1);
+      expect(req.session['key']['content'][0]['state']).to.equal('state4');
+      expect(req.session['key']['content'][0]['nonce']).to.equal('nonce4');
+      expect(req.session['key']['content'][0]['policy']).to.equal('policy4');
       done();
     }, 100);  // maxAge is 0.1 second = 100 ms 
   });
 });
 
-describe('checking verify function', function() {
+describe('checking findAndDeleteTupleByState function', function() {
   var req = {};
-  var handler = new SessionContentHandler('state', 2, 0.1);
+  var handler = new SessionContentHandler(2, 0.1);
 
   it('should throw without session', function(done) {
-    expect(handler.verify.bind(handler, req, 'key', 'test')).
+    expect(handler.findAndDeleteTupleByState.bind(handler, req, 'key', 'test')).
       to.throw('OIDC strategy requires session support. Did you forget to use session middleware such as express-session?');
     done();
   });
 
-  it('should find the item we added, item should be deleted after verify', function(done) {
-    handler.add(req, 'key', 'state1');
+  it('should find the tuple we added, tuple should be deleted after verify', function(done) {
+    handler.add(req, 'key', {'state': 'state1', 'nonce': 'nonce1', 'policy': 'policy1', 'timeStamp': Date.now()});
 
     // should have the items we added
-    var result = handler.verify(req, 'key', 'state1');
-    expect(result.valid).to.equal(true);
-    expect(result.errorMessage).to.equal('');
+    var tuple = handler.findAndDeleteTupleByState(req, 'key', 'state1');
+    expect(tuple['state']).to.equal('state1');
 
     // should be deleted after verify
-    var result = handler.verify(req, 'key', 'state1');
-    expect(result.valid).to.equal(false);
-    expect(result.errorMessage).to.equal('invalid state');    
-    done();
-  });
-
-  it('should be able to find the state in req', function(done) {
-    // should be able to find the state in query
-    handler.add(req, 'key', 'state1');
-    req.query = {state: 'state1'};
-    var result = handler.verify(req, 'key', 'state1');
-    expect(result.valid).to.equal(true);
-    expect(result.errorMessage).to.equal('');
-    delete req.query;
-
-    // should be able to find the state in body
-    handler.add(req, 'key', 'state1');
-    req.body = {state: 'state1'};
-    var result = handler.verify(req, 'key', 'state1');
-    expect(result.valid).to.equal(true);
-    expect(result.errorMessage).to.equal('');
-    delete req.body; 
-
+    tuple = handler.findAndDeleteTupleByState(req, 'key', 'state1');
+    expect(tuple).to.equal(null);
+  
     done();
   });
 
   it('should not find the expired item', function(done) {
-    handler.add(req, 'key', 'state1');
+    handler.add(req, 'key', {'state': 'state1', 'nonce': 'nonce1', 'policy': 'policy1', 'timeStamp': Date.now()});
 
     setTimeout(function() {
-      var result = handler.verify(req, 'key', 'state1');
-      expect(result.valid).to.equal(false);
-      expect(result.errorMessage).to.equal('invalid state');
+      var tuple = handler.findAndDeleteTupleByState(req, 'key', 'state1');
+      expect(tuple).to.equal(null);
       done();
     }, 100); // expire after 0.1 second = 100ms
   });

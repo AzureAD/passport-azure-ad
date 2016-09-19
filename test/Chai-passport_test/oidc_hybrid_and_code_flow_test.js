@@ -174,7 +174,7 @@ var setReqFromAuthRespRedirect = function(id_token_in_auth_resp, code_in_auth_re
         challenge = user = undefined;
         var time = Date.now();
         // add state and nonce to session
-        req.session = {'my_key' : {'state' : [{'state' : 'my_state', timeStamp : time}], 'nonce' : [{'nonce' : nonce_to_use, timeStamp : time}]}}; 
+        req.session = {'my_key': {'content': [{'state': 'my_state', 'nonce': nonce_to_use, 'policy': undefined, 'timeStamp': time}]}}; 
         // add id_token and state to body
         req.body = {'id_token': id_token_in_auth_resp , 'code' : code_in_auth_resp, 'state' : 'my_state'}; 
         // empty query

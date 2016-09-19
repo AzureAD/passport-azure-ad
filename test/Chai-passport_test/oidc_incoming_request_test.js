@@ -61,7 +61,7 @@ testStrategy.setOptions = function(options, metadata, cachekey, next) {
 };
 
 
-describe('OIDCStrategy state checking', function() {
+describe('OIDCStrategy incoming state and nonce checking', function() {
   var redirectUrl;
   var request;
 
@@ -84,12 +84,13 @@ describe('OIDCStrategy state checking', function() {
 
     it('should have the same state', function() {
       var u = url.parse(redirectUrl, true);
-      chai.expect(request.session['my_key']['state'][0]['state']).to.equal(u.query.state);
+      chai.expect(request.session['my_key']['content'][0]['state']).to.equal(u.query.state);
+      chai.expect(request.session['my_key']['content'][0]['nonce']).to.equal(u.query.nonce);
     });
   });
 });
 
-describe('OIDCStrategy error checking', function() {
+describe('OIDCStrategy error flow checking', function() {
   var challenge;
 
   var testPrepare = function() {
@@ -99,7 +100,7 @@ describe('OIDCStrategy error checking', function() {
         .fail(function(c) { challenge = c; done(); })
         .req(function(req) {
           var time = Date.now();
-          req.session = {'my_key': {state: [{'state' : 'my_state', timeStamp: time}]}}; 
+          req.session = {'my_key': {'content': [{'state': 'my_state', 'timeStamp': time}]}}; 
           req.query = {}; 
           req.body = {state: 'my_state', error: 'my_error'};
         })
