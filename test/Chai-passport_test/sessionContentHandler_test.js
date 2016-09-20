@@ -136,6 +136,6 @@ describe('checking findAndDeleteTupleByState function', function() {
       var tuple = handler.findAndDeleteTupleByState(req, 'key', 'state1');
       expect(tuple).to.equal(null);
       done();
-    }, 100); // expire after 0.1 second = 100ms
+    }, 200); // expire after 0.1 second = 100ms, wait a little bit longer here (for 0.2 seconds)
   });
 });
