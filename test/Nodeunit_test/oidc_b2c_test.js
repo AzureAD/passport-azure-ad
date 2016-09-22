@@ -57,13 +57,13 @@ exports.oidc = {
 
     const oidcConfig = {
       // required options
-      identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
-      tenantName: 'hypercubeb2c.onmicrosoft.com',
+      identityMetadata: 'https://login.microsoftonline.com/test.onmicrosoft.com/.well-known/openid-configuration',
       forceB2C: true,
       clientID: '123',
-      callbackURL: 'http://www.example.com',
+      redirectUrl: 'http://www.example.com',
       responseType: 'id_token',
       responseMode: 'form_post',
+      isB2C: true,
       validateIssuer: false
     };
 

@@ -1,14 +1,28 @@
 <a name="3.0.0"></a>
 # 3.0.0
 
-## Breaking changes from 2.0.1
+## OIDCStrategy
 
-### OIDCStrategy
+### Breaking changes
 * skipUserProfile option is no longer provided. We will load 'userinfo' if AAD v1 is being used and
 if there is 'code' involved in the flow (in other words, one of the following flows: 'code', 
 'code id_token', 'id_token code'). For all other scenarios, we do an 'id_token' fallback, since we 
 cannot obtain 'userinfo' (AAD v2 doesn't have an userinfo endpoint, and 'id_token' flow doesn't yield
  an 'access_token' to exchange for an 'userinfo' token).
+
+* changed the `returnURL` option name to `redirectUrl`.
+
+* added `isB2C` option. In order to use B2C feature, user must have this option and set it to true. 
+
+* added `oid` claim in the returned profile.
+
+* removed `email` claim, and added `emails` claim in the returned profile. `emails` claim is always an array.
+
+### New features
+* multiple nonce and state support in OIDCStrategy. Provided `nonceLifetime` option to configure the lifetime of nonce saved in session.
+
+* enabled `issuer` validation against common endpoint. To validate issuer on common endpoint, user must
+specify the allowed issuer(s) in `issuer` option, and set `validateIssuer` option to true. 
 
 # 2.0.1
 
