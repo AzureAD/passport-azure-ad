@@ -172,8 +172,9 @@ var setReqFromAuthRespRedirect = function(id_token_in_auth_resp, code_in_auth_re
       .req(function(req) {
         // reset the value of challenge and user
         challenge = user = undefined;
+        var time = Date.now();
         // add state and nonce to session
-        req.session = {'my_key' : {'state' : 'my_state', 'nonce' : nonce_to_use}}; 
+        req.session = {'my_key': {'content': [{'state': 'my_state', 'nonce': nonce_to_use, 'policy': undefined, 'timeStamp': time}]}}; 
         // add id_token and state to body
         req.body = {'id_token': id_token_in_auth_resp , 'code' : code_in_auth_resp, 'state' : 'my_state'}; 
         // empty query
@@ -218,7 +219,7 @@ describe('OIDCStrategy hybrid flow test', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, 'wrong_nonce'));
 
     it('should fail with wrong nonce', function() {
-      chai.expect(challenge).to.equal('invalid nonce in id_token');
+      chai.expect(challenge).to.equal('invalid nonce');
     });
   });
 
@@ -345,7 +346,7 @@ describe('OIDCStrategy authorization code flow test', function() {
     before(setReqFromAuthRespRedirect(null, code, 'wrong_nonce'));
 
     it('should fail with wrong nonce', function() {
-      chai.expect(challenge).to.equal('invalid nonce in id_token');
+      chai.expect(challenge).to.equal('invalid nonce');
     });
   });
 
