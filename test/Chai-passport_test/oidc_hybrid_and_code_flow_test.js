@@ -80,7 +80,7 @@ var rmValidateIssuer = function(options) { options.validateIssuer = undefined; }
 var setWrongAudience = function(options) { options.audience = 'wrong audience'; };
 
 var testStrategy = new OIDCStrategy(options, function(profile, done) {
-    done(null, profile.emails[0]);
+    done(null, profile.upn);
 });
 
 // mock the userinfo endpoint response

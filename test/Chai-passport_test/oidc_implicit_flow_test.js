@@ -65,7 +65,7 @@ var options = {
 };
 
 var testStrategy = new OIDCStrategy(options, function(profile, done) {
-    done(null, profile.emails[0]);
+    done(null, profile.upn);
 });
 
 /* 

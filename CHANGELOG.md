@@ -14,7 +14,7 @@ cannot obtain 'userinfo' (AAD v2 doesn't have an userinfo endpoint, and 'id_toke
 
 * added `isB2C` option. In order to use B2C feature, user must have this option and set it to true. 
 
-* added `oid` claim in the returned profile.
+* added `oid` and `upn` claim in the returned profile.
 
 * removed `email` claim, and added `emails` claim in the returned profile. `emails` claim is always an array.
 
