@@ -291,6 +291,37 @@ exports.oidc = {
 
     test.done();
   },
+  'redirectUrl: only allow https by default': (test) => {
+    test.expect(1);
+
+    setConfig('http://www.example.com', '123', 'id_token code', 'form_post', 'true', (oidcConfig) =>
+    {
+      test.throws(() => {
+        new OidcStrategy(oidcConfig, noop);
+      },
+      Error,
+        'Should have failed with http redirectUrl by default'
+      );
+    });
+
+    test.done();
+  },
+  'redirectUrl: allows http and https if allowHttpForRedirectUrl is set to true': (test) => {
+    test.expect(1);
+
+    setConfig('http://www.example.com', '123', 'id_token code', 'form_post', 'true', (oidcConfig) =>
+    {
+      test.doesNotThrow(() => {
+        oidcConfig.allowHttpForRedirectUrl = true;
+        new OidcStrategy(oidcConfig, noop);
+      },
+      Error,
+        'Should NOT have failed with http redirectUrl and allowHttpForRedirectUrl set to true'
+      );
+    });
+
+    test.done();
+  },
   'validateIssuer: should use the default value true if it is set null or not set': (test) => {
     test.expect(2);
 

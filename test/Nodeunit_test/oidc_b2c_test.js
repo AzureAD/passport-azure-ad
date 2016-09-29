@@ -60,7 +60,7 @@ exports.oidc = {
       identityMetadata: 'https://login.microsoftonline.com/test.onmicrosoft.com/.well-known/openid-configuration',
       forceB2C: true,
       clientID: '123',
-      redirectUrl: 'http://www.example.com',
+      redirectUrl: 'https://www.example.com',
       responseType: 'id_token',
       responseMode: 'form_post',
       isB2C: true,

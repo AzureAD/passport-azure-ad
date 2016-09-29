@@ -53,7 +53,7 @@ KzveKf3l5UU3c6PkGy+BB3E/ChqFm6sPWwIDAQAB\n\
  */
 
 var options = {
-  redirectUrl: 'http://localhost:3000/auth/openid/return',
+  redirectUrl: 'https://localhost:3000/auth/openid/return',
   clientID: '2abf3a52-7d86-460b-a1ef-77dc43de8aad',
   identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
   responseType: 'id_token',
@@ -65,7 +65,7 @@ var options = {
 };
 
 var options_badIssuer = {
-  redirectUrl: 'http://localhost:3000/auth/openid/return',
+  redirectUrl: 'https://localhost:3000/auth/openid/return',
   clientID: '2abf3a52-7d86-460b-a1ef-77dc43de8aad',
   identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
   responseType: 'id_token',

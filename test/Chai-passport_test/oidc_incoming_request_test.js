@@ -33,7 +33,7 @@ chai.use(require('chai-passport-strategy'));
 
 // Mock options required to create a OIDC strategy
 var options = {
-    redirectUrl: 'http://returnURL',
+    redirectUrl: 'https://returnURL',
     clientID: 'my_client_id',
     clientSecret: 'my_client_secret',
     identityMetadata: 'https://login.microsoftonline.com/xxx.onmicrosoft.com/.well-known/openid-configuration',

@@ -59,7 +59,7 @@ KzveKf3l5UU3c6PkGy+BB3E/ChqFm6sPWwIDAQAB\n\
  */
 
 var options = {
-  redirectUrl: 'http://localhost:3000/auth/openid/return',
+  redirectUrl: 'https://localhost:3000/auth/openid/return',
   clientID: '2abf3a52-7d86-460b-a1ef-77dc43de8aad',
   identityMetadata: 'https://login.microsoftonline.com/sijun.onmicrosoft.com/.well-known/openid-configuration',
   responseType: 'id_token code',

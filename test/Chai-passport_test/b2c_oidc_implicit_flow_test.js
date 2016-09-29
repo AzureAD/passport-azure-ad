@@ -46,7 +46,7 @@ var PEMkey = "-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEAs4W7xjkQZP3OwG7PfRgcYK
  */
 
 var options = {
-  redirectUrl: 'http://localhost:3000/auth/openid/return',
+  redirectUrl: 'https://localhost:3000/auth/openid/return',
   clientID: 'f0b6e4eb-2d8c-40b6-b9c6-e26d1074846d',
   identityMetadata: 'https://login.microsoftonline.com/sijun1b2c.onmicrosoft.com/v2.0/.well-known/openid-configuration',
   responseType: 'id_token',
