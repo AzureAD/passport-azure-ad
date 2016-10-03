@@ -64,7 +64,7 @@ function setConfig(metadataURL, validateIssuer, callback) {
 
 exports.bearer = {
   'validateIssuer tests': (test) => {
-    test.expect(9);
+    test.expect(13);
 
     setConfig(commonMetadataURL, true, (bearerConfig) => {
       test.throws(() => { 
@@ -90,6 +90,52 @@ exports.bearer = {
         },
         Error,
         'Should throw with default validateIssuer value on common endpoint'
+      );
+    });
+
+    setConfig(commonMetadataURL, null, (bearerConfig) => {
+      test.doesNotThrow(() => {
+          bearerConfig.issuer = 'some issuer'; 
+          new BearerStrategy(bearerConfig, noop);
+        },
+        Error,
+        'Should not throw if validateIssuer is true and issuer is provided on common endpoint'
+      );
+    });
+
+    setConfig(commonMetadataURL, null, (bearerConfig) => {
+      test.throws(() => {
+          bearerConfig.isB2C = true;
+          bearerConfig.policyName = 'B2C_1_signin';
+          bearerConfig.validateIssuer = false; 
+          new BearerStrategy(bearerConfig, noop);
+        },
+        Error,
+        'Should throw for using B2C on common endpoint'
+      );
+    });
+
+    setConfig(nonCommonMetadataURL, null, (bearerConfig) => {
+      test.throws(() => {
+          bearerConfig.isB2C = true;
+          bearerConfig.policyName = 'signin';
+          bearerConfig.validateIssuer = false; 
+          new BearerStrategy(bearerConfig, noop);
+        },
+        Error,
+        'Should throw for using B2C with wrong policy name'
+      );
+    });
+
+    setConfig(nonCommonMetadataURL, null, (bearerConfig) => {
+      test.doesNotThrow(() => {
+          bearerConfig.isB2C = true;
+          bearerConfig.policyName = 'b2c_1_signin';
+          bearerConfig.validateIssuer = false; 
+          new BearerStrategy(bearerConfig, noop);
+        },
+        Error,
+        'Should not throw with lower case prefix for B2C'
       );
     });
 
