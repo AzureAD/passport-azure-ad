@@ -55,7 +55,19 @@ KzveKf3l5UU3c6PkGy+BB3E/ChqFm6sPWwIDAQAB\n\
 var options = {
   redirectUrl: 'https://localhost:3000/auth/openid/return',
   clientID: '2abf3a52-7d86-460b-a1ef-77dc43de8aad',
-  identityMetadata: 'https://login.microsoftonline.com/sijun.onmicrosoft.com/.well-known/openid-configuration',
+  identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
+  responseType: 'id_token',
+  responseMode: 'form_post',
+  validateIssuer: true,
+  passReqToCallback: false,
+  sessionKey: 'my_key',
+  issuer: 'https://sts.windows.net/268da1a1-9db4-48b9-b1fe-683250ba90cc/',
+};
+
+var options_badIssuer = {
+  redirectUrl: 'https://localhost:3000/auth/openid/return',
+  clientID: '2abf3a52-7d86-460b-a1ef-77dc43de8aad',
+  identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
   responseType: 'id_token',
   responseMode: 'form_post',
   validateIssuer: true,
@@ -68,6 +80,9 @@ var testStrategy = new OIDCStrategy(options, function(profile, done) {
     done(null, profile.upn);
 });
 
+var testStrategy_badIssuer = new OIDCStrategy(options_badIssuer, function(profile, done) {
+    done(null, profile.upn);
+});
 /* 
  * Begin the testing
  */
@@ -75,7 +90,7 @@ var challenge;
 var user;
 
 var setIgnoreExpirationFalse = function(options) { options.ignoreExpiration = false; };
-var setWrongIssuer = function(options) { options.issuer = ['wrong_issuer']; };
+var setWrongIssuer = function(options) { options.issuer = 'wrong_issuer'; };
 var rmValidateIssuer = function(options) { options.validateIssuer = undefined; };
 
 var testPrepare = function(id_token_to_use, nonce_to_use, action) {

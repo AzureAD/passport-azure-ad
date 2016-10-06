@@ -49,10 +49,10 @@ const OidcStrategy = require('../../lib/index').OIDCStrategy;
 
 function noop() {}
 
-function setConfig(callbackURL, clientID, responseType, responseMode, validateIssuer, testCallback) {
+function setConfig(redirectUrl, clientID, responseType, responseMode, validateIssuer, testCallback) {
   var config = {
     identityMetadata: 'https://login.microsoftonline.com/contoso.onmicrosoft.com/v2.0/.well-known/openid-configuration',
-    callbackURL: callbackURL,
+    redirectUrl: redirectUrl,
     clientID: clientID,
     responseType: responseType,
     responseMode: responseMode,
@@ -62,14 +62,15 @@ function setConfig(callbackURL, clientID, responseType, responseMode, validateIs
   testCallback(config);
 }
 
-function setConfigCommon(callbackURL, clientID, responseType, responseMode, validateIssuer, testCallback) {
+function setConfigCommon(redirectUrl, clientID, responseType, responseMode, validateIssuer, issuer, testCallback) {
   var config = {
     identityMetadata: 'https://login.microsoftonline.com/contoso.onmicrosoft.com/common/v2.0/.well-known/openid-configuration',
-    callbackURL: callbackURL,
+    redirectUrl: redirectUrl,
     clientID: clientID,
     responseType: responseType,
     responseMode: responseMode,
     validateIssuer: validateIssuer,
+    issuer: issuer,
   };
 
   testCallback(config);
@@ -125,7 +126,7 @@ exports.oidc = {
 
     test.done();
   },
-  'callbackURL (empty)': (test) => {
+  'redirectUrl (empty)': (test) => {
     test.expect(1);
 
     setConfig('', '123', 'id_token token', 'form_post', 'true', (oidcConfig) =>
@@ -134,7 +135,7 @@ exports.oidc = {
         new OidcStrategy(oidcConfig, noop);
       },
       TypeError,
-        'Should have failed: callbackURL (empty)'
+        'Should have failed: redirectUrl (empty)'
       );
     });
 
@@ -290,6 +291,37 @@ exports.oidc = {
 
     test.done();
   },
+  'redirectUrl: only allow https by default': (test) => {
+    test.expect(1);
+
+    setConfig('http://www.example.com', '123', 'id_token code', 'form_post', 'true', (oidcConfig) =>
+    {
+      test.throws(() => {
+        new OidcStrategy(oidcConfig, noop);
+      },
+      Error,
+        'Should have failed with http redirectUrl by default'
+      );
+    });
+
+    test.done();
+  },
+  'redirectUrl: allows http and https if allowHttpForRedirectUrl is set to true': (test) => {
+    test.expect(1);
+
+    setConfig('http://www.example.com', '123', 'id_token code', 'form_post', 'true', (oidcConfig) =>
+    {
+      test.doesNotThrow(() => {
+        oidcConfig.allowHttpForRedirectUrl = true;
+        new OidcStrategy(oidcConfig, noop);
+      },
+      Error,
+        'Should NOT have failed with http redirectUrl and allowHttpForRedirectUrl set to true'
+      );
+    });
+
+    test.done();
+  },
   'validateIssuer: should use the default value true if it is set null or not set': (test) => {
     test.expect(2);
 
@@ -325,39 +357,51 @@ exports.oidc = {
     test.done();
   },
   'validateIssuer tests on v2 common endpoint': (test) => {
-    test.expect(5);
+    test.expect(7);
 
-    setConfigCommon('https://www.example.com', '123', 'id_token code', 'form_post', true, (oidcConfig) =>
+    setConfigCommon('https://www.example.com', '123', 'id_token code', 'form_post', true, null, (oidcConfig) =>
     {
       test.throws(() => {
         new OidcStrategy(oidcConfig, noop);
       },
       Error,
-      'Should throw with validateIssuer set true on common endpoint'
+      'Should throw with validateIssuer set true on common endpoint without issuer provided'
       );
     });
 
-    setConfigCommon('https://www.example.com', '123', 'id_token code', 'form_post', null, (oidcConfig) =>
+    setConfigCommon('https://www.example.com', '123', 'id_token code', 'form_post', null, null, (oidcConfig) =>
     {
       test.throws(() => {
         new OidcStrategy(oidcConfig, noop);
       },
       Error,
-      'Should throw with the default validateIssuer value on common endpoint'
+      'Should throw with the default validateIssuer value on common endpoint without issuer provided'
       );
     });
 
-    setConfigCommon('https://www.example.com', '123', 'id_token code', 'form_post', undefined, (oidcConfig) =>
+    setConfigCommon('https://www.example.com', '123', 'id_token code', 'form_post', undefined, null, (oidcConfig) =>
     {
       test.throws(() => {
         new OidcStrategy(oidcConfig, noop);
       },
       Error,
-      'Should throw with the default validateIssuer value on common endpoint'
+      'Should throw with the default validateIssuer value on common endpoint without issuer provided'
       );
     });
 
-    setConfigCommon('https://www.example.com', '123', 'id_token code', 'form_post', false, (oidcConfig) =>
+    setConfigCommon('https://www.example.com', '123', 'id_token code', 'form_post', true, 'my_issuer', (oidcConfig) =>
+    {
+      var strategy;
+      test.doesNotThrow(() => {
+        strategy = new OidcStrategy(oidcConfig, noop);
+      },
+      Error,
+      'Should not throw with validateIssuer set true on common endpoint with issuer provided'
+      );
+      test.ok(strategy._options.responseType === 'code id_token', 'should have changed id_token code to code id_token');
+    });
+
+    setConfigCommon('https://www.example.com', '123', 'id_token code', 'form_post', false, null, (oidcConfig) =>
     {
       var strategy;
       test.doesNotThrow(() => {
