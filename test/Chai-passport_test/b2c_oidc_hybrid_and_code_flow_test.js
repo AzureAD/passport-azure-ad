@@ -52,7 +52,7 @@ wfp+cqZbCd9TENyHaTb8iA27s+73L3ExOQIDAQAB\n\
 
 
 /*
- * test strategy (for response_type = 'id_token') which checks the expiration of id_token
+ * test strategy
  */
 
 var options = {
