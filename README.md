@@ -15,6 +15,11 @@ and with [Microsoft Active Directory Federation Services](http://en.wikipedia.or
 ## Security Vulnerability in Versions < 1.4.6 and 2.0.0
 _passport-azure-ad_ has a known security vulnerability affecting versions <1.4.6 and 2.0.0. Please update to >=1.4.6 or >=2.0.1 immediately. For more details, see the [security notice](https://github.com/AzureAD/passport-azure-ad/blob/master/SECURITY-NOTICE.MD).
 
+## Versions
+Current version - 3.0.0  
+Minimum  recommended version - 1.4.6  
+You can find the changes for each version in the [change log](https://github.com/AzureAD/passport-azure-ad/blob/master/CHANGELOG.md).
+
 ## Contribution History
 
 [![Stories in Ready](https://badge.waffle.io/AzureAD/passport-azure-ad.png?label=ready&title=Ready)](https://waffle.io/AzureAD/passport-azure-ad)
@@ -68,23 +73,28 @@ This sample uses the OIDCStrategy:
 
 ```javascript
 passport.use(new OIDCStrategy({
-    callbackURL: config.creds.returnURL,
-    realm: config.creds.realm,
-    clientID: config.creds.clientID,
-    clientSecret: config.creds.clientSecret,
-    oidcIssuer: config.creds.issuer,
     identityMetadata: config.creds.identityMetadata,
-    skipUserProfile: config.creds.skipUserProfile,
+    clientID: config.creds.clientID,
     responseType: config.creds.responseType,
-    responseMode: config.creds.responseMode
+    responseMode: config.creds.responseMode,
+    redirectUrl: config.creds.redirectUrl,
+    allowHttpForRedirectUrl: config.creds.allowHttpForRedirectUrl,
+    clientSecret: config.creds.clientSecret,
+    validateIssuer: config.creds.validateIssuer,
+    isB2C: config.creds.isB2C,
+    issuer: config.creds.issuer,
+    passReqToCallback: config.creds.passReqToCallback,
+    scope: config.creds.scope,
+    loggingLevel: config.creds.loggingLevel,
+    nonceLifetime: config.creds.nonceLifetime,
   },
   function(iss, sub, profile, accessToken, refreshToken, done) {
-    if (!profile.email) {
-      return done(new Error("No email found"), null);
+    if (!profile.oid) {
+      return done(new Error("No oid found"), null);
     }
     // asynchronous verification, for effect...
     process.nextTick(function () {
-      findByEmail(profile.email, function(err, user) {
+      findByOid(profile.oid, function(err, user) {
         if (err) {
           return done(err);
         }
@@ -108,7 +118,7 @@ configuration parameter that is sent to the strategy:
 ```javascript
 
 app.get('/login', 
-  passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
+  passport.authenticate('azuread-openidconnect', { failureRedirect: '/' }),
   function(req, res) {
     log.info('Login was called in the Sample');
     res.redirect('/');
@@ -117,10 +127,10 @@ app.get('/login',
 // POST /auth/openid/return
 //   Use passport.authenticate() as route middleware to authenticate the
 //   request.  If authentication fails, the user will be redirected back to the
-//   login page.  Otherwise, the primary route function function will be called,
+//   home page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
 app.post('/auth/openid/return',
-  passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
+  passport.authenticate('azuread-openidconnect', { failureRedirect: '/' }),
   function(req, res) {
     
     res.redirect('/');
@@ -159,10 +169,21 @@ OAuth2, OpenID Connect, Graph API, and other awesome features.
 
 Azure Identity samples for this plug-in can be found in the following links:
 
-* For [OpenID connect strategy](https://github.com/AzureAD/passport-azure-ad/blob/master/lib/oidcstrategy.js), the sample is [here](https://github.com/Azure-Samples/active-directory-node-webapp-openidconnect), and the B2C sample is [here](https://github.com/AzureADQuickStarts/B2C-WebApp-OpenIDConnect-NodeJS).
+### Samples for [OpenID connect strategy](https://github.com/AzureAD/passport-azure-ad/blob/master/lib/oidcstrategy.js)
 
-* For [Bearer strategy](https://github.com/AzureAD/passport-azure-ad/blob/master/lib/bearerstrategy.js), the sample is [here](https://github.com/Azure-Samples/active-directory-node-webapi), and the B2C sample is [here](https://github.com/AzureADQuickStarts/B2C-WebApi-Nodejs). 
+* [sample using v1 endpoint](https://github.com/AzureADQuickStarts/WebApp-OpenIDConnect-NodeJS)
 
+* [sample using v2 endpoint](https://github.com/AzureADQuickStarts/AppModelv2-WebApp-OpenIDConnect-nodejs)
+
+* [sample using B2C tenant](https://github.com/AzureADQuickStarts/B2C-WebApp-OpenIDConnect-NodeJS)
+
+### Samples for [Bearer strategy](https://github.com/AzureAD/passport-azure-ad/blob/master/lib/bearerstrategy.js)
+
+* [sample using v1 endpoint](https://github.com/AzureADQuickStarts/WebAPI-Bearer-NodeJS)
+
+* [sample using v2 endpoint](https://github.com/AzureADQuickStarts/AppModelv2-WebAPI-nodejs)
+
+* [sample using B2C tenant](https://github.com/AzureADQuickStarts/B2C-WebApi-Nodejs)
 
 ## Community Help and Support
 
