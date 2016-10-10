@@ -16,7 +16,7 @@ cannot obtain 'userinfo' (AAD v2 doesn't have an userinfo endpoint, and 'id_toke
 * `returnURL` option: this option is renamed to `redirectUrl`. `redirectUrl` can only be a https url now unless you set the
 `allowHttpForRedirectUrl` option to true.
 
-* `isB2C` option: this is a new option. In order to use B2C feature, user must have this option and set it to true. 
+* `isB2C` option: this is a new option. If you are using a B2C tenant, set this option to true. 
 
 #### Claims in the returned profile
 
@@ -31,6 +31,12 @@ get `emails` claim from B2C tenants.
 
 * enabled `issuer` validation against common endpoint. To validate issuer on common endpoint, user must
 specify the allowed issuer(s) in `issuer` option, and set `validateIssuer` option to true. 
+
+* user-provided state support. The usage is as follows:
+
+```
+  passport.authenticate('azuread-openidconnect', { customState : 'the_state_you_want_to_use' });
+```
 
 ## BearerStrategy
 
@@ -48,7 +54,7 @@ specify the allowed issuer(s) in `issuer` option, and set `validateIssuer` optio
 `https://login.microsoftonline.com/your_B2C_tenant_name.onmicrosoft.com/v2.0/.well-known/openid-configuration` or 
 `https://login.microsoftonline.com/your_B2C_tenant_guid/v2.0/.well-known/openid-configuration`.
 
-* `isB2C`: this is a new option. In order to use B2C feature, this option is required and it must be set to true.
+* `isB2C` option: this is a new option. If you are using a B2C tenant, set this option to true. 
 
 * `tenantName`: this option is no longer used.
 

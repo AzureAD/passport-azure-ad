@@ -41,32 +41,37 @@ This sample uses the OAuth2Bearer Strategy:
 // We pass these options in to the ODICBearerStrategy.
 
 var options = {
-    // The URL of the metadata document for your app. We will put the keys for token validation from the URL found in the jwks_uri tag of the in the metadata.
-    identityMetadata: config.creds.identityMetadata,
-    issuer: config.creds.issuer,
-    audience: config.creds.audience
-
+  identityMetadata: config.creds.identityMetadata,
+  clientID: config.creds.clientID,
+  validateIssuer: config.creds.validateIssuer,
+  issuer: config.creds.issuer,
+  passReqToCallback: config.creds.passReqToCallback,
+  isB2C: config.creds.isB2C,
+  policyName: config.creds.policyName,
+  allowMultiAudiencesInToken: config.creds.allowMultiAudiencesInToken,
+  audience: config.creds.audience,
+  loggingLevel: config.creds.loggingLevel,
 };
 
 var bearerStrategy = new BearerStrategy(options,
-    function(token, done) {
-        log.info('verifying the user');
-        log.info(token, 'was the token retreived');
-        findById(token.sub, function(err, user) {
-            if (err) {
-                return done(err);
-            }
-            if (!user) {
-                // "Auto-registration"
-                log.info('User was added automatically as they were new. Their sub is: ', token.sub);
-                users.push(token);
-                owner = token.sub;
-                return done(null, token);
-            }
-            owner = token.sub;
-            return done(null, user, token);
-        });
-    }
+  function(token, done) {
+    log.info('verifying the user');
+    log.info(token, 'was the token retreived');
+    findById(token.oid, function(err, user) {
+      if (err) {
+        return done(err);
+      }
+      if (!user) {
+        // "Auto-registration"
+        log.info('User was added automatically as they were new. Their oid is: ', token.oid);
+        users.push(token);
+        owner = token.oid;
+        return done(null, token);
+      }
+      owner = token.oid;
+      return done(null, user, token);
+    });
+  }
 );
 ```
 This sample uses the OIDCStrategy:
@@ -141,6 +146,35 @@ app.post('/auth/openid/return',
   res.redirect('/');
 });
 
+```
+
+### Options available for `passport.authenticate`
+
+#### OIDCStrategy
+
+* `failureRedirect`: the url redirected to when the authentication fails
+
+* `session`: if you don't want a persistent login session, you can use `session: false`
+
+* `customState`: if you want to use a custom state value instead of a random generated one
+
+* `resourceURL`: if you need access_token for some resource. Note this option is only for v1 endpoint and `code`, `code id_token`, `id_token code` flow. For v2 endpoint, resource is considered as a scope, so it should be specified in the `scope` field when you create
+the strategy.
+
+Example:
+
+```
+  passport.authenticate('azuread-openidconnect', { failureRedirect: '/', session: false, customState: 'my_state', resourceURL: 'https://graph.microsoft.com/mail.send'});
+```
+
+#### BearerStrategy
+
+* `session`: if you don't want a persistent login session, you can use `session: false`
+
+Example:
+
+```
+  passport.authenticate('oauth-bearer', { session: false });
 ```
 
 ## Test
