@@ -7,11 +7,7 @@
 
 #### Options
 
-* `skipUserProfile` option: this option is no longer provided. We will load 'userinfo' if AAD v1 is being used and
-if there is 'code' involved in the flow (in other words, one of the following flows: 'code', 
-'code id_token', 'id_token code'). For all other scenarios, we do an 'id_token' fallback, since we 
-cannot obtain 'userinfo' (AAD v2 doesn't have an userinfo endpoint, and 'id_token' flow doesn't yield
- an 'access_token' to exchange for an 'userinfo' token).
+* `skipUserProfile` option: this option is no longer provided. We will load 'userinfo' if we can get an access_token for 'userinfo'. More specifically, if you are using AAD v1 with 'code', 'code id_token' or 'id_token code' flow, and the resource is not specified. For all other scenarios, we do an 'id_token' fallback.
 
 * `returnURL` option: this option is renamed to `redirectUrl`. `redirectUrl` can only be a https url now unless you set the
 `allowHttpForRedirectUrl` option to true.
@@ -66,23 +62,23 @@ specify the allowed issuer or array of issuers in `issuer` option, and set `vali
 
 ## Bug fixes
 
-* #218 Missing email claim for B2C
+* [#218](https://github.com/AzureAD/passport-azure-ad/issues/218) Missing email claim for B2C
 
-* #195 Remove default query support for access_token in bearerStrategy
+* [#195](https://github.com/AzureAD/passport-azure-ad/issues/195) Remove default query support for access_token in bearerStrategy
 
-* #194 Error message for 'sub' mismatch is incorrect after redeeming 'code'
+* [#194](https://github.com/AzureAD/passport-azure-ad/issues/194) Error message for 'sub' mismatch is incorrect after redeeming 'code'
 
-* #189 Extensibility to allow issuer validation when going against common endpoint
+* [#189](https://github.com/AzureAD/passport-azure-ad/issues/189) Extensibility to allow issuer validation when going against common endpoint
 
-* #188 Mocha tests for B2C to prevent regressions
+* [#188](https://github.com/AzureAD/passport-azure-ad/issues/188) Mocha tests for B2C to prevent regressions
 
-* #187 p parameter is not being passed in each flow through the passport.js library
+* [#187](https://github.com/AzureAD/passport-azure-ad/issues/187) p parameter is not being passed in each flow through the passport.js library
 
-* #171 multiple nonce and state handling
+* [#171](https://github.com/AzureAD/passport-azure-ad/issues/171) multiple nonce and state handling
 
-* #165 validationConfiguration.callbackUrl should be named redirectUrl
+* [#165](https://github.com/AzureAD/passport-azure-ad/issues/165) validationConfiguration.callbackUrl should be named redirectUrl
 
-* #164 By default redirect URL should be https
+* [#164](https://github.com/AzureAD/passport-azure-ad/issues/164) By default redirect URL should be https
 
 # 2.0.3
 
