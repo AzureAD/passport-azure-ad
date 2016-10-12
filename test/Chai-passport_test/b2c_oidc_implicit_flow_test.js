@@ -32,21 +32,14 @@ chai.use(require('chai-passport-strategy'));
 var Metadata = require('../../lib/metadata').Metadata;
 var OIDCStrategy = require('../../lib/index').OIDCStrategy;
 
-var nonce = 'eDBXVqk40ng5BarS';
-var id_token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IlliUkFRUlljRV9tb3RXVkpLSHJ3TEJiZF85cyIsImtpZCI6IlliUkFRUlljRV9tb3RXVkpLSHJ3TEJiZF85cyJ9.eyJhdWQiOiIyYWJmM2E1Mi03ZDg2LTQ2MGItYTFlZi03N2RjNDNkZThhYWQiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8yNjhkYTFhMS05ZGI0LTQ4YjktYjFmZS02ODMyNTBiYTkwY2MvIiwiaWF0IjoxNDcxMzEzNDE3LCJuYmYiOjE0NzEzMTM0MTcsImV4cCI6MTQ3MTMxNzMxNywiYW1yIjpbInB3ZCJdLCJmYW1pbHlfbmFtZSI6Im9uZSIsImdpdmVuX25hbWUiOiJyb2JvdCIsImlwYWRkciI6IjE2Ny4yMjAuMC4xNjAiLCJuYW1lIjoicm9ib3QgMSIsIm5vbmNlIjoiZURCWFZxazQwbmc1QmFyUyIsIm9pZCI6Ijc5MTJmZTdiLWI1YWItNDI1Yi1iYjFmLTBlODNiOTlmY2E3ZiIsInB3ZF9leHAiOiI1ODQ2NzIiLCJwd2RfdXJsIjoiaHR0cHM6Ly9wb3J0YWwubWljcm9zb2Z0b25saW5lLmNvbS9DaGFuZ2VQYXNzd29yZC5hc3B4Iiwic3ViIjoiMUpNZHpPeEp5V2VDb2M1UXNZdkRQY29adHFodVdJWnhnbUhuQ3pRVFhhUSIsInRpZCI6IjI2OGRhMWExLTlkYjQtNDhiOS1iMWZlLTY4MzI1MGJhOTBjYyIsInVuaXF1ZV9uYW1lIjoicm9ib3RAc2lqdW4ub25taWNyb3NvZnQuY29tIiwidXBuIjoicm9ib3RAc2lqdW4ub25taWNyb3NvZnQuY29tIiwidmVyIjoiMS4wIn0.qoOyzkWJoB6XOOpISWamL6LrQ3VImbf5QWm5Zfs_dCgNpRaUS1EiOV8kijKZy4YTQ6ldKHhcbRtEAMZzrBl9k74Nks2JYSMAP05rAHvADyWcl89IzZ-cyWXwEfUJshRY8wMut11eBcIY3ml5--9AjtLYoqDKZZcNs2FdYsp9RwEc_tZWamHQ1rdknlbRDViXvqwtsNAgXLESA10nJIgwMEc6bKB3_pnEeBHjUJWcbKEeE6sZNdS66QK7DXEEnjEMdjShRZSULDX4pNtj-9azyNa8zKJPM4T-gkFkYO2LurKFRWTtjwshzxBCLXJ6cDq5B_kGcSJIMQ134Jbk7-kKiQ';
+var nonce = 'OKK4cd2ftdqsj4n0Gr+GCHOMH6cJ00oO';
+var policy = 'b2c_1_signin';
+var id_token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IklkVG9rZW5TaWduaW5nS2V5Q29udGFpbmVyLnYyIn0.eyJleHAiOjE0NzQ2OTY0MjQsIm5iZiI6MTQ3NDY5MjgyNCwidmVyIjoiMS4wIiwiaXNzIjoiaHR0cHM6Ly9sb2dpbi5taWNyb3NvZnRvbmxpbmUuY29tLzIyYmY0MGM2LTExODYtNGVhNS1iNDliLTNkYzRlYzBmNTRlYi92Mi4wLyIsInN1YiI6Ik5vdCBzdXBwb3J0ZWQgY3VycmVudGx5LiBVc2Ugb2lkIGNsYWltLiIsImF1ZCI6ImYwYjZlNGViLTJkOGMtNDBiNi1iOWM2LWUyNmQxMDc0ODQ2ZCIsImFjciI6ImIyY18xX3NpZ25pbiIsIm5vbmNlIjoiT0tLNGNkMmZ0ZHFzajRuMEdyK0dDSE9NSDZjSjAwb08iLCJpYXQiOjE0NzQ2OTI4MjQsImF1dGhfdGltZSI6MTQ3NDY5MjgyNCwib2lkIjoiNDMyOWQ2YmMtMGY4NC00NWQ4LTg3MDktMmM4YjA5MTM1N2QxIiwiZW1haWxzIjpbInNpanVuLndvcmtAZ21haWwuY29tIl19.BzKOUVnE6s6c03CFkS1DceJNvwXwHXE4IlXxXJyjNrD6LGKoMnRqI2mFzylCpjib4QM7byjHLs6MumwjrIR4iu_m-ryU6_2NMB0ry8cVCzm7g3QQklNGlsGAeHT69yl8TBqQpUCB71NoDu830nTcLwzN490id4RiWlTiJboyCkOHGZ36hMd4L-9qR-GtWKIJQR8-bgZRjS9vysaUQigIyMEaZzqQ3HBF1gq1euXLfiL_QAaFVay1CvT3kcvFN7wUfdMP6QvpwnzKTQW3CSpLbQlcxdc1bsNWvnd9d6ASxZVHMSxljJ7ZK0YHg6mUCDEH3r4nK9Sdvy_CHeKKOuPZtQ';
 // change the last character in id_token to make a id_token with wrong signature
-var id_token_wrong_signature = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IlliUkFRUlljRV9tb3RXVkpLSHJ3TEJiZF85cyIsImtpZCI6IlliUkFRUlljRV9tb3RXVkpLSHJ3TEJiZF85cyJ9.eyJhdWQiOiIyYWJmM2E1Mi03ZDg2LTQ2MGItYTFlZi03N2RjNDNkZThhYWQiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8yNjhkYTFhMS05ZGI0LTQ4YjktYjFmZS02ODMyNTBiYTkwY2MvIiwiaWF0IjoxNDcxMzEzNDE3LCJuYmYiOjE0NzEzMTM0MTcsImV4cCI6MTQ3MTMxNzMxNywiYW1yIjpbInB3ZCJdLCJmYW1pbHlfbmFtZSI6Im9uZSIsImdpdmVuX25hbWUiOiJyb2JvdCIsImlwYWRkciI6IjE2Ny4yMjAuMC4xNjAiLCJuYW1lIjoicm9ib3QgMSIsIm5vbmNlIjoiZURCWFZxazQwbmc1QmFyUyIsIm9pZCI6Ijc5MTJmZTdiLWI1YWItNDI1Yi1iYjFmLTBlODNiOTlmY2E3ZiIsInB3ZF9leHAiOiI1ODQ2NzIiLCJwd2RfdXJsIjoiaHR0cHM6Ly9wb3J0YWwubWljcm9zb2Z0b25saW5lLmNvbS9DaGFuZ2VQYXNzd29yZC5hc3B4Iiwic3ViIjoiMUpNZHpPeEp5V2VDb2M1UXNZdkRQY29adHFodVdJWnhnbUhuQ3pRVFhhUSIsInRpZCI6IjI2OGRhMWExLTlkYjQtNDhiOS1iMWZlLTY4MzI1MGJhOTBjYyIsInVuaXF1ZV9uYW1lIjoicm9ib3RAc2lqdW4ub25taWNyb3NvZnQuY29tIiwidXBuIjoicm9ib3RAc2lqdW4ub25taWNyb3NvZnQuY29tIiwidmVyIjoiMS4wIn0.qoOyzkWJoB6XOOpISWamL6LrQ3VImbf5QWm5Zfs_dCgNpRaUS1EiOV8kijKZy4YTQ6ldKHhcbRtEAMZzrBl9k74Nks2JYSMAP05rAHvADyWcl89IzZ-cyWXwEfUJshRY8wMut11eBcIY3ml5--9AjtLYoqDKZZcNs2FdYsp9RwEc_tZWamHQ1rdknlbRDViXvqwtsNAgXLESA10nJIgwMEc6bKB3_pnEeBHjUJWcbKEeE6sZNdS66QK7DXEEnjEMdjShRZSULDX4pNtj-9azyNa8zKJPM4T-gkFkYO2LurKFRWTtjwshzxBCLXJ6cDq5B_kGcSJIMQ134Jbk7-kKiq';
+var id_token_wrong_signature = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IklkVG9rZW5TaWduaW5nS2V5Q29udGFpbmVyLnYyIn0.eyJleHAiOjE0NzQ2OTY0MjQsIm5iZiI6MTQ3NDY5MjgyNCwidmVyIjoiMS4wIiwiaXNzIjoiaHR0cHM6Ly9sb2dpbi5taWNyb3NvZnRvbmxpbmUuY29tLzIyYmY0MGM2LTExODYtNGVhNS1iNDliLTNkYzRlYzBmNTRlYi92Mi4wLyIsInN1YiI6Ik5vdCBzdXBwb3J0ZWQgY3VycmVudGx5LiBVc2Ugb2lkIGNsYWltLiIsImF1ZCI6ImYwYjZlNGViLTJkOGMtNDBiNi1iOWM2LWUyNmQxMDc0ODQ2ZCIsImFjciI6ImIyY18xX3NpZ25pbiIsIm5vbmNlIjoiT0tLNGNkMmZ0ZHFzajRuMEdyK0dDSE9NSDZjSjAwb08iLCJpYXQiOjE0NzQ2OTI4MjQsImF1dGhfdGltZSI6MTQ3NDY5MjgyNCwib2lkIjoiNDMyOWQ2YmMtMGY4NC00NWQ4LTg3MDktMmM4YjA5MTM1N2QxIiwiZW1haWxzIjpbInNpanVuLndvcmtAZ21haWwuY29tIl19.BzKOUVnE6s6c03CFkS1DceJNvwXwHXE4IlXxXJyjNrD6LGKoMnRqI2mFzylCpjib4QM7byjHLs6MumwjrIR4iu_m-ryU6_2NMB0ry8cVCzm7g3QQklNGlsGAeHT69yl8TBqQpUCB71NoDu830nTcLwzN490id4RiWlTiJboyCkOHGZ36hMd4L-9qR-GtWKIJQR8-bgZRjS9vysaUQigIyMEaZzqQ3HBF1gq1euXLfiL_QAaFVay1CvT3kcvFN7wUfdMP6QvpwnzKTQW3CSpLbQlcxdc1bsNWvnd9d6ASxZVHMSxljJ7ZK0YHg6mUCDEH3r4nK9Sdvy_CHeKKOuPZtM';
 
 // Mock the process of getting PEMkey
-var PEMkey = "-----BEGIN RSA PUBLIC KEY-----\n\
-MIIBCgKCAQEAvbcFrj193Gm6zeo5e2/y54Jx49sIgScv+2JO+n6NxNqQaKVnMkHc\n\
-z+S1j2FfpFngotwGMzZIKVCY1SK8SKZMFfRTU3wvToZITwf3W1Qq6n+h+abqpyJT\n\
-aqIcfhA0d6kEAM5NsQAKhfvw7fre1QicmU9LWVWUYAayLmiRX6o3tktJq6H58pUz\n\
-Ttx/D0Dprnx6z5sW+uiMipLXbrgYmOez7htokJVgDg8w+yDFCxZNo7KVueUkLkxh\n\
-NjYGkGfnt18s7ZW036WoTmdaQmW4CChf/o4TLE5VyGpYWm7I/+nV95BBvwlzokVV\n\
-KzveKf3l5UU3c6PkGy+BB3E/ChqFm6sPWwIDAQAB\n\
------END RSA PUBLIC KEY-----\n\
-";
+var PEMkey = "-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEAs4W7xjkQZP3OwG7PfRgcYKn8eRYXHiz1iK503fS+K2FZo+Ublwwa\n2xFZWpsUU/jtoVCwIkaqZuo6xoKtlMYXXvfVHGuKBHEBVn8b8x/57BQWz1d0KdrN\nXxuMvtFe6RzMqiMqzqZrzae4UqVCkYqcR9gQx66Ehq7hPmCxJCkg7ajo7fu6E7dP\nd34KH2HSYRsaaEA/BcKTeb9H1XE/qEKjog68wUU9Ekfl3FBIRN+1Ah/BoktGFoXy\ni/jt0+L0+gKcL1BLmUlGzMusvRbjI/0+qj+mc0utGdRjY+xIN2yBj8vl4DODO+wM\nwfp+cqZbCd9TENyHaTb8iA27s+73L3ExOQIDAQAB\n-----END RSA PUBLIC KEY-----\n";
 
 /*
  * test strategy (for response_type = 'id_token') which checks the expiration of id_token
@@ -54,18 +47,20 @@ KzveKf3l5UU3c6PkGy+BB3E/ChqFm6sPWwIDAQAB\n\
 
 var options = {
   redirectUrl: 'https://localhost:3000/auth/openid/return',
-  clientID: '2abf3a52-7d86-460b-a1ef-77dc43de8aad',
-  identityMetadata: 'https://login.microsoftonline.com/sijun.onmicrosoft.com/.well-known/openid-configuration',
+  clientID: 'f0b6e4eb-2d8c-40b6-b9c6-e26d1074846d',
+  identityMetadata: 'https://login.microsoftonline.com/sijun1b2c.onmicrosoft.com/v2.0/.well-known/openid-configuration',
   responseType: 'id_token',
   responseMode: 'form_post',
   validateIssuer: true,
   passReqToCallback: false,
+  isB2C: true,
   sessionKey: 'my_key',
-  issuer: 'https://sts.windows.net/268da1a1-9db4-48b9-b1fe-683250ba90cc/',
+  ignoreExpiration: true,
+  issuer: 'https://login.microsoftonline.com/22bf40c6-1186-4ea5-b49b-3dc4ec0f54eb/v2.0/',
 };
 
 var testStrategy = new OIDCStrategy(options, function(profile, done) {
-    done(null, profile.upn);
+    done(null, profile.oid);
 });
 
 /* 
@@ -75,18 +70,21 @@ var challenge;
 var user;
 
 var setIgnoreExpirationFalse = function(options) { options.ignoreExpiration = false; };
-var setWrongIssuer = function(options) { options.issuer = ['wrong_issuer']; };
+var setWrongIssuer = function(options) { options.issuer = 'wrong_issuer'; };
 var rmValidateIssuer = function(options) { options.validateIssuer = undefined; };
 
-var testPrepare = function(id_token_to_use, nonce_to_use, action) {
+var testPrepare = function(id_token_to_use, nonce_to_use, policy_to_use, action) {
   return function(done) {
     // Mock `setOptions` 
     testStrategy.setOptions = function(params, oauthConfig, optionsToValidate, done) {
       params.metadata.generateOidcPEM = () => { return PEMkey; };
 
+      oauthConfig.auth_endpoint = 'https://login.microsoftonline.com/sijun1b2c.onmicrosoft.com/oauth2/v2.0/authorize?p=b2c_1_signin';
+      oauthConfig.token_endpoint = 'https://login.microsoftonline.com/sijun1b2c.onmicrosoft.com/oauth2/v2.0/token?p=b2c_1_signin';
+
       optionsToValidate.validateIssuer = true;
-      optionsToValidate.issuer = 'https://sts.windows.net/268da1a1-9db4-48b9-b1fe-683250ba90cc/';
-      optionsToValidate.audience = '2abf3a52-7d86-460b-a1ef-77dc43de8aad';
+      optionsToValidate.issuer = 'https://login.microsoftonline.com/22bf40c6-1186-4ea5-b49b-3dc4ec0f54eb/v2.0/';
+      optionsToValidate.audience = 'f0b6e4eb-2d8c-40b6-b9c6-e26d1074846d';
       optionsToValidate.allowMultiAudiencesInToken = false;
       optionsToValidate.ignoreExpiration = true;
       optionsToValidate.algorithms = ['RS256'];
@@ -112,7 +110,7 @@ var testPrepare = function(id_token_to_use, nonce_to_use, action) {
         challenge = user = undefined;
         var time = Date.now();
         // add state and nonce to session
-        req.session = {'my_key': {'content': [{'state': 'my_state', 'nonce': nonce_to_use, 'policy': undefined, 'timeStamp': time}]}};
+        req.session = {'my_key': {'content': [{'state': 'my_state', 'nonce': nonce_to_use, 'policy': policy_to_use, 'timeStamp': time}]}};
         // add id_token and state to body
         req.body = {'id_token': id_token_to_use, 'state' : 'my_state'}; 
         // empty query
@@ -122,18 +120,18 @@ var testPrepare = function(id_token_to_use, nonce_to_use, action) {
   };
 };
 
-describe('OIDCStrategy implicit flow test', function() {
+describe('B2C OIDCStrategy implicit flow test', function() {
 
   describe('should succeed without expiration checking', function() {
-    before(testPrepare(id_token, nonce));
+    before(testPrepare(id_token, nonce, policy));
 
     it('should succeed with expected user', function() {
-      chai.expect(user).to.equal('robot@sijun.onmicrosoft.com');
+      chai.expect(user).to.equal('4329d6bc-0f84-45d8-8709-2c8b091357d1');
     });
   });
 
   describe('should fail for id_token with invalid signature', function() {
-    before(testPrepare(id_token_wrong_signature, nonce));
+    before(testPrepare(id_token_wrong_signature, nonce, policy));
 
     it('should fail', function() {
       chai.expect(challenge).to.equal('In _validateResponse: invalid signature');
@@ -141,7 +139,7 @@ describe('OIDCStrategy implicit flow test', function() {
   });
 
   describe('should fail for id_token with wrong nonce', function() {
-    before(testPrepare(id_token, 'wrong_nonce'));
+    before(testPrepare(id_token, 'wrong_nonce', policy));
 
     it('should fail', function() {
       chai.expect(challenge).to.equal('In _validateResponse: invalid nonce');
@@ -149,7 +147,7 @@ describe('OIDCStrategy implicit flow test', function() {
   });
 
   describe('should fail with id_token expiration checking', function() {
-    before(testPrepare(id_token, nonce, [setIgnoreExpirationFalse]));
+    before(testPrepare(id_token, nonce, policy, [setIgnoreExpirationFalse]));
 
     it('should fail', function() {
       chai.expect(challenge).to.equal('In _validateResponse: jwt is expired');
@@ -158,7 +156,7 @@ describe('OIDCStrategy implicit flow test', function() {
 
   describe('should fail with wrong issuer', function() {
     // we check the issuer by default
-    before(testPrepare(id_token, nonce, [setWrongIssuer]));
+    before(testPrepare(id_token, nonce, policy, [setWrongIssuer]));
 
     it('should fail', function() {
       chai.expect(challenge).to.equal('In _validateResponse: jwt issuer is invalid. expected: wrong_issuer');
@@ -167,10 +165,19 @@ describe('OIDCStrategy implicit flow test', function() {
 
   describe('should fail with wrong issuer with default value of validateIssuer', function() {
     // for non-common endpoint, we force to validate issuer
-    before(testPrepare(id_token, nonce, [rmValidateIssuer, setWrongIssuer]));
+    before(testPrepare(id_token, nonce, policy, [rmValidateIssuer, setWrongIssuer]));
 
     it('should fail', function() {
       chai.expect(challenge).to.equal('In _validateResponse: jwt issuer is invalid. expected: wrong_issuer');
+    });
+  });
+
+  describe('should fail with wrong policy', function() {
+    // for non-common endpoint, we force to validate issuer
+    before(testPrepare(id_token, nonce, 'wrong policy'));
+
+    it('should fail', function() {
+      chai.expect(challenge).to.equal('In _validateResponse: acr in id_token does not match the policy used');
     });
   });
 });

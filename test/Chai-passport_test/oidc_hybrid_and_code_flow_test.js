@@ -59,10 +59,9 @@ KzveKf3l5UU3c6PkGy+BB3E/ChqFm6sPWwIDAQAB\n\
  */
 
 var options = {
-  callbackURL: 'http://localhost:3000/auth/openid/return',
+  redirectUrl: 'https://localhost:3000/auth/openid/return',
   clientID: '2abf3a52-7d86-460b-a1ef-77dc43de8aad',
   identityMetadata: 'https://login.microsoftonline.com/sijun.onmicrosoft.com/.well-known/openid-configuration',
-  skipUserProfile: true,
   responseType: 'id_token code',
   responseMode: 'form_post',
   validateIssuer: true,
@@ -70,43 +69,19 @@ var options = {
   sessionKey: 'my_key',
   oidcIssuer: 'https://sts.windows.net/268da1a1-9db4-48b9-b1fe-683250ba90cc/',
   ignoreExpiration: true,
-  audience: null
-};
-
-// this is used in resetOptions
-var options_copy = JSON.parse(JSON.stringify(options));
-
-// function used to reset options
-var resetOptions = function(options) {
-  for (var p in options_copy) {
-    if (options_copy.hasOwnProperty(p))
-      options[p] = options_copy[p];
-  }
+  audience: null,
+  algorithms: ['RS256']
 };
 
 // functions used to change the fields in options
 var setIgnoreExpirationFalse = function(options) { options.ignoreExpiration = false; };
-var setWrongIssuer = function(options) { options.oidcIssuer = 'wrong_issuer'; };
+var setWrongIssuer = function(options) { options.issuer = 'wrong_issuer'; };
 var rmValidateIssuer = function(options) { options.validateIssuer = undefined; };
 var setWrongAudience = function(options) { options.audience = 'wrong audience'; };
-var setSkipUserProfileFalse = function(options) { options.skipUserProfile = false; };
 
 var testStrategy = new OIDCStrategy(options, function(profile, done) {
-    done(null, profile.email);
+    done(null, profile.upn);
 });
-
-// Moch configure function
-// This function is used to configure oauth2
-testStrategy.configure = function(identifier, callback) {
-  return callback(null, {
-    authorizationURL: "https://login.microsoftonline.com/268da1a1-9db4-48b9-b1fe-683250ba90cc/oauth2/authorize",
-    callbackURL: "http://localhost:3000/auth/openid/return",
-    clientID: "2abf3a52-7d86-460b-a1ef-77dc43de8aad",
-    identifierField: "openid_identifier",
-    tokenURL: "https://login.microsoftonline.com/268da1a1-9db4-48b9-b1fe-683250ba90cc/oauth2/token",
-    userInfoURL: "https://login.microsoftonline.com/268da1a1-9db4-48b9-b1fe-683250ba90cc/openid/userinfo"   , 
-  });
-};
 
 // mock the userinfo endpoint response
 var setUserInfoResponse = function(sub_choice) {
@@ -147,15 +122,28 @@ var user;
 var setReqFromAuthRespRedirect = function(id_token_in_auth_resp, code_in_auth_resp, nonce_to_use, action) {
   return function(done) {
     // Mock `setOptions` 
-    testStrategy.setOptions = function(options, metadata, cachekey, next) {
-      const self = this;
-      self.metadata = new Metadata(self._options.identityMetadata, 'oidc', self._options);
-      self.metadata.generateOidcPEM = () => { return PEMkey; };
+    testStrategy.setOptions = function(params, oauthConfig, optionsToValidate, done) {
+      params.metadata.generateOidcPEM = () => { return PEMkey; };
+
+      optionsToValidate.validateIssuer = true;
+      optionsToValidate.issuer = 'https://sts.windows.net/268da1a1-9db4-48b9-b1fe-683250ba90cc/';
+      optionsToValidate.audience = '2abf3a52-7d86-460b-a1ef-77dc43de8aad';
+      optionsToValidate.allowMultiAudiencesInToken = false;
+      optionsToValidate.ignoreExpiration = true;
+      optionsToValidate.algorithms = ['RS256'];
+      optionsToValidate.nonce = nonce_to_use;
+
+      oauthConfig.auth_endpoint = "https://login.microsoftonline.com/268da1a1-9db4-48b9-b1fe-683250ba90cc/oauth2/authorize";
+      oauthConfig.redirectUrl = "http://localhost:3000/auth/openid/return";
+      oauthConfig.clientID = "2abf3a52-7d86-460b-a1ef-77dc43de8aad";
+      oauthConfig.token_endpoint = "https://login.microsoftonline.com/268da1a1-9db4-48b9-b1fe-683250ba90cc/oauth2/token";
+      oauthConfig.userinfo_endpoint = "https://login.microsoftonline.com/268da1a1-9db4-48b9-b1fe-683250ba90cc/openid/userinfo";
+
       if (action) {
         for (let i = 0; i < action.length; i++)
-          action[i](self._options);
+          action[i](optionsToValidate);
       }
-      return next();
+      return done();
     };
 
     chai.passport
@@ -172,8 +160,9 @@ var setReqFromAuthRespRedirect = function(id_token_in_auth_resp, code_in_auth_re
       .req(function(req) {
         // reset the value of challenge and user
         challenge = user = undefined;
+        var time = Date.now();
         // add state and nonce to session
-        req.session = {'my_key' : {'state' : 'my_state', 'nonce' : nonce_to_use}}; 
+        req.session = {'my_key': {'content': [{'state': 'my_state', 'nonce': nonce_to_use, 'policy': undefined, 'timeStamp': time}]}}; 
         // add id_token and state to body
         req.body = {'id_token': id_token_in_auth_resp , 'code' : code_in_auth_resp, 'state' : 'my_state'}; 
         // empty query
@@ -218,7 +207,7 @@ describe('OIDCStrategy hybrid flow test', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, 'wrong_nonce'));
 
     it('should fail with wrong nonce', function() {
-      chai.expect(challenge).to.equal('invalid nonce in id_token');
+      chai.expect(challenge).to.equal('In _validateResponse: invalid nonce');
     });
   });
 
@@ -226,43 +215,39 @@ describe('OIDCStrategy hybrid flow test', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, 'wrong_code', nonce));
 
     it('should fail with invalid c_hash', function() {
-      chai.expect(challenge).to.equal('invalid c_hash');
+      chai.expect(challenge).to.equal('In _validateResponse: invalid c_hash');
     });
   });
 
   describe('fail: expired id_token', function() {
-    before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, 
-      [resetOptions, setIgnoreExpirationFalse]));
+    before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, [setIgnoreExpirationFalse]));
 
     it('should fail with expired id_token', function() {
-      chai.expect(challenge).to.equal('jwt expired');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt is expired');
     });
   });
 
   describe('fail: invalid signature in id_token', function() {
-    before(setReqFromAuthRespRedirect(id_token_in_auth_resp_wrong_signature, code, nonce, 
-      [resetOptions]));
+    before(setReqFromAuthRespRedirect(id_token_in_auth_resp_wrong_signature, code, nonce));
 
     it('should fail with invalid signature in id_token', function() {
-      chai.expect(challenge).to.equal('invalid signature');
+      chai.expect(challenge).to.equal('In _validateResponse: invalid signature');
     });
   });
 
   describe('fail: invalid issuer', function() {
-    before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, 
-      [resetOptions, setWrongIssuer]));
+    before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, [setWrongIssuer]));
 
     it('should fail with invalid issuer', function() {
-      chai.expect(challenge).to.equal('jwt issuer invalid. expected: wrong_issuer');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt issuer is invalid. expected: wrong_issuer');
     });
   });
 
   describe('fail: invalid audience', function() {
-    before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, 
-      [resetOptions, setWrongAudience]));
+    before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, [setWrongAudience]));
 
     it('should fail with invalid audience', function() {
-      chai.expect(challenge).to.equal('jwt audience invalid. expected: wrong audience');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid. expected: wrong audience');
     });
   });
 
@@ -275,10 +260,10 @@ describe('OIDCStrategy hybrid flow test', function() {
 
   describe('fail: invalid sub in id_token in token response', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, 
-      [resetOptions, setTokenResponse(id_token_in_token_resp_wrong_sub, access_token)]));
+      [setTokenResponse(id_token_in_token_resp_wrong_sub, access_token)]));
 
     it('should fail with invalid sub in id_token', function() {
-      chai.expect(challenge).to.equal('After redeeming the code, iss in id_token from authorize_endpoint does not match iss in id_token from token_endpoint');
+      chai.expect(challenge).to.equal('In _authCodeFlowHandler: After redeeming the code, sub in id_token from authorize_endpoint does not match sub in id_token from token_endpoint');
     });
   });
 
@@ -290,7 +275,7 @@ describe('OIDCStrategy hybrid flow test', function() {
 
   describe('success', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, 
-      [resetOptions, setTokenResponse(id_token_in_token_resp, access_token), setSkipUserProfileFalse]));
+      [setTokenResponse(id_token_in_token_resp, access_token)]));
 
     it('should succeed with expected user', function() {
       chai.expect(user).to.equal('robot@sijun.onmicrosoft.com');
@@ -299,20 +284,20 @@ describe('OIDCStrategy hybrid flow test', function() {
 
   describe('fail: missing access_token', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, 
-      [resetOptions, setTokenResponse(id_token_in_token_resp, null), setSkipUserProfileFalse]));
+      [setTokenResponse(id_token_in_token_resp, null)]));
 
     it('should fail with access_token missing', function() {
-      chai.expect(challenge).to.equal('we want to access userinfo endpoint, but access_token is not received');
+      chai.expect(challenge).to.equal('In _authCodeFlowHandler: we want to access userinfo endpoint, but access_token is not received');
     });
   });
 
   describe('fail: invalid sub in userinfo', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, 
-      [resetOptions, setTokenResponse(id_token_in_token_resp, access_token), 
-        setUserInfoResponse('use_invalid_sub'), setSkipUserProfileFalse]));
+      [setTokenResponse(id_token_in_token_resp, access_token), 
+        setUserInfoResponse('use_invalid_sub')]));
 
     it('should fail with invalid sub in userInfo', function() {
-      chai.expect(challenge).to.equal('sub received in userinfo and id_token do not match');
+      chai.expect(challenge).to.equal('In _authCodeFlowHandler: sub received in userinfo and id_token do not match');
     });
   });
 });
@@ -325,7 +310,7 @@ describe('OIDCStrategy authorization code flow test', function() {
 
   describe('success', function() {
     before(setReqFromAuthRespRedirect(null, code, nonce, 
-      [resetOptions, setTokenResponse(id_token_in_token_resp, access_token), setUserInfoResponse('use_valid_sub')]));
+      [setTokenResponse(id_token_in_token_resp, access_token), setUserInfoResponse('use_valid_sub')]));
 
     it('should succeed with expected user', function() {
       chai.expect(user).to.equal('robot@sijun.onmicrosoft.com');
@@ -345,43 +330,43 @@ describe('OIDCStrategy authorization code flow test', function() {
     before(setReqFromAuthRespRedirect(null, code, 'wrong_nonce'));
 
     it('should fail with wrong nonce', function() {
-      chai.expect(challenge).to.equal('invalid nonce in id_token');
+      chai.expect(challenge).to.equal('In _validateResponse: invalid nonce');
     });
   });
 
   describe('fail: expired id_token', function() {
     before(setReqFromAuthRespRedirect(null, code, nonce, 
-      [resetOptions, setIgnoreExpirationFalse]));
+      [setIgnoreExpirationFalse]));
 
     it('should fail with expired id_token', function() {
-      chai.expect(challenge).to.equal('jwt expired');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt is expired');
     });
   });
 
   describe('fail: invalid issuer', function() {
     before(setReqFromAuthRespRedirect(null, code, nonce, 
-      [resetOptions, setWrongIssuer]));
+      [setWrongIssuer]));
 
     it('should fail with invalid issuer', function() {
-      chai.expect(challenge).to.equal('jwt issuer invalid. expected: wrong_issuer');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt issuer is invalid. expected: wrong_issuer');
     });
   });
 
   describe('fail: invalid audience', function() {
     before(setReqFromAuthRespRedirect(null, code, nonce, 
-      [resetOptions, setWrongAudience]));
+      [setWrongAudience]));
 
     it('should fail with invalid audience', function() {
-      chai.expect(challenge).to.equal('jwt audience invalid. expected: wrong audience');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid. expected: wrong audience');
     });
   });
 
   describe('fail: invalid signature in id_token', function() {
     before(setReqFromAuthRespRedirect(null, code, nonce, 
-      [resetOptions, setTokenResponse(id_token_in_auth_resp_wrong_signature, access_token)]));
+      [setTokenResponse(id_token_in_auth_resp_wrong_signature, access_token)]));
 
     it('should fail with invalid signature in id_token', function() {
-      chai.expect(challenge).to.equal('invalid signature');
+      chai.expect(challenge).to.equal('In _validateResponse: invalid signature');
     });
   });
 
@@ -391,7 +376,7 @@ describe('OIDCStrategy authorization code flow test', function() {
 
   describe('success', function() {
     before(setReqFromAuthRespRedirect(null, code, nonce, 
-      [resetOptions, setTokenResponse(id_token_in_token_resp, access_token), setSkipUserProfileFalse]));
+      [setTokenResponse(id_token_in_token_resp, access_token)]));
 
     it('should succeed with expected user', function() {
       chai.expect(user).to.equal('robot@sijun.onmicrosoft.com');
@@ -400,20 +385,20 @@ describe('OIDCStrategy authorization code flow test', function() {
 
   describe('fail: access_token is not received', function() {
     before(setReqFromAuthRespRedirect(null, code, nonce, 
-      [resetOptions, setTokenResponse(id_token_in_token_resp, null), setSkipUserProfileFalse]));
+      [setTokenResponse(id_token_in_token_resp, null)]));
 
     it('should fail with access_token missing', function() {
-      chai.expect(challenge).to.equal('we want to access userinfo endpoint, but access_token is not received');
+      chai.expect(challenge).to.equal('In _authCodeFlowHandler: we want to access userinfo endpoint, but access_token is not received');
     });
   });
 
   describe('fail: invalid sub in userinfo', function() {
     before(setReqFromAuthRespRedirect(null, code, nonce, 
-      [resetOptions, setTokenResponse(id_token_in_token_resp, access_token), 
-        setUserInfoResponse('use_invalid_sub'), setSkipUserProfileFalse]));
+      [setTokenResponse(id_token_in_token_resp, access_token), 
+        setUserInfoResponse('use_invalid_sub')]));
 
     it('should fail with invalid sub in userInfo', function() {
-      chai.expect(challenge).to.equal('sub received in userinfo and id_token do not match');
+      chai.expect(challenge).to.equal('In _authCodeFlowHandler: sub received in userinfo and id_token do not match');
     });
   });
 });

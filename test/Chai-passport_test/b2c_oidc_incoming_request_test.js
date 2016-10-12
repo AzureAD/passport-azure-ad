@@ -36,12 +36,12 @@ var options = {
     redirectUrl: 'https://returnURL',
     clientID: 'my_client_id',
     clientSecret: 'my_client_secret',
-    identityMetadata: 'https://login.microsoftonline.com/xxx.onmicrosoft.com/.well-known/openid-configuration',
+    identityMetadata: 'https://login.microsoftonline.com/xxx.onmicrosoft.com/v2.0/.well-known/openid-configuration',
     responseType: 'id_token',
     responseMode: 'form_post',
     validateIssuer: true,
     passReqToCallback: false,
-    algorithms: ['RS256'],
+    isB2C: true,
     sessionKey: 'my_key'    //optional sessionKey
 };
 
@@ -49,10 +49,8 @@ var testStrategy = new OIDCStrategy(options, function(profile, done) {});
 
 // Mock `setOptions`
 testStrategy.setOptions = function(params, oauthConfig, optionsToValidate, done) {
-  oauthConfig.clientID = options.clientID;
-  oauthConfig.clientSecret = options.clientSecret;
-  oauthConfig.authorizationURL = 'https://www.example.com/authorizationURL';
-  oauthConfig.tokenURL = 'https://www.example.com/tokenURL';
+  oauthConfig.auth_endpoint = 'https://login.microsoftonline.com/sijun1b2c.onmicrosoft.com/oauth2/v2.0/authorize?p=b2c_1_signin';
+  oauthConfig.token_endpoint = 'https://login.microsoftonline.com/sijun1b2c.onmicrosoft.com/oauth2/v2.0/token?p=b2c_1_signin';
 
   done();
 };
@@ -61,38 +59,48 @@ testStrategy.setOptions = function(params, oauthConfig, optionsToValidate, done)
 describe('OIDCStrategy incoming state and nonce checking', function() {
   var redirectUrl;
   var request;
+  var challenge;
 
-  var testPrepare = function(customState) {
+  var testPrepare = function(policy) {
   	return function(done) {
   		chai.passport
   		  .use(testStrategy)
+        .fail(function(c) { challenge = c; done(); })
         .redirect(function(u) {redirectUrl = u; done(); })
   		  .req(function(req) {
           request = req;
           req.session = {}; 
-          req.query = {}; 
+          req.query = {p: policy}; 
         })
-  		  .authenticate({ customState : customState });
+  		  .authenticate({});
   	};
   };
 
-  describe('state/nonce checking', function() {
-    before(testPrepare());
+  describe('state/nonce/policy checking', function() {
+    before(testPrepare('B2C_1_signin'));
 
-    it('should have the same state/nonce', function() {
+    it('should have the same state/nonce/policy', function() {
       var u = url.parse(redirectUrl, true);
       chai.expect(request.session['my_key']['content'][0]['state']).to.equal(u.query.state);
       chai.expect(request.session['my_key']['content'][0]['nonce']).to.equal(u.query.nonce);
+      // policy should be changed to lower case
+      chai.expect(request.session['my_key']['content'][0]['policy']).to.equal('b2c_1_signin');
     });
   });
 
-  describe('custom state checking', function() {
-    before(testPrepare('custom_state'));
+  describe('missing policy', function() {
+    before(testPrepare(null));
 
-    it('should have used custom state', function() {
-      var u = url.parse(redirectUrl, true);
-      chai.expect(request.session['my_key']['content'][0]['state']).to.equal(u.query.state);
-      chai.expect(request.session['my_key']['content'][0]['state'].substring(38)).to.equal('custom_state');
+    it('should fail if policy is missing', function() {
+      chai.expect(challenge).to.equal('In collectInfoFromReq: policy is missing');
+    });
+  });
+
+  describe('wrong policy', function() {
+    before(testPrepare('wrong_policy_not_starting_with_b2c_1_'));
+
+    it('should fail if policy is wrong', function() {
+      chai.expect(challenge).to.equal('In _flowInitializationHandler: the given policy wrong_policy_not_starting_with_b2c_1_ given in the request is invalid');
     });
   });
 });
@@ -107,7 +115,7 @@ describe('OIDCStrategy error flow checking', function() {
         .fail(function(c) { challenge = c; done(); })
         .req(function(req) {
           var time = Date.now();
-          req.session = {'my_key': {'content': [{'state': 'my_state', 'timeStamp': time}]}}; 
+          req.session = {'my_key': {'content': [{'state': 'my_state', 'nonce': 'my_nonce', 'policy': 'b2c_1_signin', 'timeStamp': time}]}}; 
           req.query = {}; 
           req.body = {state: 'my_state', error: 'my_error'};
         })
