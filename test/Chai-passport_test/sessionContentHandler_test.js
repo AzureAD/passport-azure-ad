@@ -101,7 +101,7 @@ describe('checking add function', function() {
       expect(req.session['key']['content'][0]['nonce']).to.equal('nonce4');
       expect(req.session['key']['content'][0]['policy']).to.equal('policy4');
       done();
-    }, 100);  // maxAge is 0.1 second = 100 ms 
+    }, 200);  // maxAge is 0.1 second = 100 ms 
   });
 });
 

@@ -62,7 +62,7 @@ describe('OIDCStrategy incoming state and nonce checking', function() {
   var redirectUrl;
   var request;
 
-  var testPrepare = function() {
+  var testPrepare = function(customState) {
   	return function(done) {
   		chai.passport
   		  .use(testStrategy)
@@ -72,7 +72,7 @@ describe('OIDCStrategy incoming state and nonce checking', function() {
           req.session = {}; 
           req.query = {}; 
         })
-  		  .authenticate({});
+  		  .authenticate({ customState : customState });
   	};
   };
 
@@ -83,6 +83,16 @@ describe('OIDCStrategy incoming state and nonce checking', function() {
       var u = url.parse(redirectUrl, true);
       chai.expect(request.session['my_key']['content'][0]['state']).to.equal(u.query.state);
       chai.expect(request.session['my_key']['content'][0]['nonce']).to.equal(u.query.nonce);
+    });
+  });
+
+  describe('custom state checking', function() {
+    before(testPrepare('custom_state'));
+
+    it('should have used custom state', function() {
+      var u = url.parse(redirectUrl, true);
+      chai.expect(request.session['my_key']['content'][0]['state']).to.equal(u.query.state);
+      chai.expect(request.session['my_key']['content'][0]['state'].substring(38)).to.equal('custom_state');
     });
   });
 });

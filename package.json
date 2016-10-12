@@ -26,11 +26,8 @@
   },
   "main": "./lib",
   "devDependencies": {
-    "body-parser": "^1.15.0",
-    "cookie-parser": "^1.4.0",
     "eslint": "^2.9.0",
     "eslint-config-oniyi": "^3.0.0",
-    "express-session": "^1.12.1",
     "grunt": "^1.0.1",
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-contrib-nodeunit": "^1.0.0",
@@ -53,15 +50,9 @@
     "oauth": "^0.9.14",
     "oniyi-object-transform": "^1.0.0",
     "passport": "^0.3.2",
-    "passport-http-bearer": "^1.0.1",
+    "pkginfo": "^0.4.0",
     "request": "^2.72.0",
-    "underscore": "^1.8.3",
-    "webfinger": "^0.4.2",
-    "valid-url": "^1.0.6",
-    "xml-crypto": "^0.8.4",
-    "xml2js": "^0.4.16",
-    "xmldom": "^0.1.22",
-    "xtend": "4.0.1"
+    "valid-url": "^1.0.6"
   },
   "scripts": {
     "test": "grunt run_all_tests"

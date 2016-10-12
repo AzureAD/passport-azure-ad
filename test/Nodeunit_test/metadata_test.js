@@ -60,7 +60,7 @@ exports.metadata = {
 
     test.doesNotThrow(
       () => {
-        new Metadata('http://something.com/federationmetadata.xml', 'wsfed', options);
+        new Metadata(oidcMetadataUrl, 'oidc', options);
       },
       Error,
       'Should not fail with url present'
@@ -88,7 +88,7 @@ exports.metadata = {
 
     test.throws(
       () => {
-        new Metadata('http://something.com/federationmetadata.xml', options);
+        new Metadata(oidcMetadataUrl, options);
       },
       Error,
       'Should fail with auth type missing'
@@ -102,7 +102,7 @@ exports.metadata = {
 
     test.throws(
       () => {
-        new Metadata('http://something.com/federationmetadata.xml', 'wsfed');
+        new Metadata(oidcMetadataUrl, 'oidc');
       },
       Error,
       'Should fail with options missing'
@@ -111,41 +111,18 @@ exports.metadata = {
     test.done();
   },
   'fetch metadata saml': (test) => {
-    test.expect(5);
+    test.expect(1);
     // tests here
 
-    test.doesNotThrow(
+    test.throws(
       () => {
-        const m = new Metadata(metadataUrl, 'saml', options);
-        m.fetch((err) => {
-          test.ifError(err);
-          test.ok(m.saml.certs.length > 0, 'fetch should obtain 1 or more saml x509 certificates');
-          test.ok(m.saml.loginEndpoint, 'fetch should obtain saml login endpoint');
-          test.ok(m.saml.logoutEndpoint, 'fetch should obtain saml logout endpoint');
-          test.done();
-        });
+        new Metadata(metadataUrl, 'saml', options);
       },
       Error,
-      'Should not fail with url present and auth type saml'
+      'Should fail with unsupported auth type'
     );
-  },
-  'fetch metadata wsfed': (test) => {
-    test.expect(4);
-    // tests here
 
-    test.doesNotThrow(
-      () => {
-        const m = new Metadata(metadataUrl, 'wsfed', options);
-        m.fetch((err) => {
-          test.ifError(err);
-          test.ok(m.wsfed.certs.length > 0, 'fetch should obtain 1 or more wsfed x509 certificates');
-          test.ok(m.wsfed.loginEndpoint, 'fetch should obtain wsfedlogin endpoint');
-          test.done();
-        });
-      },
-      Error,
-      'Should not fail with url present and auth type wsfed'
-    );
+    test.done();
   },
   'fetch metadata oidc': (test) => {
     test.expect(4);
