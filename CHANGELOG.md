@@ -5,6 +5,10 @@
 
 ### Breaking changes
 
+#### SAML and WSFED
+
+* We no longer support SAML and WSFED starting from version 3.0.0, please use release 2.0.3 instead.
+
 #### Options
 
 * `skipUserProfile` option: this option is no longer provided. We will load 'userinfo' if we can get an access_token for 'userinfo'. More specifically, if you are using AAD v1 with 'code', 'code id_token' or 'id_token code' flow, and the resource is not specified. For all other scenarios, we do an 'id_token' fallback.
