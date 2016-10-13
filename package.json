@@ -14,7 +14,7 @@
     "bearer",
     "shibboleth"
   ],
-  "description": "WSFED/SAMLP/OIDC/Bearer Passport strategies for Azure Active Directory",
+  "description": "OIDC and Bearer Passport strategies for Azure Active Directory",
   "author": {
     "name": "azuread",
     "email": "nugetaad@microsoft.com",
