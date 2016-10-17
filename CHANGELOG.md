@@ -1,4 +1,22 @@
-<a name="3.0.0"></a>
+<a name="3.0.1"></a>
+# 3.0.1
+
+## OIDCStrategy
+
+### New features
+
+* specify tenant per request 
+
+  Now you can specify the tenant per request, using the `tenantIdOrName` option in `passport.authenticate`. More details on the usage can be found in README.md. This brings us two additional benefits:
+
+  * B2C common endpoint support
+
+    Now you can use B2C common endpoint, if you specify the tenant for each login request (in other words, a request that doesn't contain code or id_token) using the `tenantIdOrName` option.
+
+  * extensive issuer validation on common endpoint
+    
+    If you want to validate issuer on common endpoint, previously you have to provide `issuer`in configuration. Now you can either provide `issuer`, or specify the tenant for each login request.
+
 # 3.0.0
 
 ## OIDCStrategy
