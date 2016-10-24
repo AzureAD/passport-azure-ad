@@ -7,15 +7,15 @@
 
 * specify tenant per request 
 
-  Now you can specify the tenant per request, using the `tenantIdOrName` option in `passport.authenticate`. More details on the usage can be found in README.md. This brings us two additional benefits:
+  Now you can specify the tenant per request, using the `tenantIdOrName` option in `passport.authenticate`. More details on the usage can be found in README.md. `tenantIdOrName` enables two features:
 
   * B2C common endpoint support
 
-    Now you can use B2C common endpoint, if you specify the tenant for each login request (in other words, a request that doesn't contain code or id_token) using the `tenantIdOrName` option.
+    Now you can use the B2C common endpoint by specifying the tenant for each login request using the `tenantIdOrName` option. A login request is any request that doesn't contain code or id_token in the responseType.
 
   * extensive issuer validation on common endpoint
     
-    If you want to validate issuer on common endpoint, previously you have to provide `issuer`in configuration. Now you can either provide `issuer`, or specify the tenant for each login request.
+    Previously, you had to provide an `issuer` value in configuration to validat the issuer on the common endpoint. Alternatively, you can now specify the tenant for each login request.
 
 # 3.0.0
 

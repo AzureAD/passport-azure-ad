@@ -33,15 +33,15 @@ chai.use(require('chai-passport-strategy'));
 
 // Mock options required to create a OIDC strategy
 var options = {
-    redirectUrl: 'https://returnURL',
-    clientID: 'my_client_id',
-    clientSecret: 'my_client_secret',
-    identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
-    responseType: 'id_token',
-    responseMode: 'form_post',
-    validateIssuer: true,
-    passReqToCallback: false,
-    sessionKey: 'my_key'    //optional sessionKey
+  redirectUrl: 'https://returnURL',
+  clientID: 'my_client_id',
+  clientSecret: 'my_client_secret',
+  identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
+  responseType: 'id_token',
+  responseMode: 'form_post',
+  validateIssuer: true,
+  passReqToCallback: false,
+  sessionKey: 'my_key'    //optional sessionKey
 };
 
 describe('OIDCStrategy dynamic tenant test', function() {
@@ -50,25 +50,25 @@ describe('OIDCStrategy dynamic tenant test', function() {
   var request;
 
   var testPrepare = function(validateIssuer, issuer, tenantIdOrName, isB2C, policy) {
-  	return function(done) {
+    return function(done) {
       options.validateIssuer = validateIssuer;
       options.issuer = issuer;
       options.isB2C = isB2C;
 
       var testStrategy = new OIDCStrategy(options, function(profile, done) {});
 
-  		chai.passport
-  		  .use(testStrategy)
+      chai.passport
+        .use(testStrategy)
         .redirect(function(u) {redirectUrl = u; done(); })
         .fail(function(c) {challenge = c; done(); })
-  		  .req(function(req) {
+        .req(function(req) {
           request = req;
           req.session = {}; 
           req.query = {}; 
           challenge = null;
         })
-  		  .authenticate({ tenantIdOrName: tenantIdOrName });
-  	};
+       .authenticate({ tenantIdOrName: tenantIdOrName });
+    };
   };
 
   describe('should succeed', function() {
