@@ -226,7 +226,7 @@ app.get('/logout', function(req, res){
 
 * `failureRedirect`: the url redirected to when the authentication fails
 
-* `session`: if you don't want a persistent login session, you can use `session: false`
+* `session`: if you don't want a persistent login session, you can use `session: false`. The default value is true.
 
 * `customState`: if you want to use a custom state value instead of a random generated one
 
@@ -377,7 +377,7 @@ In the following example, we are using passport to protect '/api/tasks'. User se
 
 #### 5.2.3 Options available for `passport.authenticate`
 
-* `session`: if you don't want a persistent login session, you can use `session: false`
+* `session`: if you don't want a persistent login session, you can use `session: false`. The default value is true.
 
 Example:
 
