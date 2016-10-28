@@ -1,0 +1,15 @@
+{
+  "name": "passport-azure-ad-end-to-end-test",
+  "version": "0.0.1",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "ejs": ">= 0.0.0",
+    "ejs-locals": ">= 0.0.0",
+    "express": "^3.21.2",
+    "express-session": "^1.14.2",
+    "method-override": "^2.3.6",
+    "passport": "*",
+    "request": "^2.78.0"
+  }
+}

@@ -393,10 +393,61 @@ In the library root folder, type the following command to install the dependency
     $ npm install
 ```
 
-Then type the following command to run tests:
+### 6.1. Run all tests except the end to end tests
+
+Type the following command to run tests:
 
 ```
     $ npm test
+```
+
+### 6.2. Run all tests including the end to end tests
+
+#### 6.2.1. Create test applications
+
+First you need to register one application in v1 tenant, one in v2 tenant and one in B2C tenant. 
+
+For the v2 application, you should register it at https://apps.dev.microsoft.com/ instead of Azure Portal.
+
+For the B2C application, create four policies named 'B2C_1_signin', 'B2C_1_signup', 'B2C_1_updateprofile', 
+'B2C_1_resetpassword'. For each policy, select 'Local Account' as the identity provider, and select the
+following:
+
+* 'B2C_1_signup': 
+
+  * Sign-up attributes: 'Display Name', 'Email Address', 'Given Name', 'Surname'
+
+  * Application claims: 'Display Name', Email Addresses', 'Given Name', 'Identity Provider', 'Surname', 'Users Object ID'
+
+* 'B2C_1_updateprofile': 
+
+  * Profile attributes: 'Display Name', 'Given Name', 'Surname'
+
+  * Application claims: 'Display Name', Email Addresses', 'Given Name', 'Identity Provider', 'Surname', 'Users Object ID'
+
+* 'B2C_1_signin': 
+
+  * Application claims: 'Display Name', Email Addresses', 'Given Name', 'Identity Provider', 'Surname', 'Users Object ID'
+
+* 'B2C_1_resetpassword': 
+
+  * Application claims: 'Email Addresses', 'Given Name', 'Users Object ID'
+
+You will also need to click the 'Run now' button in the 'B2C_1_signup' blade to create an user.
+
+#### 6.2.2. Fill the test parameters 
+
+Open `test/End_to_end_test/script.js`, set `is_test_parameters_completed` parameter to true. For `test_parameters` variable, fill in the tenant id/client id/client secret of your applications, and the username/password of your application user. The 'oid' value is the object id of your application user. To find the 'oid' value, go to your tenant, click 'Users and groups', find your user and click it. The Object ID value will show up in the new blade.
+
+#### 6.2.3. Run the tests
+
+Type the following commands to run the tests:
+
+```
+    $ cd test/End_to_end_test/app
+    $ npm install
+    $ npm install grunt -g
+    $ grunt run_tests_with_e2e
 ```
 
 Tests will run automatically and in the terminal you can see how many tests are passing/failing. More details can be found [here](https://github.com/AzureAD/passport-azure-ad/blob/master/contributing.md).

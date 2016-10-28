@@ -47,23 +47,14 @@ For the testing tools, we use both nodeunit and [chai-passport-strategy](https:/
 
 All the test files should have a _test suffix in their names and be placed in the correct subdirectory, depending on the testing tools used. The following is the rule: 
 
-* **nodeunit_test**: contains all nodeunit tests
-* **chai-passport_test**: contains all chai-passport-strategy tests
+* **Nodeunit_test**: contains all nodeunit tests
+* **Chai-passport_test**: contains all chai-passport-strategy tests
+* **End_to_end_test**: contains all end to end tests using Selenium with chrome webdriver
 * **resource**: contains all shared resources for testing (for example, pem key file)
 
 ### How to run tests on your machine
 
-In the library root folder, type the following command to install the dependency packages:
-
-```
-    $ npm install
-```
-Then type the following command to run tests:
-
-```
-    $ npm test
-```
-Tests will run automatically and in the terminal you can see how many tests are passing/failing. Ensure all tests are passing before submitting your pull request.
+Please refer to section 6 in README.md for the test instructions.
 
 ### Automatic Travis test
 
