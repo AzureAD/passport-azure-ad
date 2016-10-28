@@ -1,4 +1,6 @@
 node_modules/
+test/End_to_end_test/app/node_modules/
+test/End_to_end_test/debug.log
 .idea/
 npm-debug.log
 federationmetadata.xml
