@@ -357,35 +357,15 @@ exports.oidc = {
     test.done();
   },
   'validateIssuer tests on v2 common endpoint': (test) => {
-    test.expect(7);
+    test.expect(5);
 
     setConfigCommon('https://www.example.com', '123', 'id_token code', 'form_post', true, null, (oidcConfig) =>
     {
-      test.throws(() => {
+      test.doesNotThrow(() => {
         new OidcStrategy(oidcConfig, noop);
       },
       Error,
-      'Should throw with validateIssuer set true on common endpoint without issuer provided'
-      );
-    });
-
-    setConfigCommon('https://www.example.com', '123', 'id_token code', 'form_post', null, null, (oidcConfig) =>
-    {
-      test.throws(() => {
-        new OidcStrategy(oidcConfig, noop);
-      },
-      Error,
-      'Should throw with the default validateIssuer value on common endpoint without issuer provided'
-      );
-    });
-
-    setConfigCommon('https://www.example.com', '123', 'id_token code', 'form_post', undefined, null, (oidcConfig) =>
-    {
-      test.throws(() => {
-        new OidcStrategy(oidcConfig, noop);
-      },
-      Error,
-      'Should throw with the default validateIssuer value on common endpoint without issuer provided'
+      'Should not throw with validateIssuer set true on common endpoint'
       );
     });
 
