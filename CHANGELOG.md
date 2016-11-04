@@ -11,7 +11,7 @@
 
   * B2C common endpoint support
 
-    Now you can use the B2C common endpoint by specifying the tenant for each login request using the `tenantIdOrName` option. A login request is any request that doesn't contain code or id_token in the responseType.
+    Now you can use the B2C common endpoint by specifying the tenant for each login request using the `tenantIdOrName` option. A login request is any request that doesn't contain code or id_token.
 
   * extensive issuer validation on common endpoint
     
