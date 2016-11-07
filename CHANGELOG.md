@@ -1,4 +1,12 @@
 <a name="3.0.1"></a>
+# 3.0.2
+
+## Changes
+
+* removed dependency on oniyi-object-transform
+
+* allow 5 minutes clock skew for token validation
+
 # 3.0.1
 
 ## OIDCStrategy
