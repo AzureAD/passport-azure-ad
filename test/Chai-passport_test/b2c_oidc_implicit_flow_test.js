@@ -86,7 +86,7 @@ var testPrepare = function(id_token_to_use, nonce_to_use, policy_to_use, action)
     testStrategy.setOptions = function(params, oauthConfig, optionsToValidate, done) {
       params.metadata.generateOidcPEM = () => { return PEMkey; };
 
-      oauthConfig.auth_endpoint = 'https://login.microsoftonline.com/sijun1b2c.onmicrosoft.com/oauth2/v2.0/authorize?p=b2c_1_signin';
+      oauthConfig.authorization_endpoint = 'https://login.microsoftonline.com/sijun1b2c.onmicrosoft.com/oauth2/v2.0/authorize?p=b2c_1_signin';
       oauthConfig.token_endpoint = 'https://login.microsoftonline.com/sijun1b2c.onmicrosoft.com/oauth2/v2.0/token?p=b2c_1_signin';
 
       optionsToValidate.validateIssuer = true;
