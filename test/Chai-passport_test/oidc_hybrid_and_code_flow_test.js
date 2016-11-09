@@ -133,7 +133,7 @@ var setReqFromAuthRespRedirect = function(id_token_in_auth_resp, code_in_auth_re
       optionsToValidate.algorithms = ['RS256'];
       optionsToValidate.nonce = nonce_to_use;
 
-      oauthConfig.auth_endpoint = "https://login.microsoftonline.com/268da1a1-9db4-48b9-b1fe-683250ba90cc/oauth2/authorize";
+      oauthConfig.authorization_endpoint = "https://login.microsoftonline.com/268da1a1-9db4-48b9-b1fe-683250ba90cc/oauth2/authorize";
       oauthConfig.redirectUrl = "http://localhost:3000/auth/openid/return";
       oauthConfig.clientID = "2abf3a52-7d86-460b-a1ef-77dc43de8aad";
       oauthConfig.token_endpoint = "https://login.microsoftonline.com/268da1a1-9db4-48b9-b1fe-683250ba90cc/oauth2/token";

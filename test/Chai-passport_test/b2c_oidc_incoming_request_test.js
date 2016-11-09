@@ -49,7 +49,7 @@ var testStrategy = new OIDCStrategy(options, function(profile, done) {});
 
 // Mock `setOptions`
 testStrategy.setOptions = function(params, oauthConfig, optionsToValidate, done) {
-  oauthConfig.auth_endpoint = 'https://login.microsoftonline.com/sijun1b2c.onmicrosoft.com/oauth2/v2.0/authorize?p=b2c_1_signin';
+  oauthConfig.authorization_endpoint = 'https://login.microsoftonline.com/sijun1b2c.onmicrosoft.com/oauth2/v2.0/authorize?p=b2c_1_signin';
   oauthConfig.token_endpoint = 'https://login.microsoftonline.com/sijun1b2c.onmicrosoft.com/oauth2/v2.0/token?p=b2c_1_signin';
 
   done();
