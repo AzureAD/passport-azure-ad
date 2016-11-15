@@ -1,4 +1,10 @@
 <a name="3.0.1"></a>
+# 3.0.3
+
+## Bug fixes
+
+* [#248](https://github.com/AzureAD/passport-azure-ad/issues/248) End_to_end_test showing up in test folder
+
 # 3.0.2
 
 ## Changes
