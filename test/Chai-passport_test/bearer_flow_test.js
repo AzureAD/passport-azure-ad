@@ -29,7 +29,7 @@ var chai = require('chai');
 chai.use(require('chai-passport-strategy'));
 var BearerStrategy = require('../../lib/index').BearerStrategy;
 
-var PemKey = 
+var PemKey =
   "-----BEGIN RSA PUBLIC KEY-----\n" +
   "MIIBCgKCAQEAvbcFrj193Gm6zeo5e2/y54Jx49sIgScv+2JO+n6NxNqQaKVnMkHc\n" +
   "z+S1j2FfpFngotwGMzZIKVCY1SK8SKZMFfRTU3wvToZITwf3W1Qq6n+h+abqpyJT\n" +
@@ -49,38 +49,76 @@ var options = {
   ignoreExpiration: true,
 };
 
-var strategy = new BearerStrategy(options, function(token, done) {
-  done(null, token.oid);
-});
+var newStrategy = function(_options) {
+  _options = Object.assign({}, options, _options)
 
-strategy.loadMetadata = function(params, next) {
-  var metadata = {oidc: {issuer: 'https://sts.windows.net/268da1a1-9db4-48b9-b1fe-683250ba90cc/', algorithms: ['RS256']}};
-  metadata.generateOidcPEM = ()=> { return PemKey; };
-  return next(null, metadata);
-};
-
-describe('test flow', function() {
-  var challenge = null;
-  var user = null;
-
-  before(function(done) {
-    chai.passport
-      .use(strategy)
-      .success(function(u, i) {
-        user = u;
-        done();
-      })
-      .req(function(req) {
-  	    req.headers.authorization = 'Bearer ' + access_token;
-      })
-      .fail(function(c) {
-  	    challenge = c;
-  	    done();
-      })
-      .authenticate();
+  var strategy = new BearerStrategy(_options, function(req, token, done) {
+    if (!done) {
+      done = token;
+      token = req;
+      done(null, token.oid);
+    }
+    else {
+      done(null, req);
+    }
   });
 
-  it('should succeed', function() {
-    chai.expect(user).to.equal('7912fe7b-b5ab-425b-bb1f-0e83b99fca7f');
+  strategy.loadMetadata = function(params, next) {
+    var metadata = {oidc: {issuer: 'https://sts.windows.net/268da1a1-9db4-48b9-b1fe-683250ba90cc/', algorithms: ['RS256']}};
+    metadata.generateOidcPEM = ()=> { return PemKey; };
+    return next(null, metadata);
+  };
+
+  return strategy;
+};
+
+
+describe('bearer flow', function() {
+
+  context('passReqToCallback = true', function() {
+    var req = null;
+
+    before(function (done) {
+      chai.passport
+        .use(newStrategy({ passReqToCallback: true }))
+        .success(function (r, u, i) {
+          req = r;
+          done();
+        })
+        .req(function (req) {
+          req.headers.authorization = 'Bearer ' + access_token;
+        })
+        .authenticate();
+    });
+
+    it('should cause req to be passed to callback', function() {
+      chai.expect(req.url).to.equal('/');
+    });
+  });
+
+  context('with valid params', function() {
+    var challenge = null;
+    var user = null;
+
+    before(function (done) {
+      chai.passport
+        .use(newStrategy())
+        .success(function (u, i) {
+          user = u;
+          done();
+        })
+        .req(function (req) {
+          req.headers.authorization = 'Bearer ' + access_token;
+        })
+        .fail(function (c) {
+          challenge = c;
+          done();
+        })
+        .authenticate();
+    });
+
+    it('should succeed', function() {
+      chai.expect(user).to.equal('7912fe7b-b5ab-425b-bb1f-0e83b99fca7f');
+    });
   });
 });
