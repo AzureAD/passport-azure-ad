@@ -26,6 +26,9 @@
   },
   "main": "./lib",
   "devDependencies": {
+    "chai": "2.x.x",
+    "chai-passport-strategy": "1.x.x",
+    "chromedriver": "^2.24.1",
     "eslint": "^2.9.0",
     "eslint-config-oniyi": "^3.0.0",
     "grunt": "^1.0.1",
@@ -33,12 +36,12 @@
     "grunt-contrib-nodeunit": "^1.0.0",
     "grunt-contrib-uglify": "^1.0.1",
     "grunt-contrib-watch": "^1.0.0",
-    "grunt-mocha-test": "^0.12.7",
     "grunt-eslint": "^18.1.0",
-    "nodeunit": "^0.9.1",
+    "grunt-mocha-test": "^0.12.7",
     "mocha": "^3.0.2",
-    "chai": "2.x.x",
-    "chai-passport-strategy": "1.x.x"
+    "nodeunit": "^0.9.1",
+    "selenium-webdriver": "^3.0.0",
+    "server-graceful-shutdown": "^0.1.2"
   },
   "dependencies": {
     "async": "^1.5.2",
@@ -54,7 +57,7 @@
     "valid-url": "^1.0.6"
   },
   "scripts": {
-    "test": "grunt run_all_tests"
+    "test": "cd test/End_to_end_test/app && npm install && cd ../../ && grunt run_all_tests"
   },
   "engines": {
     "node": ">= 4.0.1"
