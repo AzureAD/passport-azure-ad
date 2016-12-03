@@ -71,7 +71,7 @@ var options = {
 // functions used to change the fields in options
 var setIgnoreExpirationFalse = function(options) { options.ignoreExpiration = false; };
 var setWrongIssuer = function(options) { options.issuer = 'wrong_issuer'; };
-var setWrongAudience = function(options) { options.audience = 'wrong audience'; };
+var setWrongAudience = function(options) { options.audience = 'wrong_audience'; };
 
 var testStrategy = new OIDCStrategy(options, function(profile, done) {
     done(null, profile.oid);
@@ -230,7 +230,7 @@ describe('OIDCStrategy hybrid flow test', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, policy, [setWrongAudience]));
 
     it('should fail with invalid audience', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid. expected: wrong audience');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid. expected: wrong_audience,spn:wrong_audience');
     });
   });
 
@@ -322,7 +322,7 @@ describe('OIDCStrategy authorization code flow test', function() {
       [setWrongAudience]));
 
     it('should fail with invalid audience', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid. expected: wrong audience');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid. expected: wrong_audience,spn:wrong_audience');
     });
   });
 
