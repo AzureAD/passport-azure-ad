@@ -184,7 +184,7 @@ describe('B2C OIDCStrategy implicit flow test', function() {
     before(testPrepare(id_token, nonce, 'wrong policy'));
 
     it('should fail', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: acr in id_token does not match the policy used');
+      chai.expect(challenge).to.equal('In _validateResponse: policy in id_token does not match the policy used');
     });
   });
 });

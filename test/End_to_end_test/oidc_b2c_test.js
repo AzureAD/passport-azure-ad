@@ -234,6 +234,9 @@ var checkResult = (test_app_config, done) => {
     resultPageValidation(test_app_config, driver);
   })
   .then(() => {
+    driver.get('http://localhost:3000/login?p=b2c_1_signin_acr');
+  })
+  .then(() => {
     driver.get('http://localhost:3000/login?p=b2c_1_resetpassword');
     driver.wait(until.titleIs('User Details'), 10000);
   })

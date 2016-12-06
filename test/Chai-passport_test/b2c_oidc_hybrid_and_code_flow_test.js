@@ -196,7 +196,7 @@ describe('OIDCStrategy hybrid flow test', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, 'wrong_policy'));
 
     it('should fail with invalid policy', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: acr in id_token does not match the policy used');
+      chai.expect(challenge).to.equal('In _validateResponse: policy in id_token does not match the policy used');
     });
   });
 
@@ -311,7 +311,7 @@ describe('OIDCStrategy authorization code flow test', function() {
     before(setReqFromAuthRespRedirect(null, code, nonce, 'wrong_policy'));
 
     it('should fail with invalid policy', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: acr in id_token does not match the policy used');
+      chai.expect(challenge).to.equal('In _validateResponse: policy in id_token does not match the policy used');
     });
   });
 
