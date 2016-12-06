@@ -87,6 +87,16 @@ var setTokenResponse = function(id_token_in_token_resp, access_token_in_token_re
   };
 };
 
+// mock the token response we want when we consume the code, and use 'bearer' fpr token_type
+var setTokenResponseWithLowerCaseBearer = function(id_token_in_token_resp, access_token_in_token_resp) {
+  return () => {
+    OAuth2.prototype.getOAuthAccessToken = function(code, params, callback) {
+      params = {'id_token': id_token_in_token_resp, 'token_type': 'bearer'};
+      callback(null, access_token_in_token_resp, null, params);
+    }
+  };
+};
+
 // used to remember the error message in self.fail
 var challenge;
 // used to remember the 'user' when we successfully log in
@@ -227,6 +237,15 @@ describe('OIDCStrategy hybrid flow test', function() {
   /*
    * test the access_token, id_token received from code consumpution
    */
+
+  describe('success', function() {
+    before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, policy,
+      [setTokenResponseWithLowerCaseBearer(id_token_in_token_resp, access_token)]));
+
+    it('should succeed with expected user', function() {
+      chai.expect(user).to.equal('4329d6bc-0f84-45d8-8709-2c8b091357d1');
+    });
+  });
 
   describe('success', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, policy,
