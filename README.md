@@ -429,6 +429,12 @@ following:
 
   * Application claims: 'Display Name', Email Addresses', 'Given Name', 'Identity Provider', 'Surname', 'Users Object ID'
 
+* 'B2C_1_signin_acr': 
+
+  * Application claims: 'Display Name', Email Addresses', 'Given Name', 'Identity Provider', 'Surname', 'Users Object ID'
+
+  * After creating this policy, go the blade of this policy, click 'Edit' and then 'Token, session & SSO config'. Now switch the 'Claim representing policy ID' from 'tfp' to 'acr' and save the change.
+
 * 'B2C_1_resetpassword': 
 
   * Application claims: 'Email Addresses', 'Given Name', 'Users Object ID'
