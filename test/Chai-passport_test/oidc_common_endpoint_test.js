@@ -106,6 +106,7 @@ var testPrepare = function(id_token_to_use, nonce_to_use, action) {
       optionsToValidate.ignoreExpiration = true;
       optionsToValidate.algorithms = ['RS256'];
       optionsToValidate.nonce = nonce_to_use;
+      optionsToValidate.clockSkew = testStrategy._options.clockSkew;
 
       if (action) {
         for (let i = 0; i < action.length; i++)
