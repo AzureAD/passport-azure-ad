@@ -48,13 +48,14 @@ var client_config = {};
 var server_config,  server_config_with_req, server_config_allow_multiAud,
 server_config_wrong_issuer, server_config_wrong_identityMetadata, 
 server_config_wrong_audience, server_config_wrong_issuer_no_validateIssuer,
+server_config_multiple_audience,
 server_config_common_endpoint, server_config_common_endpoint_with_req,
 server_config_common_endpoint_allow_multiAud, server_config_common_endpoint_wrong_issuer,
 server_config_common_endpoint_wrong_audience,
 server_config_common_endpoint_wrong_issuer_no_validateIssuer = {};
 
-
 var driver;
+var client_already_logged_in = false;
 var client;
 
 /******************************************************************************
@@ -98,7 +99,7 @@ var apply_test_parameters = (done) => {
     validateIssuer: true,
     passReqToCallback: false,
     issuer: null,
-    audience: 'https://graph.windows.net',
+    audience: null,  // passport is expected to use clientID by default if audience is not provided
     allowMultiAudiencesInToken: false,
     loggingLevel: null,
   };
@@ -122,6 +123,9 @@ var apply_test_parameters = (done) => {
   server_config_wrong_issuer_no_validateIssuer.issuer = 'wrong_issuer';
   server_config_wrong_issuer_no_validateIssuer.validateIssuer = false;
 
+  server_config_multiple_audience = JSON.parse(JSON.stringify(server_config));
+  server_config_multiple_audience.audience = ['https://graph.windows.net', test_parameters.clientID];
+
   server_config_common_endpoint = JSON.parse(JSON.stringify(server_config));
   server_config_common_endpoint.identityMetadata = 'https://login.microsoftonline.com/common/.well-known/openid-configuration';
   server_config_common_endpoint.issuer = 'https://sts.windows.net/' + test_parameters.tenantID + '/';
@@ -143,6 +147,33 @@ var apply_test_parameters = (done) => {
   server_config_common_endpoint_wrong_issuer_no_validateIssuer.validateIssuer = false;
 
   done();  
+};
+
+var get_token_for_resource = (resource, done) => {
+  if (!driver)
+    driver = chromedriver.get_driver();
+  
+  client = require('./app/client_for_api')(client_config, { resourceURL: resource });
+
+  driver.get('http://localhost:3000')
+  .then(() => {
+    driver.wait(until.titleIs('Example'), 10000);
+    driver.findElement(By.xpath('/html/body/p/a')).click();
+  }).then(() => {
+    // we only need to enter the user name and password if we haven't logged in yet
+    if (!client_already_logged_in) {
+      driver.wait(until.titleIs('Sign in to your account'), 10000); 
+      var usernamebox = driver.findElement(By.name('login'));
+      usernamebox.sendKeys(test_parameters.username);
+      var passwordbox = driver.findElement(By.name('passwd'));
+      passwordbox.sendKeys(test_parameters.password);
+      driver.sleep(LOGIN_WAITING_TIME);
+      passwordbox.sendKeys(webdriver.Key.ENTER);
+      client_already_logged_in = true;
+    }
+  }).then(() => {
+    done();
+  });
 };
 
 var checkResult = (test_app_config, result, done) => {
@@ -169,26 +200,8 @@ describe('bearer test', function() {
     get_test_parameters(apply_test_parameters, done);
   });
 
-  it('get token for the rest tests', function(done) {
-    driver = chromedriver.get_driver();
-    client = require('./app/client_for_api')(client_config, { resourceURL: 'https://graph.windows.net' });
-
-    driver.get('http://localhost:3000')
-    .then(() => {
-      driver.wait(until.titleIs('Example'), 10000);
-      driver.findElement(By.xpath('/html/body/p/a')).click();
-    }).then(() => {
-      driver.wait(until.titleIs('Sign in to your account'), 10000); 
-      var usernamebox = driver.findElement(By.name('login'));
-      usernamebox.sendKeys(test_parameters.username);
-      var passwordbox = driver.findElement(By.name('passwd'));
-      passwordbox.sendKeys(test_parameters.password);
-      driver.sleep(LOGIN_WAITING_TIME);
-      passwordbox.sendKeys(webdriver.Key.ENTER);
-    }).then(() => {
-      expect('1').to.equal('1');
-      done();
-    });
+  it('get token for the client itself', function(done) {
+    get_token_for_resource(test_parameters.clientID, done);
   });
 
   /******************************************************************************
@@ -251,6 +264,31 @@ describe('bearer test', function() {
     checkResult(server_config_common_endpoint_wrong_issuer, 'Unauthorized', done);
   });
 
+  /******************************************************************************
+   *  test with multiple audiences in config
+   *****************************************************************************/
+
+  // first test the token whose audience is itself (the clientID of this app)
+  it('should succeed with multiple audience provided in config and access token for itself', function(done) {
+    checkResult(server_config_multiple_audience, 'succeeded', done);
+  });
+
+  // shut down the client which can get access_token for itself
+  it('shutdown client', function(done) {
+    expect('1').to.equal('1');
+    client.shutdown(done);
+  });
+  
+  // create a client which can get access_token for graph and generate an access_token
+  it('get token for graph', function(done) {
+    get_token_for_resource('https://graph.windows.net', done);
+  });
+
+  it('should succeed with multiple audience provided in config and access token for graph', function(done) {
+    checkResult(server_config_multiple_audience, 'succeeded', done);
+  });
+
+  // clean up work
   it('close service', function(done) {
     expect('1').to.equal('1');
     driver.quit();
