@@ -117,6 +117,7 @@ var setReqFromAuthRespRedirect = function(id_token_in_auth_resp, code_in_auth_re
       optionsToValidate.ignoreExpiration = true;
       optionsToValidate.algorithms = ['RS256'];
       optionsToValidate.nonce = nonce_to_use;
+      optionsToValidate.clockSkew = testStrategy._options.clockSkew;
 
       oauthConfig.authorization_endpoint = "https://login.microsoftonline.com/sijun1b2c.onmicrosoft.com/oauth2/v2.0/authorize?p=b2c_1_signin";
       oauthConfig.redirectUrl = "https://localhost:3000/auth/openid/return";

@@ -65,6 +65,7 @@ passport.use(new OIDCStrategy({
     scope: config.creds.scope,
     loggingLevel: config.creds.loggingLevel,
     nonceLifetime: config.creds.nonceLifetime,
+    clockSkew: config.creds.clockSkew,
   },
   function(iss, sub, profile, accessToken, refreshToken, done) {
     if (!profile.oid) {
@@ -165,6 +166,10 @@ passport.use(new OIDCStrategy({
 * `nonceLifetime`  (Optional)
   
   The lifetime of nonce in session in seconds. The default value is 3600 seconds.
+
+* `clockSkew`  (Optional)
+
+  This value is the clock skew (in seconds) allowed in token validation. It must be a positive integer. The default value is 300 seconds.
   
 ##### 5.1.1.3 Verify callback
 
@@ -267,6 +272,7 @@ var options = {
   allowMultiAudiencesInToken: config.creds.allowMultiAudiencesInToken,
   audience: config.creds.audience,
   loggingLevel: config.creds.loggingLevel,
+  clockSkew: config.creds.clockSkew,
 };
 
 var bearerStrategy = new BearerStrategy(options,
@@ -352,6 +358,10 @@ var bearerStrategy = new BearerStrategy(options,
 * `loggingLevel`  (Optional)
 
   Logging level. 'info', 'warn' or 'error'.
+
+* `clockSkew`  (Optional)
+
+  This value is the clock skew (in seconds) allowed in token validation. It must be a positive integer. The default value is 300 seconds.
 
 ##### 5.2.1.3 Verify callback
 
