@@ -243,6 +243,12 @@ the strategy.
   * This option only applies to the login request, in other words, the request which is not supposed to contain code or id_token. Passport saves the `tenantIdOrName` value in session before sending the authentication request. When we receive a request containing code or id_token, we retrieve the saved `tenantIdOrName` value from session and use that value.
   * If you are using B2C common endpoint, then `tenantIdOrName` must be used for every login request.
 
+* `domain_hint`: if you want to specify the domain that the user should use to sign in. This option is not supported for B2C tenant.
+
+* `login_hint`: if you want to prefill the username with a given value in the login page. The value should be the `upn` of an user, not the email (most times they are the same though). 
+
+* `prompt`: v1 and v2 endpoint support `login`, `consent` and `admin_conset`; B2C endpoint only supports `login`. 
+
 Example:
 
 ```

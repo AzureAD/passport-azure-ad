@@ -164,7 +164,15 @@ module.exports = function(strategyOptions, authenicateOptions, verifyFuncNumber)
     res.render('result', { user: req.user });
   });
 
-  app.get('/login', passport.authenticate('azuread-openidconnect', { tenantIdOrName: authenicateOptions.tenantIdOrName, resourceURL: authenicateOptions.resourceURL, customState: authenicateOptions.customState, failureRedirect: '/result' }));
+  app.get('/login', passport.authenticate('azuread-openidconnect', { 
+    tenantIdOrName: authenicateOptions.tenantIdOrName, 
+    resourceURL: authenicateOptions.resourceURL, 
+    customState: authenicateOptions.customState,
+    prompt: authenicateOptions.prompt,
+    domain_hint: authenicateOptions.domain_hint,
+    login_hint: authenicateOptions.login_hint,
+    failureRedirect: '/result' 
+  }));
 
   app.get('/auth/openid/return',
     passport.authenticate('azuread-openidconnect', { failureRedirect: '/result' }),
