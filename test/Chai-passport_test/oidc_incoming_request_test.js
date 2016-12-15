@@ -36,11 +36,12 @@ var options = {
     redirectUrl: 'https://returnURL',
     clientID: 'my_client_id',
     clientSecret: 'my_client_secret',
-    identityMetadata: 'https://login.microsoftonline.com/xxx.onmicrosoft.com/.well-known/openid-configuration',
+    identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
     responseType: 'id_token',
     responseMode: 'form_post',
     validateIssuer: true,
     passReqToCallback: false,
+    issuer: 'issuer',
     algorithms: ['RS256'],
     sessionKey: 'my_key'    //optional sessionKey
 };
@@ -172,6 +173,59 @@ describe('OIDCStrategy token in request checking', function() {
 
     it('should fail', function() {
       chai.expect(challenge).to.equal('In collectInfoFromReq: neither access token nor refresh token is expected in the incoming request');
+    });
+  });
+});
+
+describe('OIDCStrategy default response mode test', function() {
+  var redirectUrl;
+
+  var testPrepare = function(flow, mode) {
+    redirectUrl = null;
+
+    return function(done) {
+      options.responseType = flow;
+      options.responseMode = mode;
+      var test_strategy_response_mode = new OIDCStrategy(options, function(profile, done) {});
+
+      chai.passport
+      .use(test_strategy_response_mode)
+      .redirect(function(u) {redirectUrl = u; done(); })
+      .req(function(req) {
+        req.session = {}; 
+        req.query = {}; 
+      })
+      .authenticate({});
+    };
+  };
+
+  describe('test responseMode for code flow', function() {
+    before(testPrepare('code', 'query'));
+
+    it('should not send the default responseMode: query', function(done) {
+      var u = url.parse(redirectUrl, true);
+      chai.expect(u.response_mode).to.equal(undefined);
+      done();
+    });
+  });
+
+  describe('test responseMode for hybrid flow', function() {
+    before(testPrepare('code id_token', 'form_post'));
+
+    it('should send the non-default responseMode: form_post', function(done) {
+      var u = url.parse(redirectUrl, true);
+      chai.expect(u.query.response_mode).to.equal('form_post');
+      done();
+    });
+  });
+
+  describe('test responseMode for implicit flow', function() {
+    before(testPrepare('id_token', 'form_post'));
+
+    it('should send the non-default responseMode: form_post', function(done) {
+      var u = url.parse(redirectUrl, true);
+      chai.expect(u.query.response_mode).to.equal('form_post');
+      done();
     });
   });
 });
