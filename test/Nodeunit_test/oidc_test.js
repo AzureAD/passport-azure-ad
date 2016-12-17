@@ -57,6 +57,7 @@ function setConfig(redirectUrl, clientID, responseType, responseMode, validateIs
     responseType: responseType,
     responseMode: responseMode,
     validateIssuer: validateIssuer,
+    clientSecret: 'secret'
   };
 
   testCallback(config);
@@ -71,6 +72,7 @@ function setConfigCommon(redirectUrl, clientID, responseType, responseMode, vali
     responseMode: responseMode,
     validateIssuer: validateIssuer,
     issuer: issuer,
+    clientSecret: 'secret'
   };
 
   testCallback(config);

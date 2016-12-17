@@ -32,6 +32,7 @@ var async = require('async');
 var clientId = process.env.KEY_VAULT_CLIENT_ID;
 var clientSecret = process.env.KEY_VAULT_CLIENT_SECRET;
 
+
 var authenticator = (challenge, callback) => {
   // Create a new authentication context. 
   var context = new adalNode.AuthenticationContext(challenge.authorization);
@@ -57,8 +58,12 @@ var b2c_kv_name = 'PassportB2C-lsj31415926atgmaildotcom';
 var b2c_password;
 var v1_client_secret_kv_name = 'PassportV1ClientSecret';
 var v1_client_secret;
+var v1_private_pem_key_kv_name = 'PassportV1PrivatePEMKey';
+var v1_private_pem_key;
 var v2_client_secret_kv_name = 'PassportV2ClientSecret';
 var v2_client_secret;
+var v2_private_pem_key_kv_name = 'PassportV2PrivatePEMKey';
+var v2_private_pem_key;
 var b2c_client_secret_kv_name = 'PassportB2CClientSecret';
 var b2c_client_secret;
 
@@ -99,6 +104,22 @@ exports.set_test_parameters = (callback) => {
     },
 
     (next) => {
+      client.getSecret(vaultUri + '/secrets/' + v1_private_pem_key_kv_name, function (err, result) {
+        if (err) throw err;
+        v1_private_pem_key = result.value.replace(/\\n/g, '\n');
+        return next();
+      });
+    },
+
+    (next) => {
+      client.getSecret(vaultUri + '/secrets/' + v2_private_pem_key_kv_name, function (err, result) {
+        if (err) throw err;
+        v2_private_pem_key = result.value.replace(/\\n/g, '\n');
+        return next();
+      });    
+    },
+
+    (next) => {
       client.getSecret(vaultUri + '/secrets/' + b2c_client_secret_kv_name, function (err, result) {
         if (err) throw err;
         b2c_client_secret = result.value;
@@ -111,6 +132,8 @@ exports.set_test_parameters = (callback) => {
         tenantID: 'd34a1bb7-3481-4d5f-8b94-f3cc27bf8eac',
         clientID: '53d378fd-9c04-4e99-bb8e-6c9f144fe440',
         clientSecret: v1_client_secret,
+        thumbprint: 'Z2mGlF+IHL49Q9a66mDQLWG/lfs=',
+        privatePEMKey: v1_private_pem_key,
         username: 'manNonMFA1@msidlab5.onmicrosoft.com',
         password: v1_v2_password,
         oid: 'a9590750-7562-45f5-af5b-41f504843766'
@@ -120,6 +143,8 @@ exports.set_test_parameters = (callback) => {
         tenantID: 'd34a1bb7-3481-4d5f-8b94-f3cc27bf8eac',
         clientID: 'fa300e1e-ba08-4717-b97f-af77a9f65199',
         clientSecret: v2_client_secret,
+        thumbprint: 'IjDSnLDGTTqGCFOgfMURlYtKMro',
+        privatePEMKey: v2_private_pem_key,
         username: 'manNonMFA1@msidlab5.onmicrosoft.com',
         password: v1_v2_password,
         oid: 'a9590750-7562-45f5-af5b-41f504843766'

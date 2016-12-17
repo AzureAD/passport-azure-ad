@@ -58,6 +58,7 @@ wfp+cqZbCd9TENyHaTb8iA27s+73L3ExOQIDAQAB\n\
 var options = {
   redirectUrl: 'https://localhost:3000/auth/openid/return',
   clientID: 'f0b6e4eb-2d8c-40b6-b9c6-e26d1074846d',
+  clientSecret: 'secret',
   identityMetadata: 'https://login.microsoftonline.com/mytenant.onmicrosoft.com/v2.0/.well-known/openid-configuration',
   responseType: 'code id_token',
   responseMode: 'form_post',
@@ -80,20 +81,30 @@ var testStrategy = new OIDCStrategy(options, function(profile, done) {
 // mock the token response we want when we consume the code
 var setTokenResponse = function(id_token_in_token_resp, access_token_in_token_resp) {
   return () => {
-    OAuth2.prototype.getOAuthAccessToken = function(code, params, callback) {
-      params = {'id_token': id_token_in_token_resp, 'token_type': 'Bearer'};
-      callback(null, access_token_in_token_resp, null, params);
-    }
+    testStrategy._getAccessTokenBySecretOrAssertion = function(code, oauthConfig, next, callback) {
+      var params = {
+        'id_token': id_token_in_token_resp, 
+        'token_type': 'Bearer',
+        'access_token': access_token_in_token_resp,
+        'refresh_token': null
+      };
+      callback(null, params);
+    };
   };
 };
 
 // mock the token response we want when we consume the code, and use 'bearer' fpr token_type
 var setTokenResponseWithLowerCaseBearer = function(id_token_in_token_resp, access_token_in_token_resp) {
   return () => {
-    OAuth2.prototype.getOAuthAccessToken = function(code, params, callback) {
-      params = {'id_token': id_token_in_token_resp, 'token_type': 'bearer'};
-      callback(null, access_token_in_token_resp, null, params);
-    }
+    testStrategy._getAccessTokenBySecretOrAssertion = function(code, oauthConfig, next, callback) {
+      var params = {
+        'id_token': id_token_in_token_resp, 
+        'token_type': 'Bearer',
+        'access_token': access_token_in_token_resp,
+        'refresh_token': null
+      };
+      callback(null, params);
+    };
   };
 };
 

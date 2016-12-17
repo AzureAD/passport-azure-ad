@@ -50,7 +50,8 @@ var test_parameters = {};
 // tenant specific endpoint configurations
 var config_template, hybrid_config, hybrid_config_alternative, code_config,
 implicit_config, hybrid_config_passReqToCallback, code_config_query, 
-hybrid_config_noIssuer, hybrid_config_with_scope = {};
+hybrid_config_noIssuer, hybrid_config_with_scope,
+hybrid_config_clientAssertion, code_config_clientAssertion = {};
 
 // common endpoint configurations
 var config_template_common_endpoint, hybrid_config_common_endpoint, 
@@ -143,6 +144,18 @@ var apply_test_parameters = (done) => {
   // - hybrid flow with scope value ['email', 'profile', 'offline_access', 'https://graph.microsoft.com/mail.read']
   hybrid_config_with_scope = JSON.parse(JSON.stringify(config_template));
   hybrid_config_with_scope.scope = ['email', 'profile', 'offline_access', 'https://graph.microsoft.com/mail.read'];
+
+  // 6. Hybird flow using client assertion
+  hybrid_config_clientAssertion = JSON.parse(JSON.stringify(hybrid_config));
+  hybrid_config_clientAssertion.thumbprint = test_parameters.thumbprint;
+  hybrid_config_clientAssertion.privatePEMKey = test_parameters.privatePEMKey;
+  hybrid_config_clientAssertion.clientSecret = null;
+
+  // 7. Code flow using client assertion
+  code_config_clientAssertion = JSON.parse(JSON.stringify(code_config));
+  code_config_clientAssertion.thumbprint = test_parameters.thumbprint;
+  code_config_clientAssertion.privatePEMKey = test_parameters.privatePEMKey;
+  code_config_clientAssertion.clientSecret = null;  
 
   /******************************************************************************
    *  Common endpoint configurations
@@ -346,6 +359,20 @@ describe('oidc v2 positive test', function() {
     checkResult(implicit_config, done);
   }); 
 
+  /****************************************************************************
+   *  Test client assertion
+   ***************************************************************************/
+  
+  // hybrid flow using client assertion
+  it('should succeed', function(done) {
+    checkResult(hybrid_config_clientAssertion, done);
+  }); 
+
+  // code flow using client assertion
+  it('should succeed', function(done) {
+    checkResult(code_config_clientAssertion, done);
+  }); 
+  
   /***************************************************************************
    *  Test various response type for common endpoint
    **************************************************************************/

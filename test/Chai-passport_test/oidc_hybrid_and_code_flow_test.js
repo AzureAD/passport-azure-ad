@@ -61,6 +61,7 @@ KzveKf3l5UU3c6PkGy+BB3E/ChqFm6sPWwIDAQAB\n\
 var options = {
   redirectUrl: 'https://localhost:3000/auth/openid/return',
   clientID: '2abf3a52-7d86-460b-a1ef-77dc43de8aad',
+  clientSecret: 'secret',
   identityMetadata: 'https://login.microsoftonline.com/sijun.onmicrosoft.com/.well-known/openid-configuration',
   responseType: 'id_token code',
   responseMode: 'form_post',
@@ -105,9 +106,14 @@ var setUserInfoResponse = function(sub_choice) {
 // mock the token response we want when we consume the code
 var setTokenResponse = function(id_token_in_token_resp, access_token_in_token_resp) {
   return () => {
-    OAuth2.prototype.getOAuthAccessToken = function(code, params, callback) {
-      params = {'id_token': id_token_in_token_resp, 'token_type': 'Bearer'};
-      callback(null, access_token_in_token_resp, refresh_token, params);
+    testStrategy._getAccessTokenBySecretOrAssertion = function(code, oauthConfig, next, callback) {
+      var params = {
+        'id_token': id_token_in_token_resp, 
+        'token_type': 'Bearer',
+        'access_token': access_token_in_token_resp,
+        'refresh_token': refresh_token
+      };
+      callback(null, params);
     }
   };
 };
