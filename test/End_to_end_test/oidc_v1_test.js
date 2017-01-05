@@ -37,6 +37,7 @@ var create_app = require('./app/app');
 
 var chai = require('chai');
 var expect = chai.expect;
+var fs = require('fs');
 
 const TEST_TIMEOUT = 600000; // 600 seconds
 const LOGIN_WAITING_TIME = 1000; // 1 second
@@ -64,6 +65,7 @@ var hybrid_config_common_endpoint_wrong_issuer,
 hybrid_config_common_endpoint_short_lifetime, 
 hybrid_config_common_endpoint_wrong_secret, 
 hybrid_config_clientAssertion_invalid_pemKey,
+hybrid_config_clientAssertion_unregistered_pemKey,
 hybrid_config_clientAssertion_wrong_thumbprint = {};
 
 // drivers needed for the tests
@@ -211,7 +213,12 @@ var apply_test_parameters = (done) => {
   hybrid_config_clientAssertion_wrong_thumbprint.thumbprint = 'wrongThumbprint';
   hybrid_config_clientAssertion_wrong_thumbprint.privatePEMKey = test_parameters.privatePEMKey;
   hybrid_config_clientAssertion_wrong_thumbprint.clientSecret = null;
-
+  // 5. hybrid flow using client assertion with unregistered privatePEMKey
+  var unregistered_privatePEMKey = fs.readFileSync(__dirname + '/../resource/private.pem', 'utf8');
+  hybrid_config_clientAssertion_unregistered_pemKey = JSON.parse(JSON.stringify(hybrid_config));
+  hybrid_config_clientAssertion_unregistered_pemKey.thumbprint = test_parameters.thumbprint;
+  hybrid_config_clientAssertion_unregistered_pemKey.privatePEMKey = unregistered_privatePEMKey;
+  hybrid_config_clientAssertion_unregistered_pemKey.clientSecret = null;
   done();  
 };
 
@@ -629,6 +636,11 @@ describe('oidc v1 negative test', function() {
   // wrong thumbprint
   it('should fail with wrong thumbprint', function(done) {
     checkInvalidResult(hybrid_config_clientAssertion_wrong_thumbprint, done);
+  });
+
+  // unregistered privatePEMKey
+  it('should fail with unregistered privatePEMKey', function(done) {
+    checkInvalidResult(hybrid_config_clientAssertion_unregistered_pemKey, done);
   });
 
   it('close service', function(done) {

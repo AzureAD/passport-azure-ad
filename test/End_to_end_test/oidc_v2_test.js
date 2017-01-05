@@ -37,6 +37,7 @@ var create_app = require('./app/app');
 
 var chai = require('chai');
 var expect = chai.expect;
+var fs = require('fs');
 
 const TEST_TIMEOUT = 600000; // 600 seconds
 const LOGIN_WAITING_TIME = 1000; // 1 second
@@ -61,6 +62,7 @@ hybrid_config_common_endpoint_with_scope = {};
 
 // invalid configurations
 var hybrid_config_common_endpoint_wrong_issuer, hybrid_config_common_endpoint_wrong_secret,
+hybrid_config_clientAssertion_unregistered_pemKey,
 hybrid_config_invalid_identityMetadata = {};
 
 // driver needed for the tests
@@ -206,6 +208,13 @@ var apply_test_parameters = (done) => {
   // 3. invalid identityMetadata
   hybrid_config_invalid_identityMetadata = JSON.parse(JSON.stringify(config_template_common_endpoint));
   hybrid_config_invalid_identityMetadata.identityMetadata = 'https://login.microsoftonline.com/common/v2.0/.well-known/wrong';
+
+  // 4. hybrid flow using client assertion with unregistered privatePEMKey
+  var unregistered_privatePEMKey = fs.readFileSync(__dirname + '/../resource/private.pem', 'utf8');
+  hybrid_config_clientAssertion_unregistered_pemKey = JSON.parse(JSON.stringify(hybrid_config));
+  hybrid_config_clientAssertion_unregistered_pemKey.thumbprint = test_parameters.thumbprint;
+  hybrid_config_clientAssertion_unregistered_pemKey.privatePEMKey = unregistered_privatePEMKey;
+  hybrid_config_clientAssertion_unregistered_pemKey.clientSecret = null;
 
   done();
 };
@@ -468,6 +477,11 @@ describe('oidc v2 negative test', function() {
     checkInvalidResult(hybrid_config_common_endpoint_wrong_secret, done);
   });
 
+  // unregistered privatePEMKey
+  it('should fail with unregistered privatePEMKey', function(done) {
+    checkInvalidResult(hybrid_config_clientAssertion_unregistered_pemKey, done);
+  });
+  
   it('close service', function(done) {
     expect('1').to.equal('1');
     driver.quit();
