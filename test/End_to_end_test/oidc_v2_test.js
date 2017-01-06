@@ -37,6 +37,7 @@ var create_app = require('./app/app');
 
 var chai = require('chai');
 var expect = chai.expect;
+var fs = require('fs');
 
 const TEST_TIMEOUT = 600000; // 600 seconds
 const LOGIN_WAITING_TIME = 1000; // 1 second
@@ -50,7 +51,8 @@ var test_parameters = {};
 // tenant specific endpoint configurations
 var config_template, hybrid_config, hybrid_config_alternative, code_config,
 implicit_config, hybrid_config_passReqToCallback, code_config_query, 
-hybrid_config_noIssuer, hybrid_config_with_scope = {};
+hybrid_config_noIssuer, hybrid_config_with_scope,
+hybrid_config_clientAssertion, code_config_clientAssertion = {};
 
 // common endpoint configurations
 var config_template_common_endpoint, hybrid_config_common_endpoint, 
@@ -60,6 +62,7 @@ hybrid_config_common_endpoint_with_scope = {};
 
 // invalid configurations
 var hybrid_config_common_endpoint_wrong_issuer, hybrid_config_common_endpoint_wrong_secret,
+hybrid_config_clientAssertion_unregistered_pemKey,
 hybrid_config_invalid_identityMetadata = {};
 
 // driver needed for the tests
@@ -144,6 +147,18 @@ var apply_test_parameters = (done) => {
   hybrid_config_with_scope = JSON.parse(JSON.stringify(config_template));
   hybrid_config_with_scope.scope = ['email', 'profile', 'offline_access', 'https://graph.microsoft.com/mail.read'];
 
+  // 6. Hybird flow using client assertion
+  hybrid_config_clientAssertion = JSON.parse(JSON.stringify(hybrid_config));
+  hybrid_config_clientAssertion.thumbprint = test_parameters.thumbprint;
+  hybrid_config_clientAssertion.privatePEMKey = test_parameters.privatePEMKey;
+  hybrid_config_clientAssertion.clientSecret = null;
+
+  // 7. Code flow using client assertion
+  code_config_clientAssertion = JSON.parse(JSON.stringify(code_config));
+  code_config_clientAssertion.thumbprint = test_parameters.thumbprint;
+  code_config_clientAssertion.privatePEMKey = test_parameters.privatePEMKey;
+  code_config_clientAssertion.clientSecret = null;  
+
   /******************************************************************************
    *  Common endpoint configurations
    *****************************************************************************/
@@ -193,6 +208,13 @@ var apply_test_parameters = (done) => {
   // 3. invalid identityMetadata
   hybrid_config_invalid_identityMetadata = JSON.parse(JSON.stringify(config_template_common_endpoint));
   hybrid_config_invalid_identityMetadata.identityMetadata = 'https://login.microsoftonline.com/common/v2.0/.well-known/wrong';
+
+  // 4. hybrid flow using client assertion with unregistered privatePEMKey
+  var unregistered_privatePEMKey = fs.readFileSync(__dirname + '/../resource/private.pem', 'utf8');
+  hybrid_config_clientAssertion_unregistered_pemKey = JSON.parse(JSON.stringify(hybrid_config));
+  hybrid_config_clientAssertion_unregistered_pemKey.thumbprint = test_parameters.thumbprint;
+  hybrid_config_clientAssertion_unregistered_pemKey.privatePEMKey = unregistered_privatePEMKey;
+  hybrid_config_clientAssertion_unregistered_pemKey.clientSecret = null;
 
   done();
 };
@@ -346,6 +368,20 @@ describe('oidc v2 positive test', function() {
     checkResult(implicit_config, done);
   }); 
 
+  /****************************************************************************
+   *  Test client assertion
+   ***************************************************************************/
+  
+  // hybrid flow using client assertion
+  it('should succeed', function(done) {
+    checkResult(hybrid_config_clientAssertion, done);
+  }); 
+
+  // code flow using client assertion
+  it('should succeed', function(done) {
+    checkResult(code_config_clientAssertion, done);
+  }); 
+  
   /***************************************************************************
    *  Test various response type for common endpoint
    **************************************************************************/
@@ -441,6 +477,11 @@ describe('oidc v2 negative test', function() {
     checkInvalidResult(hybrid_config_common_endpoint_wrong_secret, done);
   });
 
+  // unregistered privatePEMKey
+  it('should fail with unregistered privatePEMKey', function(done) {
+    checkInvalidResult(hybrid_config_clientAssertion_unregistered_pemKey, done);
+  });
+  
   it('close service', function(done) {
     expect('1').to.equal('1');
     driver.quit();

@@ -140,9 +140,23 @@ passport.use(new OIDCStrategy({
   Required to set to true if you want to use http url for redirectUrl like `http://localhost:3000`. 
  
 * `clientSecret`  (Conditional)
+
+  When `responseType` is not `id_token`, we have to provide client credential to redeem the authorization code. This credential could be client secret or client assertion. Non-B2C tenant supports both flows, but B2C tenant only supports client secret flow.
   
-  Required if the `responseType` is not 'id_token'. This is the app key of your app in AAD. For B2C, the app key sometimes contains \, please replace \ with two \'s in the app key, otherwise \ will be treated as the beginning of an escaping character.
-  
+  For B2C tenant: `clientSecret` is required if the `responseType` is not 'id_token'.
+
+  For non-B2C tenant: If `responseType` is not `id_token`, developer must provide either `clientSecret`, or `thumbprint` and `privatePEMKey`. We use `clientSecret` if it is provided; otherwise we use `thumbprint` and `privatePEMKey` for client assertion flow.
+
+  `clientSecret` is the app key of your app in AAD. For B2C, the app key sometimes contains \, please replace \ with two \'s in the app key, otherwise \ will be treated as the beginning of an escaping character.
+
+* `thumbprint`  (Conditional)
+
+  Required if you want to use client assertion flow. `thumbprint` is the base64url format of the thumbprint (hash value) of the public key.
+
+* `privatePEMKey`  (Conditional)
+
+  Required if you want to use client assertion flow. `privatePEMKey` is the private pem key string.
+
 * `isB2C`  (Conditional)
 
   Required to set to true if you are using B2C tenant.
