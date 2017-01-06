@@ -16,7 +16,7 @@ and with [Microsoft Active Directory Federation Services](http://en.wikipedia.or
 _passport-azure-ad_ has a known security vulnerability affecting versions <1.4.6 and 2.0.0. Please update to >=1.4.6 or >=2.0.1 immediately. For more details, see the [security notice](https://github.com/AzureAD/passport-azure-ad/blob/master/SECURITY-NOTICE.MD).
 
 ## 2. Versions
-Current version - 3.0.3  
+Current version - 3.0.4  
 Minimum  recommended version - 1.4.6  
 You can find the changes for each version in the [change log](https://github.com/AzureAD/passport-azure-ad/blob/master/CHANGELOG.md).
 
@@ -474,6 +474,8 @@ You will also need to click the 'Run now' button in the 'B2C_1_signup' blade to 
 #### 6.2.2. Fill the test parameters 
 
 Open `test/End_to_end_test/script.js`, set `is_test_parameters_completed` parameter to true. For `test_parameters` variable, fill in the tenant id/client id/client secret of your applications, and the username/password of your application user. The 'oid' value is the object id of your application user. To find the 'oid' value, go to your tenant, click 'Users and groups', find your user and click it. The Object ID value will show up in the new blade.
+
+For `thumbprint` and `privatePEMKey` parameters, you need to specify a certificate for your app and register the public key in Azure Active Directory. `thumbprint` is the base64url format of the thumbprint of the public key, and `privatePEMKey` is the private pem key string. For a v1 tenant, you can follow [this post](http://www.andrewconnell.com/blog/user-app-app-only-permissions-client-credentials-grant-flow-in-azure-ad-office-365-apis) to generate a certificate and register the public key. For a v2 tenant, you can go to your application page in the [v2 portal](https://apps.dev.microsoft.com) and click `Generate New Key Pair`. A certificate will be generated for you to download. The corresponding public key is automatically registered in this case.  
 
 #### 6.2.3. Run the tests
 
