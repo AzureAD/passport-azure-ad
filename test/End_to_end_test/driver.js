@@ -23,8 +23,22 @@
 
 'use strict';
 
-/**
- * Export BearerStrategy and OIDCStrategy.
- */
-module.exports.BearerStrategy = require('./bearerstrategy');
-module.exports.OIDCStrategy = require('./oidcstrategy');
+var webdriver = require('selenium-webdriver');
+var chrome = require('selenium-webdriver/chrome');
+var path = require('chromedriver').path;
+
+var chromeCapabilities = webdriver.Capabilities.chrome();
+var chromeOptions = {
+  'args': ['--no-sandbox']
+};
+chromeCapabilities.set('chromeOptions', chromeOptions);
+
+exports = module.exports = {
+  get_service: () => { 
+  	var service = new chrome.ServiceBuilder(path).build();
+    chrome.setDefaultService(service);
+  	return service; 
+  },
+  get_driver: () => { return new webdriver.Builder().withCapabilities(chromeCapabilities).build(); },
+  webdriver: webdriver
+};

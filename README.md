@@ -16,7 +16,7 @@ and with [Microsoft Active Directory Federation Services](http://en.wikipedia.or
 _passport-azure-ad_ has a known security vulnerability affecting versions <1.4.6 and 2.0.0. Please update to >=1.4.6 or >=2.0.1 immediately. For more details, see the [security notice](https://github.com/AzureAD/passport-azure-ad/blob/master/SECURITY-NOTICE.MD).
 
 ## 2. Versions
-Current version - 3.0.3  
+Current version - 3.0.4  
 Minimum  recommended version - 1.4.6  
 You can find the changes for each version in the [change log](https://github.com/AzureAD/passport-azure-ad/blob/master/CHANGELOG.md).
 
@@ -65,6 +65,7 @@ passport.use(new OIDCStrategy({
     scope: config.creds.scope,
     loggingLevel: config.creds.loggingLevel,
     nonceLifetime: config.creds.nonceLifetime,
+    clockSkew: config.creds.clockSkew,
   },
   function(iss, sub, profile, accessToken, refreshToken, done) {
     if (!profile.oid) {
@@ -139,9 +140,23 @@ passport.use(new OIDCStrategy({
   Required to set to true if you want to use http url for redirectUrl like `http://localhost:3000`. 
  
 * `clientSecret`  (Conditional)
+
+  When `responseType` is not `id_token`, we have to provide client credential to redeem the authorization code. This credential could be client secret or client assertion. Non-B2C tenant supports both flows, but B2C tenant only supports client secret flow.
   
-  Required if the `responseType` is not 'id_token'. This is the app key of your app in AAD. For B2C, the app key sometimes contains \, please replace \ with two \'s in the app key, otherwise \ will be treated as the beginning of an escaping character.
-  
+  For B2C tenant: `clientSecret` is required if the `responseType` is not 'id_token'.
+
+  For non-B2C tenant: If `responseType` is not `id_token`, developer must provide either `clientSecret`, or `thumbprint` and `privatePEMKey`. We use `clientSecret` if it is provided; otherwise we use `thumbprint` and `privatePEMKey` for client assertion flow.
+
+  `clientSecret` is the app key of your app in AAD. For B2C, the app key sometimes contains \, please replace \ with two \'s in the app key, otherwise \ will be treated as the beginning of an escaping character.
+
+* `thumbprint`  (Conditional)
+
+  Required if you want to use client assertion flow. `thumbprint` is the base64url format of the thumbprint (hash value) of the public key.
+
+* `privatePEMKey`  (Conditional)
+
+  Required if you want to use client assertion flow. `privatePEMKey` is the private pem key string.
+
 * `isB2C`  (Conditional)
 
   Required to set to true if you are using B2C tenant.
@@ -165,6 +180,10 @@ passport.use(new OIDCStrategy({
 * `nonceLifetime`  (Optional)
   
   The lifetime of nonce in session in seconds. The default value is 3600 seconds.
+
+* `clockSkew`  (Optional)
+
+  This value is the clock skew (in seconds) allowed in token validation. It must be a positive integer. The default value is 300 seconds.
   
 ##### 5.1.1.3 Verify callback
 
@@ -238,6 +257,12 @@ the strategy.
   * This option only applies to the login request, in other words, the request which is not supposed to contain code or id_token. Passport saves the `tenantIdOrName` value in session before sending the authentication request. When we receive a request containing code or id_token, we retrieve the saved `tenantIdOrName` value from session and use that value.
   * If you are using B2C common endpoint, then `tenantIdOrName` must be used for every login request.
 
+* `domain_hint`: if you want to specify the domain that the user should use to sign in. This option is not supported for B2C tenant.
+
+* `login_hint`: if you want to prefill the username with a given value in the login page. The value should be the `upn` of an user, not the email (most times they are the same though). 
+
+* `prompt`: v1 and v2 endpoint support `login`, `consent` and `admin_conset`; B2C endpoint only supports `login`. 
+
 Example:
 
 ```
@@ -267,6 +292,7 @@ var options = {
   allowMultiAudiencesInToken: config.creds.allowMultiAudiencesInToken,
   audience: config.creds.audience,
   loggingLevel: config.creds.loggingLevel,
+  clockSkew: config.creds.clockSkew,
 };
 
 var bearerStrategy = new BearerStrategy(options,
@@ -353,6 +379,10 @@ var bearerStrategy = new BearerStrategy(options,
 
   Logging level. 'info', 'warn' or 'error'.
 
+* `clockSkew`  (Optional)
+
+  This value is the clock skew (in seconds) allowed in token validation. It must be a positive integer. The default value is 300 seconds.
+
 ##### 5.2.1.3 Verify callback
 
 If you set `passReqToCallback` option to false, you can use the following verify callback
@@ -393,10 +423,69 @@ In the library root folder, type the following command to install the dependency
     $ npm install
 ```
 
-Then type the following command to run tests:
+### 6.1. Run all tests except the end to end tests
+
+Type the following command to run tests:
 
 ```
     $ npm test
+```
+
+### 6.2. Run all tests including the end to end tests
+
+#### 6.2.1. Create test applications
+
+First you need to register one application in v1 tenant, one in v2 tenant and one in B2C tenant. 
+
+For the v2 application, you should register it at https://apps.dev.microsoft.com/ instead of Azure Portal.
+
+For the B2C application, create four policies named 'B2C_1_signin', 'B2C_1_signup', 'B2C_1_updateprofile', 
+'B2C_1_resetpassword'. For each policy, select 'Local Account' as the identity provider, and select the
+following:
+
+* 'B2C_1_signup': 
+
+  * Sign-up attributes: 'Display Name', 'Email Address', 'Given Name', 'Surname'
+
+  * Application claims: 'Display Name', Email Addresses', 'Given Name', 'Identity Provider', 'Surname', 'Users Object ID'
+
+* 'B2C_1_updateprofile': 
+
+  * Profile attributes: 'Display Name', 'Given Name', 'Surname'
+
+  * Application claims: 'Display Name', Email Addresses', 'Given Name', 'Identity Provider', 'Surname', 'Users Object ID'
+
+* 'B2C_1_signin': 
+
+  * Application claims: 'Display Name', Email Addresses', 'Given Name', 'Identity Provider', 'Surname', 'Users Object ID'
+
+* 'B2C_1_signin_acr': 
+
+  * Application claims: 'Display Name', Email Addresses', 'Given Name', 'Identity Provider', 'Surname', 'Users Object ID'
+
+  * After creating this policy, go the blade of this policy, click 'Edit' and then 'Token, session & SSO config'. Now switch the 'Claim representing policy ID' from 'tfp' to 'acr' and save the change.
+
+* 'B2C_1_resetpassword': 
+
+  * Application claims: 'Email Addresses', 'Given Name', 'Users Object ID'
+
+You will also need to click the 'Run now' button in the 'B2C_1_signup' blade to create an user.
+
+#### 6.2.2. Fill the test parameters 
+
+Open `test/End_to_end_test/script.js`, set `is_test_parameters_completed` parameter to true. For `test_parameters` variable, fill in the tenant id/client id/client secret of your applications, and the username/password of your application user. The 'oid' value is the object id of your application user. To find the 'oid' value, go to your tenant, click 'Users and groups', find your user and click it. The Object ID value will show up in the new blade.
+
+For `thumbprint` and `privatePEMKey` parameters, you need to specify a certificate for your app and register the public key in Azure Active Directory. `thumbprint` is the base64url format of the thumbprint of the public key, and `privatePEMKey` is the private pem key string. For a v1 tenant, you can follow [this post](http://www.andrewconnell.com/blog/user-app-app-only-permissions-client-credentials-grant-flow-in-azure-ad-office-365-apis) to generate a certificate and register the public key. For a v2 tenant, you can go to your application page in the [v2 portal](https://apps.dev.microsoft.com) and click `Generate New Key Pair`. A certificate will be generated for you to download. The corresponding public key is automatically registered in this case.  
+
+#### 6.2.3. Run the tests
+
+Type the following commands to run the tests:
+
+```
+    $ cd test/End_to_end_test/app
+    $ npm install
+    $ npm install grunt -g
+    $ grunt run_tests_with_e2e
 ```
 
 Tests will run automatically and in the terminal you can see how many tests are passing/failing. More details can be found [here](https://github.com/AzureAD/passport-azure-ad/blob/master/contributing.md).

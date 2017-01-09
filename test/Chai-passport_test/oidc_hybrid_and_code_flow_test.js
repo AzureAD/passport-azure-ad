@@ -61,6 +61,7 @@ KzveKf3l5UU3c6PkGy+BB3E/ChqFm6sPWwIDAQAB\n\
 var options = {
   redirectUrl: 'https://localhost:3000/auth/openid/return',
   clientID: '2abf3a52-7d86-460b-a1ef-77dc43de8aad',
+  clientSecret: 'secret',
   identityMetadata: 'https://login.microsoftonline.com/sijun.onmicrosoft.com/.well-known/openid-configuration',
   responseType: 'id_token code',
   responseMode: 'form_post',
@@ -77,7 +78,7 @@ var options = {
 var setIgnoreExpirationFalse = function(options) { options.ignoreExpiration = false; };
 var setWrongIssuer = function(options) { options.issuer = 'wrong_issuer'; };
 var rmValidateIssuer = function(options) { options.validateIssuer = undefined; };
-var setWrongAudience = function(options) { options.audience = 'wrong audience'; };
+var setWrongAudience = function(options) { options.audience = 'wrong_audience'; };
 
 var testStrategy = new OIDCStrategy(options, function(profile, done) {
     done(null, profile.upn);
@@ -105,9 +106,14 @@ var setUserInfoResponse = function(sub_choice) {
 // mock the token response we want when we consume the code
 var setTokenResponse = function(id_token_in_token_resp, access_token_in_token_resp) {
   return () => {
-    OAuth2.prototype.getOAuthAccessToken = function(code, params, callback) {
-      params = {'id_token': id_token_in_token_resp, 'token_type': 'Bearer'};
-      callback(null, access_token_in_token_resp, refresh_token, params);
+    testStrategy._getAccessTokenBySecretOrAssertion = function(code, oauthConfig, next, callback) {
+      var params = {
+        'id_token': id_token_in_token_resp, 
+        'token_type': 'Bearer',
+        'access_token': access_token_in_token_resp,
+        'refresh_token': refresh_token
+      };
+      callback(null, params);
     }
   };
 };
@@ -132,6 +138,7 @@ var setReqFromAuthRespRedirect = function(id_token_in_auth_resp, code_in_auth_re
       optionsToValidate.ignoreExpiration = true;
       optionsToValidate.algorithms = ['RS256'];
       optionsToValidate.nonce = nonce_to_use;
+      optionsToValidate.clockSkew = testStrategy._options.clockSkew;
 
       oauthConfig.authorization_endpoint = "https://login.microsoftonline.com/268da1a1-9db4-48b9-b1fe-683250ba90cc/oauth2/authorize";
       oauthConfig.redirectUrl = "http://localhost:3000/auth/openid/return";
@@ -247,7 +254,7 @@ describe('OIDCStrategy hybrid flow test', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, [setWrongAudience]));
 
     it('should fail with invalid audience', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid. expected: wrong audience');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid. expected: wrong_audience,spn:wrong_audience');
     });
   });
 
@@ -357,7 +364,7 @@ describe('OIDCStrategy authorization code flow test', function() {
       [setWrongAudience]));
 
     it('should fail with invalid audience', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid. expected: wrong audience');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid. expected: wrong_audience,spn:wrong_audience');
     });
   });
 

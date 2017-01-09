@@ -23,8 +23,37 @@
 
 'use strict';
 
-/**
- * Export BearerStrategy and OIDCStrategy.
- */
-module.exports.BearerStrategy = require('./bearerstrategy');
-module.exports.OIDCStrategy = require('./oidcstrategy');
+var test_parameters = {
+  v1_params: {
+    tenantID: '<fill-in>',
+    clientID: '<fill-in>',
+    clientSecret: '<fill-in>',
+    thumbprint: '<fill-in>',
+    privatePEMKey: '<fill-in>',
+    username: '<fill-in>',
+    password: '<fill-in>',
+    oid: '<fill-in>',
+  },
+  v2_params: {
+    tenantID: '<fill-in>',
+    clientID: '<fill-in>',
+    clientSecret: '<fill-in>',
+    thumbprint: '<fill-in>',
+    privatePEMKey: '<fill-in>',
+    username: '<fill-in>',
+    password: '<fill-in>',
+    oid: '<fill-in>',
+  },
+  b2c_params: {
+    tenantID: '<fill-in>',
+    clientID: '<fill-in>',
+    clientSecret: '<fill-in>',
+    username: '<fill-in>',
+    password: '<fill-in>',
+    oid: '<fill-in>'
+  }
+};
+
+exports.is_test_parameters_completed = false;
+
+exports.test_parameters = test_parameters;

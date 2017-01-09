@@ -58,6 +58,7 @@ wfp+cqZbCd9TENyHaTb8iA27s+73L3ExOQIDAQAB\n\
 var options = {
   redirectUrl: 'https://localhost:3000/auth/openid/return',
   clientID: 'f0b6e4eb-2d8c-40b6-b9c6-e26d1074846d',
+  clientSecret: 'secret',
   identityMetadata: 'https://login.microsoftonline.com/mytenant.onmicrosoft.com/v2.0/.well-known/openid-configuration',
   responseType: 'code id_token',
   responseMode: 'form_post',
@@ -71,7 +72,7 @@ var options = {
 // functions used to change the fields in options
 var setIgnoreExpirationFalse = function(options) { options.ignoreExpiration = false; };
 var setWrongIssuer = function(options) { options.issuer = 'wrong_issuer'; };
-var setWrongAudience = function(options) { options.audience = 'wrong audience'; };
+var setWrongAudience = function(options) { options.audience = 'wrong_audience'; };
 
 var testStrategy = new OIDCStrategy(options, function(profile, done) {
     done(null, profile.oid);
@@ -80,10 +81,30 @@ var testStrategy = new OIDCStrategy(options, function(profile, done) {
 // mock the token response we want when we consume the code
 var setTokenResponse = function(id_token_in_token_resp, access_token_in_token_resp) {
   return () => {
-    OAuth2.prototype.getOAuthAccessToken = function(code, params, callback) {
-      params = {'id_token': id_token_in_token_resp, 'token_type': 'Bearer'};
-      callback(null, access_token_in_token_resp, null, params);
-    }
+    testStrategy._getAccessTokenBySecretOrAssertion = function(code, oauthConfig, next, callback) {
+      var params = {
+        'id_token': id_token_in_token_resp, 
+        'token_type': 'Bearer',
+        'access_token': access_token_in_token_resp,
+        'refresh_token': null
+      };
+      callback(null, params);
+    };
+  };
+};
+
+// mock the token response we want when we consume the code, and use 'bearer' fpr token_type
+var setTokenResponseWithLowerCaseBearer = function(id_token_in_token_resp, access_token_in_token_resp) {
+  return () => {
+    testStrategy._getAccessTokenBySecretOrAssertion = function(code, oauthConfig, next, callback) {
+      var params = {
+        'id_token': id_token_in_token_resp, 
+        'token_type': 'Bearer',
+        'access_token': access_token_in_token_resp,
+        'refresh_token': null
+      };
+      callback(null, params);
+    };
   };
 };
 
@@ -107,6 +128,7 @@ var setReqFromAuthRespRedirect = function(id_token_in_auth_resp, code_in_auth_re
       optionsToValidate.ignoreExpiration = true;
       optionsToValidate.algorithms = ['RS256'];
       optionsToValidate.nonce = nonce_to_use;
+      optionsToValidate.clockSkew = testStrategy._options.clockSkew;
 
       oauthConfig.authorization_endpoint = "https://login.microsoftonline.com/sijun1b2c.onmicrosoft.com/oauth2/v2.0/authorize?p=b2c_1_signin";
       oauthConfig.redirectUrl = "https://localhost:3000/auth/openid/return";
@@ -196,7 +218,7 @@ describe('OIDCStrategy hybrid flow test', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, 'wrong_policy'));
 
     it('should fail with invalid policy', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: acr in id_token does not match the policy used');
+      chai.expect(challenge).to.equal('In _validateResponse: policy in id_token does not match the policy used');
     });
   });
 
@@ -220,13 +242,22 @@ describe('OIDCStrategy hybrid flow test', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, policy, [setWrongAudience]));
 
     it('should fail with invalid audience', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid. expected: wrong audience');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid. expected: wrong_audience,spn:wrong_audience');
     });
   });
 
   /*
    * test the access_token, id_token received from code consumpution
    */
+
+  describe('success', function() {
+    before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, policy,
+      [setTokenResponseWithLowerCaseBearer(id_token_in_token_resp, access_token)]));
+
+    it('should succeed with expected user', function() {
+      chai.expect(user).to.equal('4329d6bc-0f84-45d8-8709-2c8b091357d1');
+    });
+  });
 
   describe('success', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, policy,
@@ -303,7 +334,7 @@ describe('OIDCStrategy authorization code flow test', function() {
       [setWrongAudience]));
 
     it('should fail with invalid audience', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid. expected: wrong audience');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid. expected: wrong_audience,spn:wrong_audience');
     });
   });
 
@@ -311,7 +342,7 @@ describe('OIDCStrategy authorization code flow test', function() {
     before(setReqFromAuthRespRedirect(null, code, nonce, 'wrong_policy'));
 
     it('should fail with invalid policy', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: acr in id_token does not match the policy used');
+      chai.expect(challenge).to.equal('In _validateResponse: policy in id_token does not match the policy used');
     });
   });
 

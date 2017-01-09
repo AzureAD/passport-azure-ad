@@ -96,6 +96,7 @@ var testPrepare = function(id_token_to_use, nonce_to_use, policy_to_use, action)
       optionsToValidate.ignoreExpiration = true;
       optionsToValidate.algorithms = ['RS256'];
       optionsToValidate.nonce = nonce_to_use;
+      optionsToValidate.clockSkew = testStrategy._options.clockSkew;
 
       if (action) {
         for (let i = 0; i < action.length; i++)
@@ -184,7 +185,7 @@ describe('B2C OIDCStrategy implicit flow test', function() {
     before(testPrepare(id_token, nonce, 'wrong policy'));
 
     it('should fail', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: acr in id_token does not match the policy used');
+      chai.expect(challenge).to.equal('In _validateResponse: policy in id_token does not match the policy used');
     });
   });
 });

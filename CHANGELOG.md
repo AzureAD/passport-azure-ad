@@ -1,4 +1,42 @@
-<a name="3.0.1"></a>
+<a name="3.0.4"></a>
+# 3.0.4
+
+## OIDCStrategy
+
+### New features
+
+* added support for `prompt`, `login_hint` and `domain_hint` parameters
+
+* added `tfp` claim support for B2C
+
+* token validation clock skew is now configurable using `clockSkew` option
+
+* added `thumbprint` and `privatePEMKey` options for client assertion support. 
+
+## BearerStrategy
+
+* token validation clock skew is now configurable using `clockSkew` option
+
+## Tests
+
+* added end to end automated tests for OIDCStrategy and BearerStrategy
+
+## Bug fixes
+
+* [#231](https://github.com/AzureAD/passport-azure-ad/issues/231) Support client_asserton for OIDC auth flow
+
+* [#245](https://github.com/AzureAD/passport-azure-ad/issues/245) Make clock skew configurable
+
+* [#251](https://github.com/AzureAD/passport-azure-ad/issues/251) Multiple Audiences with Bearer Strategy
+
+* [#254](https://github.com/AzureAD/passport-azure-ad/issues/254) passReqToCallback does not work with bearer strategy
+
+* [#256](https://github.com/AzureAD/passport-azure-ad/issues/256) Support 'tfp' for B2C
+
+* [#261](https://github.com/AzureAD/passport-azure-ad/issues/261) prompt,domain_hint and login_hint are missing in the query params sent to endpoint
+
+* [#264](https://github.com/AzureAD/passport-azure-ad/issues/264) OIDC authentication fails when oauth token_type is 'bearer' and not 'Bearer'
+
 # 3.0.3
 
 ## Bug fixes
