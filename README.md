@@ -169,6 +169,11 @@ passport.use(new OIDCStrategy({
   
   This can be a string or an array of strings. See `validateIssuer` for the situation that requires `issuer`.
 
+* `jweKeyStore`  (Conditional)
+
+  This option is required if you want to accept and decrypt id_token in JWE Compact Serialization format. See 
+  section 5.1.1.4 for more details.
+
 * `scope`  (Optional)
 
   List of scope values besides `openid` indicating the required scope of the access token for accessing the requested resource. For example, ['email', 'profile']. If you need refresh_token for v2 endpoint, then you have to include the 'offline_access' scope.
@@ -208,6 +213,89 @@ If you set `passReqToCallback` option to true, you can use one of the following 
   function(req, iss, sub, done)
   function(req, profile, done)
 ```
+
+#### 5.1.1.4 JWE support
+
+  We support encrypted id_token in JWE Compact Serialization format. The key encryption algorithms supported are: 
+  `RSA1_5`, `RSA-OAEP`, `A128KW`, `A256KW`, `dir`; the content encryption algorithms supported are:
+  `A128CBC-HS256`, `A192CBC-HS384`, `A256CBC-HS512`, `A128GCM`, and `A256GCM`.
+
+  In order to encrypt the id_token, keys have to be provided in JWK format using `jweKeyStore` option. We will first
+  try the key with the corresponding kid. If decryption fails, we will try every possible key in `jweKeyStore`. 
+  The following is an example of `jweKeyStore`:
+
+  ```javascript
+
+    jweKeyStore: [ 
+      { 'kid': 'sym_key_256', 'kty': 'oct', 'k': 'WIVds2iwJPwNhgUgwZXmn/46Ql1EkiL+M+QqDRdQURE=' }, 
+      { 'kid': 'sym_key_128', 'kty': 'oct', 'k': 'GawgguFyGrWKav7AX4VKUg'}, 
+      { 'kid': 'sym_key_384', 'kty': 'oct', 'k': 'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4v'},
+      { 'kid': 'rsa_key', 
+        'kty': 'RSA', 
+        "n":"6-FrFkt_TByQ_L5d7or-9PVAowpswxUe3dJeYFTY0Lgq7zKI5OQ5RnSrI0\n\
+             T9yrfnRzE9oOdd4zmVj9txVLI-yySvinAu3yQDQou2Ga42ML_-K4Jrd5cl\n\
+             MUPRGMbXdV5Rl9zzB0s2JoZJedua5dwoQw0GkS5Z8YAXBEzULrup06fnB5\n\
+             n6x5r2y1C_8Ebp5cyE4Bjs7W68rUlyIlx1lzYvakxSnhUxSsjx7u_mIdyw\n\
+             yGfgiT3tw0FsWvki_KYurAPR1BSMXhCzzZTkMWKE8IaLkhauw5MdxojxyB\n\
+             VuNY-J_elq-HgJ_dZK6g7vMNvXz2_vT-SykIkzwiD9eSI9UWfsjw",
+        "e":"AQAB",
+        "d":"C6EGZYf9U6RI5Z0BBoSlwy_gKumVqRx-dBMuAfPM6KVbwIUuSJKT3ExeL5\n\
+             P0Ky1b4p-j2S3u7Afnvrrj4HgVLnC1ks6rEOc2ne5DYQq8szST9FMutyul\n\
+             csNUKLOM5cVromALPz3PAqE2OCLChTiQZ5XZ0AiH-KcG-3hKMa-g1MVnGW\n\
+             -SSmm27XQwRtUtFQFfxDuL0E0fyA9O9ZFBV5201ledBaLdDcPBF8cHC53G\n\
+             m5G6FRX3QVpoewm3yGk28Wze_YvNl8U3hvbxei2Koc_b9wMbFxvHseLQrx\n\
+             vFg_2byE2em8FrxJstxgN7qhMsYcAyw1qGJY-cYX-Ab_1bBCpdcQ",
+        "p":"_avCCyuo7hHlqu9Ec6R47ub_Ul_zNiS-xvkkuYwW-4lNnI66A5zMm_BOQV\n\
+             MnaCkBua1OmOgx7e63-jHFvG5lyrhyYEmkA2CS3kMCrI-dx0fvNMLEXInP\n\
+             xd4np_7GUd1_XzPZEkPxBhqf09kqryHMj_uf7UtPcrJNvFY-GNrzlJk",
+        "q":"7gvYRkpqM-SC883KImmy66eLiUrGE6G6_7Y8BS9oD4HhXcZ4rW6JJKuBzm\n\
+             7FlnsVhVGro9M-QQ_GSLaDoxOPQfHQq62ERt-y_lCzSsMeWHbqOMci_pbt\n\
+             vJknpMv4ifsQXKJ4Lnk_AlGr-5r5JR5rUHgPFzCk9dJt69ff3QhzG2c",
+        "dp":"ErP3OpudePAY3uGFSoF16Sde69PnOra62jDEZGnPx_v3nPNpA5sr-tNc8\n\
+              bQP074yQl5kzSFRjRlstyW0TpBVMP0ocbD8RsN4EKsgJ1jvaSIEoP87Ox\n\
+              duGkim49wFA0Qxf_NyrcYUnz6XSidY3lC_pF4JDJXg5bP_x0MUkQCTtQE",
+        "dq":"YbBsthPt15Pshb8rN8omyfy9D7-m4AGcKzqPERWuX8bORNyhQ5M8JtdXc\n\
+              u8UmTez0j188cNMJgkiN07nYLIzNT3Wg822nhtJaoKVwZWnS2ipoFlgrB\n\
+              gmQiKcGU43lfB5e3qVVYUebYY0zRGBM1Fzetd6Yertl5Ae2g2CakQAcPs",
+        "qi":"lbljWyVY-DD_Zuii2ifAz0jrHTMvN-YS9l_zyYyA_Scnalw23fQf5WIcZ\n\
+              ibxJJll5H0kNTIk8SCxyPzNShKGKjgpyZHsJBKgL3iAgmnwk6k8zrb_lq\n\
+              a0sd1QWSB-Rqiw7AqVqvNUdnIqhm-v3R8tYrxzAqkUsGcFbQYj4M5_F_4"
+      },
+      { 'kid': 'ras_key_2',
+        'kty': 'RSA',
+        'privatePemKey': 
+          '-----BEGIN RSA PRIVATE KEY-----\n\
+          MIIEowIBAAKCAQEA6+FrFkt/TByQ/L5d7or+9PVAowpswxUe3dJeYFTY0Lgq7zKI\n\
+          5OQ5RnSrI0T9yrfnRzE9oOdd4zmVj9txVLI+yySvinAu3yQDQou2Ga42ML/+K4Jr\n\
+          d5clMUPRGMbXdV5Rl9zzB0s2JoZJedua5dwoQw0GkS5Z8YAXBEzULrup06fnB5n6\n\
+          x5r2y1C/8Ebp5cyE4Bjs7W68rUlyIlx1lzYvakxSnhUxSsjx7u/mIdywyGfgiT3t\n\
+          w0FsWvki/KYurAPR1BSMXhCzzZTkMWKE8IaLkhauw5MdxojxyBVuNY+J/elq+HgJ\n\
+          /dZK6g7vMNvXz2/vT+SykIkzwiD9eSI9UWfsjwIDAQABAoIBAAuhBmWH/VOkSOWd\n\
+          AQaEpcMv4CrplakcfnQTLgHzzOilW8CFLkiSk9xMXi+T9CstW+Kfo9kt7uwH5766\n\
+          4+B4FS5wtZLOqxDnNp3uQ2EKvLM0k/RTLrcrpXLDVCizjOXFa6JgCz89zwKhNjgi\n\
+          woU4kGeV2dAIh/inBvt4SjGvoNTFZxlvkkpptu10MEbVLRUBX8Q7i9BNH8gPTvWR\n\
+          QVedtNZXnQWi3Q3DwRfHBwudxpuRuhUV90FaaHsJt8hpNvFs3v2LzZfFN4b28Xot\n\
+          iqHP2/cDGxcbx7Hi0K8bxYP9m8hNnpvBa8SbLcYDe6oTLGHAMsNahiWPnGF/gG/9\n\
+          WwQqXXECgYEA/avCCyuo7hHlqu9Ec6R47ub/Ul/zNiS+xvkkuYwW+4lNnI66A5zM\n\
+          m/BOQVMnaCkBua1OmOgx7e63+jHFvG5lyrhyYEmkA2CS3kMCrI+dx0fvNMLEXInP\n\
+          xd4np/7GUd1/XzPZEkPxBhqf09kqryHMj/uf7UtPcrJNvFY+GNrzlJkCgYEA7gvY\n\
+          RkpqM+SC883KImmy66eLiUrGE6G6/7Y8BS9oD4HhXcZ4rW6JJKuBzm7FlnsVhVGr\n\
+          o9M+QQ/GSLaDoxOPQfHQq62ERt+y/lCzSsMeWHbqOMci/pbtvJknpMv4ifsQXKJ4\n\
+          Lnk/AlGr+5r5JR5rUHgPFzCk9dJt69ff3QhzG2cCgYASs/c6m5148Bje4YVKgXXp\n\
+          J17r0+c6trraMMRkac/H+/ec82kDmyv601zxtA/TvjJCXmTNIVGNGWy3JbROkFUw\n\
+          /ShxsPxGw3gQqyAnWO9pIgSg/zs7F24aSKbj3AUDRDF/83KtxhSfPpdKJ1jeUL+k\n\
+          XgkMleDls//HQxSRAJO1AQKBgGGwbLYT7deT7IW/KzfKJsn8vQ+/puABnCs6jxEV\n\
+          rl/GzkTcoUOTPCbXV3LvFJk3s9I9fPHDTCYJIjdO52CyMzU91oPNtp4bSWqClcGV\n\
+          p0toqaBZYKwYJkIinBlON5XweXt6lVWFHm2GNM0RgTNRc3rXemHq7ZeQHtoNgmpE\n\
+          AHD7AoGBAJW5Y1slWPgw/2bootonwM9I6x0zLzfmEvZf88mMgP0nJ2pcNt30H+Vi\n\
+          HGYm8SSZZeR9JDUyJPEgscj8zUoShio4KcmR7CQSoC94gIJp8JOpPM62/5amtLHd\n\
+          UFkgfkaosOwKlarzVHZyKoZvr90fLWK8cwKpFLBnBW0GI+DOfxf+\n\
+          -----END RSA PRIVATE KEY-----\n';
+      }
+  ]
+
+  ```
+
 
 #### 5.1.2 Use `passport.authenticate` to protect routes
 

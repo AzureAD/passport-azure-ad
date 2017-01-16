@@ -171,6 +171,7 @@ module.exports = function(strategyOptions, authenicateOptions, verifyFuncNumber)
     prompt: authenicateOptions.prompt,
     domain_hint: authenicateOptions.domain_hint,
     login_hint: authenicateOptions.login_hint,
+    extraReqQueryParams: authenicateOptions.extraReqQueryParams,
     failureRedirect: '/result' 
   }));
 

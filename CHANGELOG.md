@@ -1,4 +1,14 @@
-<a name="3.0.4"></a>
+<a name="3.0.5"></a>
+# 3.0.5
+
+## OIDCStrategy
+
+### New features
+
+* added support of `id_token` in JWE compact serialization format. Supported key encryption algorithms (alg) are: 
+  `RSA1_5`, `RSA-OAEP`, `A128KW`, `A256KW`, `dir`; supported content encryption algorithms (enc) are:
+  `A128CBC-HS256`, `A192CBC-HS384`, `A256CBC-HS512`, `A128GCM`, and `A256GCM`.
+
 # 3.0.4
 
 ## OIDCStrategy
