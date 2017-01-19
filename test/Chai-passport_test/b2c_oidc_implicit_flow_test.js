@@ -29,6 +29,8 @@ var chai = require('chai');
 var url = require('url');
 chai.use(require('chai-passport-strategy'));
 
+const TEST_TIMEOUT = 1000000; // 1000 seconds
+
 var Metadata = require('../../lib/metadata').Metadata;
 var OIDCStrategy = require('../../lib/index').OIDCStrategy;
 
@@ -129,6 +131,7 @@ var testPrepare = function(id_token_to_use, nonce_to_use, policy_to_use, action)
 };
 
 describe('B2C OIDCStrategy implicit flow test', function() {
+  this.timeout(TEST_TIMEOUT);
 
   describe('should succeed without expiration checking', function() {
     before(testPrepare(id_token, nonce, policy));

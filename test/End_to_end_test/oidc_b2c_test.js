@@ -38,8 +38,8 @@ var create_app = require('./app/app');
 var chai = require('chai');
 var expect = chai.expect;
 
-const TEST_TIMEOUT = 600000; // 600 seconds
-const LOGIN_WAITING_TIME = 1000; // 1 second
+const TEST_TIMEOUT = 1000000; // 1000 seconds
+const LOGIN_WAITING_TIME = 3000; // 3 second
 
 /******************************************************************************
  *  Configurations needed
@@ -212,7 +212,6 @@ var checkResult = (test_app_config, done) => {
   .then(() => {
     if (first_time) {
       driver.wait(until.titleIs('User Details'), 10000);
-      driver.findElement(By.id('cancel')).click();
     }
   })
   .then(() => {
@@ -243,10 +242,6 @@ var checkResult = (test_app_config, done) => {
   .then(() => {
     driver.get('http://localhost:3000/login?p=b2c_1_updateprofile');
     driver.wait(until.titleIs('Update Profile'), 10000);
-    driver.findElement(By.id('continue')).click();
-  })
-  .then(() => {
-    resultPageValidation(test_app_config, driver);
   })
   .then(() => {
     server.shutdown(done); 

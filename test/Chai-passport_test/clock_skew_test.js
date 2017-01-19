@@ -33,6 +33,8 @@ var CONSTANTS = require('../../lib/constants');
 
 chai.use(require('chai-passport-strategy'));
 
+const TEST_TIMEOUT = 1000000; // 1000 seconds
+
 var OIDC_options = {
   redirectUrl: 'https://returnURL',
   clientID: 'my_client_id',
@@ -53,6 +55,8 @@ var Bearer_options = {
 };
 
 describe('OIDCStrategy clock skew test', function() {
+  this.timeout(TEST_TIMEOUT);
+
   it('should have the default clock skew if none is given', function(done) {
     var testStrategy = new OIDCStrategy(OIDC_options, function(profile, done) {});
     chai.expect(testStrategy._options.clockSkew).to.equal(CONSTANTS.CLOCK_SKEW);
@@ -84,6 +88,8 @@ describe('OIDCStrategy clock skew test', function() {
 });
 
 describe('BearerStrategy clock skew test', function() {
+  this.timeout(TEST_TIMEOUT);
+  
   it('should have the default clock skew if none is given', function(done) {
     var testStrategy = new BearerStrategy(Bearer_options, function(profile, done) {});
     chai.expect(testStrategy._options.clockSkew).to.equal(CONSTANTS.CLOCK_SKEW);

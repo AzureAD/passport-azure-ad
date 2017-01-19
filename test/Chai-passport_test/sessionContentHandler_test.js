@@ -29,7 +29,11 @@ const chai = require('chai');
 const expect = chai.expect;
 const SessionContentHandler = require('../../lib/sessionContentHandler').SessionContentHandler; 
 
+const TEST_TIMEOUT = 1000000; // 1000 seconds
+
 describe('checking constructor', function() {
+  this.timeout(TEST_TIMEOUT);
+
   it('should throw with non-integer maxAmount', function(done) {
     expect(SessionContentHandler.bind(SessionContentHandler, 1.1, 1)).
       to.throw('SessionContentHandler: maxAmount must be a positive integer');
@@ -50,6 +54,8 @@ describe('checking constructor', function() {
 });
 
 describe('checking add function', function() {
+  this.timeout(TEST_TIMEOUT);
+
   var req = {};
   var handler = new SessionContentHandler(2, 0.1);
 
@@ -106,6 +112,8 @@ describe('checking add function', function() {
 });
 
 describe('checking findAndDeleteTupleByState function', function() {
+  this.timeout(TEST_TIMEOUT);
+  
   var req = {};
   var handler = new SessionContentHandler(2, 0.1);
 
