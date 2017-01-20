@@ -39,8 +39,8 @@ var chai = require('chai');
 var expect = chai.expect;
 var fs = require('fs');
 
-const TEST_TIMEOUT = 600000; // 600 seconds
-const LOGIN_WAITING_TIME = 1000; // 1 second
+const TEST_TIMEOUT = 1000000; // 1000 seconds
+const LOGIN_WAITING_TIME = 3000; // 3 second
 
 /******************************************************************************
  *  Configurations needed

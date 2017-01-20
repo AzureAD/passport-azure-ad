@@ -27,10 +27,14 @@ var chai = require('chai');
 var expect = chai.expect;
 var CONSTANTS = require('../../lib/constants');
 
+const TEST_TIMEOUT = 1000000; // 1000 seconds
+
 CONSTANTS.TENANTNAME_REGEX = /^[0-9a-zA-Z]+.onmicrosoft.com$/;
 CONSTANTS.TENANTID_REGEX = /^[0-9a-zA-Z-]+$/;
 
 describe('policy checking', function() {
+  this.timeout(TEST_TIMEOUT);
+
   it('should pass with good policy name', function(done) {
     expect(CONSTANTS.POLICY_REGEX.test('b2c_1_signin')).to.equal(true);
     expect(CONSTANTS.POLICY_REGEX.test('B2C_1_SIGNIN')).to.equal(true);
@@ -50,6 +54,8 @@ describe('policy checking', function() {
 });
 
 describe('tenant name checking', function() {
+  this.timeout(TEST_TIMEOUT);
+
   it('should pass with good tenant name', function(done) {
     expect(CONSTANTS.TENANTNAME_REGEX.test('contoso123COMPANY.onmicrosoft.com')).to.equal(true);
     done();
@@ -66,6 +72,8 @@ describe('tenant name checking', function() {
 });
 
 describe('tenant id checking', function() {
+  this.timeout(TEST_TIMEOUT);
+  
   it('should pass with good tenant id', function(done) {
     expect(CONSTANTS.TENANTID_REGEX.test('683eAd13-3193-43f0-9677-d727c25a588f')).to.equal(true);
     done();

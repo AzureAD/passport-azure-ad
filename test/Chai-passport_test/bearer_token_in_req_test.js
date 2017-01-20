@@ -29,6 +29,8 @@ var chai = require('chai');
 chai.use(require('chai-passport-strategy'));
 var BearerStrategy = require('../../lib/index').BearerStrategy;
 
+const TEST_TIMEOUT = 1000000; // 1000 seconds
+
 var options = {
   identityMetadata: 'https://login.microsoftonline.com/xxx.onmicrosoft.com/.well-known/openid-configuration', 
   clientID: 'spn:6514a8ca-d9e4-4155-b292-65258398f3aa',
@@ -50,6 +52,7 @@ strategy.loadMetadata = function(params, next) {
 };
 
 describe('token mock test', function() {
+  this.timeout(TEST_TIMEOUT);
 
   var challenge = '';
   var success_user = '';
