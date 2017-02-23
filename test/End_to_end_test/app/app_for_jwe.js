@@ -86,32 +86,43 @@ module.exports = function(strategyOptions) {
   });
 
   var testList = {
-    's1': "{ 'JWE_alg': 'RSA1_5', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A128CBC-HS256'}",
-    's2': "{ 'JWE_alg': 'RSA-OAEP', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A128CBC-HS256'}",
-    's3': "{ 'JWE_alg': 'A128KW', 'JWE_alg_key_kid': 'sym_key_128', 'JWE_enc': 'A128CBC-HS256'}",
-    's4': "{ 'JWE_alg': 'A256KW', 'JWE_alg_key_kid': 'sym_key_256', 'JWE_enc': 'A128CBC-HS256'}",
-    's5': "{ 'JWE_alg': 'dir', 'JWE_alg_key_kid': 'sym_key_256', 'JWE_enc': 'A128CBC-HS256'}",
+    's1': { 'JWE_alg': 'RSA1_5', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A128CBC-HS256'},
+    's2': { 'JWE_alg': 'RSA-OAEP', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A128CBC-HS256'},
+    's3': { 'JWE_alg': 'A128KW', 'JWE_alg_key_kid': 'sym_key_128', 'JWE_enc': 'A128CBC-HS256'},
+    's4': { 'JWE_alg': 'A256KW', 'JWE_alg_key_kid': 'sym_key_256', 'JWE_enc': 'A128CBC-HS256'},
+    's5': { 'JWE_alg': 'dir', 'JWE_alg_key_kid': 'sym_key_256', 'JWE_enc': 'A128CBC-HS256'},
 
-    's6': "{ 'JWE_alg': 'RSA1_5', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A256CBC-HS512'}",
-    's7': "{ 'JWE_alg': 'RSA-OAEP', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A256CBC-HS512'}",
-    's8': "{ 'JWE_alg': 'A128KW', 'JWE_alg_key_kid': 'sym_key_128', 'JWE_enc': 'A256CBC-HS512'}",
-    's9': "{ 'JWE_alg': 'A256KW', 'JWE_alg_key_kid': 'sym_key_256', 'JWE_enc': 'A256CBC-HS512'}",
-    's10': "{ 'JWE_alg': 'dir', 'JWE_alg_key_kid': 'sym_key_512', 'JWE_enc': 'A256CBC-HS512'}",
+    's6': { 'JWE_alg': 'RSA1_5', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A256CBC-HS512'},
+    's7': { 'JWE_alg': 'RSA-OAEP', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A256CBC-HS512'},
+    's8': { 'JWE_alg': 'A128KW', 'JWE_alg_key_kid': 'sym_key_128', 'JWE_enc': 'A256CBC-HS512'},
+    's9': { 'JWE_alg': 'A256KW', 'JWE_alg_key_kid': 'sym_key_256', 'JWE_enc': 'A256CBC-HS512'},
+    's10': { 'JWE_alg': 'dir', 'JWE_alg_key_kid': 'sym_key_512', 'JWE_enc': 'A256CBC-HS512'},
 
-    's11': "{ 'JWE_alg': 'RSA1_5', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A192CBC-HS384'}",
-    's12': "{ 'JWE_alg': 'RSA-OAEP', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A192CBC-HS384'}",
-    's13': "{ 'JWE_alg': 'A128KW', 'JWE_alg_key_kid': 'sym_key_128', 'JWE_enc': 'A192CBC-HS384'}",
-    's14': "{ 'JWE_alg': 'A256KW', 'JWE_alg_key_kid': 'sym_key_256', 'JWE_enc': 'A192CBC-HS384'}",
-    's15': "{ 'JWE_alg': 'dir', 'JWE_alg_key_kid': 'sym_key_384', 'JWE_enc': 'A192CBC-HS384'}",
+    's11': { 'JWE_alg': 'RSA1_5', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A192CBC-HS384'},
+    's12': { 'JWE_alg': 'RSA-OAEP', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A192CBC-HS384'},
+    's13': { 'JWE_alg': 'A128KW', 'JWE_alg_key_kid': 'sym_key_128', 'JWE_enc': 'A192CBC-HS384'},
+    's14': { 'JWE_alg': 'A256KW', 'JWE_alg_key_kid': 'sym_key_256', 'JWE_enc': 'A192CBC-HS384'},
+    's15': { 'JWE_alg': 'dir', 'JWE_alg_key_kid': 'sym_key_384', 'JWE_enc': 'A192CBC-HS384'},
 
-    'f1': "{ 'JWE_alg': 'RSA1_5', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A128CBC-HS256', 'id_token_JWE_invalid_authTag': true }",
-    'f2': "{ 'JWE_alg': 'RSA1_5', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A256CBC-HS512', 'id_token_JWE_invalid_authTag': true }",
+    'f1': { 'JWE_alg': 'RSA1_5', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A128CBC-HS256', 'id_token_JWE_invalid_authTag': true },
+    'f2': { 'JWE_alg': 'RSA1_5', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A256CBC-HS512', 'id_token_JWE_invalid_authTag': true },
   };
 
   app.get('/t/:id', (req, res, next) => {
     req.logout();
     var id = req.params['id'];
-    var tParams = base64url.encode(testList[id]);
+    var tParams = base64url.encode(JSON.stringify(testList[id]));
+    passport.authenticate('azuread-openidconnect', { extraReqQueryParams: { 'tParams': tParams }, failureRedirect: '/result' })(req, res, next);
+  }, (req, res) => {
+    res.render('apiResult', { result: 'succeeded' });
+  });
+
+  app.get('/t_no_kid/:id', (req, res, next) => {
+    req.logout();
+    var id = req.params['id'];
+    var json = JSON.parse(JSON.stringify(testList[id]));  // make a copy
+    json['id_token_JWE_header_no_kid'] = true;
+    var tParams = base64url.encode(JSON.stringify(json));
     passport.authenticate('azuread-openidconnect', { extraReqQueryParams: { 'tParams': tParams }, failureRedirect: '/result' })(req, res, next);
   }, (req, res) => {
     res.render('apiResult', { result: 'succeeded' });

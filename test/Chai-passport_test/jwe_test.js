@@ -10,7 +10,7 @@ const TEST_TIMEOUT = 1000000; // 1000 seconds
 
 var log =  { 'info': (msg) => { } };
 
-describe('policy checking', function() {
+describe('positive test', function() {
   this.timeout(TEST_TIMEOUT);
 
   it('should pass with A128KW and A128GCM', function(done) {
@@ -140,4 +140,68 @@ describe('policy checking', function() {
     expect(decrypted).to.equal('Live long and prosper.');
     done();
   })
+});
+
+describe('negative test', function() {
+  this.timeout(TEST_TIMEOUT);
+
+  // the following parts are from a valid jwe using A128KW and A128CBC-HS256
+  var header = 'eyJhbGciOiJBMTI4S1ciLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0';
+  var encrypted_key = '6KB707dM9YTIgHtLvtgWQ8mKwboJW3of9locizkDTHzBC2IlrT1oOQ';
+  var iv = 'AxY8DCtDaGlsbGljb3RoZQ';
+  var cipherText = 'KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY';
+  var authTag = 'U0m_YmjN04DJvceFICbCVQ';
+
+  // the key for the above jwe string
+  var jwk = [ { 'kty': 'oct', 'k': 'GawgguFyGrWKav7AX4VKUg' }];
+
+  it('should fail if jwe string does not have 5 parts', function(done) {
+    var jweString = '1.2.3.4';
+
+    var err;
+    jwe.decryt(jweString, null, log, (error, decrypted_token) => { err = error; });
+
+    expect(err.message).to.equal('In jwe.decrypt: invalid JWE string, it has 4 parts instead of 5');
+    done();
+  });
+
+  it('should fail with invalid header', function(done) {
+    var jweString = '1.2.3.4.5';
+
+    var err;
+    jwe.decryt(jweString, null, log, (error, decrypted_token) => { err = error; });
+
+    expect(err.message).to.equal('In jwe.decrypt: failed to parse JWE header');
+    done();
+  });
+
+  it('should fail with no encrypted_key', function(done) {
+    var jweString = header + '..' + iv + '.' + cipherText + '.' + authTag; 
+
+    var err;
+    jwe.decryt(jweString, jwk, log, (error, decrypted_token) => { err = error; });
+
+    expect(err.message).to.equal('tried all keys to decryt cek but none of them works');
+    done();
+  });
+
+  it('should fail with no iv', function(done) {
+    var jweString = header + '.' + encrypted_key + '..' + cipherText + '.' + authTag; 
+
+    var err;
+    jwe.decryt(jweString, jwk, log, (error, decrypted_token) => { err = error; });
+
+    expect(err.message).to.equal('In decrypt_AES_CBC_HMAC_SHA2: iv has size 0, it must have size 16');
+    done();
+  });
+
+  it('should fail with no authTag', function(done) {
+    var jweString = header + '.' + encrypted_key + '.' + iv +'.' + cipherText + '.'; 
+
+    var err;
+    jwe.decryt(jweString, jwk, log, (error, decrypted_token) => { err = error; });
+
+    expect(err.message).to.equal('In decrypt_AES_CBC_HMAC_SHA2: invalid authentication tag');
+    done();
+  });
 });

@@ -220,7 +220,7 @@ If you set `passReqToCallback` option to true, you can use one of the following 
   `RSA1_5`, `RSA-OAEP`, `A128KW`, `A256KW`, `dir`; the content encryption algorithms supported are:
   `A128CBC-HS256`, `A192CBC-HS384`, `A256CBC-HS512`, `A128GCM`, and `A256GCM`.
 
-  In order to encrypt the id_token, keys have to be provided in JWK format using `jweKeyStore` option. We will first
+  In order to decrypt the id_token, keys have to be provided in JWK format using `jweKeyStore` option. We will first
   try the key with the corresponding kid. If decryption fails, we will try every possible key in `jweKeyStore`. 
   The following is an example of `jweKeyStore`:
 

@@ -175,7 +175,7 @@ code_config_no_kid.jweKeyStore = [
   ];
 
 var implicit_config_pemKey = JSON.parse(JSON.stringify(implicit_config));
-implicit_config_pemKey.jweKeyStore = [ { 'kty': 'RSA', 'privatePemKey': privatePemKey } ];
+implicit_config_pemKey.jweKeyStore = [ { 'kty': 'RSA', 'kid': 'rsa_key', 'privatePemKey': privatePemKey } ];
 
 var implicit_config_no_valid_key = JSON.parse(JSON.stringify(code_config));
 implicit_config_no_valid_key.jweKeyStore = [ 
@@ -189,6 +189,16 @@ implicit_config_no_valid_key.jweKeyStore = [
 
 var runTest = (id, result, done) => {
   driver.get('http://localhost:3000/t/' + id).then(() => {
+    driver.wait(until.titleIs('result'), 10000);
+    driver.findElement(By.id('status')).getText().then((text) => { 
+      expect(text).to.equal(result);
+      done();
+    });
+  });  
+};
+
+var runNoKidTest = (id, result, done) => {
+  driver.get('http://localhost:3000/t_no_kid/' + id).then(() => {
     driver.wait(until.titleIs('result'), 10000);
     driver.findElement(By.id('status')).getText().then((text) => { 
       expect(text).to.equal(result);
@@ -324,67 +334,67 @@ describe('authorization code flow JWE test with no kid provided', function() {
   // A128CBC-HS256
 
   it('RSA1_5 with A128CBC-HS256', function(done) {
-    runTest('s1', 'succeeded', done);
+    runNoKidTest('s1', 'succeeded', done);
   });
 
   it('RSA-OAEP with A128CBC-HS256', function(done) {
-    runTest('s2', 'succeeded', done);
+    runNoKidTest('s2', 'succeeded', done);
   });
 
   it('A128KW with A128CBC-HS256', function(done) {
-    runTest('s3', 'succeeded', done);
+    runNoKidTest('s3', 'succeeded', done);
   });
 
   it('A256KW with A128CBC-HS256', function(done) {
-    runTest('s4', 'succeeded', done);
+    runNoKidTest('s4', 'succeeded', done);
   });
 
   it('dir with A128CBC-HS256', function(done) {
-    runTest('s5', 'succeeded', done);
+    runNoKidTest('s5', 'succeeded', done);
   });
 
   // A256CBC-HS512
   
   it('RSA1_5 with A256CBC-HS512', function(done) {
-    runTest('s6', 'succeeded', done);
+    runNoKidTest('s6', 'succeeded', done);
   });
 
   it('RSA-OAEP with A256CBC-HS512', function(done) {
-    runTest('s7', 'succeeded', done);
+    runNoKidTest('s7', 'succeeded', done);
   });
 
   it('A128KW with A256CBC-HS512', function(done) {
-    runTest('s8', 'succeeded', done);
+    runNoKidTest('s8', 'succeeded', done);
   });
 
   it('A256KW with A256CBC-HS512', function(done) {
-    runTest('s9', 'succeeded', done);
+    runNoKidTest('s9', 'succeeded', done);
   });
 
   it('dir with A256CBC-HS512', function(done) {
-    runTest('s10', 'succeeded', done);
+    runNoKidTest('s10', 'succeeded', done);
   });
 
   // A192CBC-HS384
   
   it('RSA1_5 with A192CBC-HS384', function(done) {
-    runTest('s11', 'succeeded', done);
+    runNoKidTest('s11', 'succeeded', done);
   });
 
   it('RSA-OAEP with A192CBC-HS384', function(done) {
-    runTest('s12', 'succeeded', done);
+    runNoKidTest('s12', 'succeeded', done);
   });
 
   it('A128KW with A192CBC-HS384', function(done) {
-    runTest('s13', 'succeeded', done);
+    runNoKidTest('s13', 'succeeded', done);
   });
 
   it('A256KW with A192CBC-HS384', function(done) {
-    runTest('s14', 'succeeded', done);
+    runNoKidTest('s14', 'succeeded', done);
   });
 
   it('dir with A192CBC-HS384', function(done) {
-    runTest('s15', 'succeeded', done);
+    runNoKidTest('s15', 'succeeded', done);
   });
 
   it('shut down app', function(done) {
