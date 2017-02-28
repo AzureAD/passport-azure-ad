@@ -31,6 +31,8 @@ var OIDCStrategy = require('../../lib/index').OIDCStrategy;
 
 chai.use(require('chai-passport-strategy'));
 
+const TEST_TIMEOUT = 1000000; // 1000 seconds
+
 // Mock options required to create a OIDC strategy
 var options = {
     redirectUrl: 'https://returnURL',
@@ -57,6 +59,8 @@ testStrategy.setOptions = function(params, oauthConfig, optionsToValidate, done)
 
 
 describe('OIDCStrategy incoming state and nonce checking', function() {
+  this.timeout(TEST_TIMEOUT);
+
   var redirectUrl;
   var request;
   var challenge;
@@ -106,6 +110,8 @@ describe('OIDCStrategy incoming state and nonce checking', function() {
 });
 
 describe('OIDCStrategy error flow checking', function() {
+  this.timeout(TEST_TIMEOUT);
+
   var challenge;
 
   var testPrepare = function() {
@@ -133,6 +139,8 @@ describe('OIDCStrategy error flow checking', function() {
 });
 
 describe('OIDCStrategy token in request checking', function() {
+  this.timeout(TEST_TIMEOUT);
+  
   var challenge;
 
   var testPrepare = function(access_token, refresh_token, query_or_body) {

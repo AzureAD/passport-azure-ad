@@ -29,6 +29,8 @@ var chai = require('chai');
 var url = require('url');
 chai.use(require('chai-passport-strategy'));
 
+const TEST_TIMEOUT = 1000000; // 1000 seconds
+
 var Metadata = require('../../lib/metadata').Metadata;
 var OIDCStrategy = require('../../lib/index').OIDCStrategy;
 var OAuth2 = require('../../node_modules/oauth/index').OAuth2;
@@ -175,6 +177,7 @@ var setReqFromAuthRespRedirect = function(id_token_in_auth_resp, code_in_auth_re
  */
 
 describe('OIDCStrategy hybrid flow test', function() {
+  this.timeout(TEST_TIMEOUT);
 
   /*
    * success if we ignore the expiration
@@ -279,6 +282,7 @@ describe('OIDCStrategy hybrid flow test', function() {
 });
 
 describe('OIDCStrategy authorization code flow test', function() {
+  this.timeout(TEST_TIMEOUT);
 
   /*
    * success if we ignore the expiration

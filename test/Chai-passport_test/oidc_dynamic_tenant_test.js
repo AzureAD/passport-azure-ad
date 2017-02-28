@@ -31,6 +31,8 @@ var OIDCStrategy = require('../../lib/index').OIDCStrategy;
 
 chai.use(require('chai-passport-strategy'));
 
+const TEST_TIMEOUT = 1000000; // 1000 seconds
+
 // Mock options required to create a OIDC strategy
 var options = {
   redirectUrl: 'https://returnURL',
@@ -45,6 +47,8 @@ var options = {
 };
 
 describe('OIDCStrategy dynamic tenant test', function() {
+  this.timeout(TEST_TIMEOUT);
+
   var redirectUrl;
   var challenge;
   var request;
@@ -99,6 +103,8 @@ describe('OIDCStrategy dynamic tenant test', function() {
 });
 
 describe('OIDCStrategy dynamic B2C tenant test', function() {
+  this.timeout(TEST_TIMEOUT);
+  
   var redirectUrl;
   var challenge;
   var request;

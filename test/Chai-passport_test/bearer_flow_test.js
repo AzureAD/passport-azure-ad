@@ -29,6 +29,8 @@ var chai = require('chai');
 chai.use(require('chai-passport-strategy'));
 var BearerStrategy = require('../../lib/index').BearerStrategy;
 
+const TEST_TIMEOUT = 1000000; // 1000 seconds
+
 var PemKey =
   "-----BEGIN RSA PUBLIC KEY-----\n" +
   "MIIBCgKCAQEAvbcFrj193Gm6zeo5e2/y54Jx49sIgScv+2JO+n6NxNqQaKVnMkHc\n" +
@@ -74,6 +76,7 @@ var newStrategy = function(_options) {
 
 
 describe('bearer flow', function() {
+  this.timeout(TEST_TIMEOUT);
 
   context('passReqToCallback = true', function() {
     var req = null;
