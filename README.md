@@ -216,8 +216,14 @@ If you set `passReqToCallback` option to true, you can use one of the following 
 
 #### 5.1.1.4 JWE support
 
-  We support encrypted id_token in JWE Compact Serialization format. The key encryption algorithms supported are: 
-  `RSA1_5`, `RSA-OAEP`, `A128KW`, `A256KW`, `dir`; the content encryption algorithms supported are:
+  We support encrypted id_token in JWE Compact Serialization format. 
+
+  The key encryption algorithms supported are: 
+
+  `RSA1_5`, `RSA-OAEP`, `A128KW`, `A256KW`, `dir`.
+
+  The content encryption algorithms supported are:
+  
   `A128CBC-HS256`, `A192CBC-HS384`, `A256CBC-HS512`, `A128GCM`, and `A256GCM`.
 
   In order to decrypt the id_token, keys have to be provided in JWK format using `jweKeyStore` option. We will first

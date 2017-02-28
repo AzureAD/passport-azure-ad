@@ -19,7 +19,7 @@ describe('positive test', function() {
     var jweString = 'eyJhbGciOiJBMTI4S1ciLCJraWQiOiI4MWIyMDk2NS04MzMyLTQzZDktYTQ2OC04MjE2MGFkOTFhYzgiLCJlbmMiOiJBMTI4R0NNIn0.CBI6oDw8MydIx1IBntf_lQcw2MmJKIQx.Qx0pmsDa8KnJc9Jo.AwliP-KmWgsZ37BvzCefNen6VTbRK3QMA4TkvRkH0tP1bTdhtFJgJxeVmJkLD61A1hnWGetdg11c9ADsnWgL56NyxwSYjU1ZEHcGkd3EkU0vjHi9gTlb90qSYFfeF0LwkcTtjbYKCsiNJQkcIp1yeM03OmuiYSoYJVSpf7ej6zaYcMv3WwdxDFl8REwOhNImk2Xld2JXq6BR53TSFkyT7PwVLuq-1GwtGHlQeg7gDT6xW0JqHDPn_H-puQsmthc9Zg0ojmJfqqFvETUxLAF-KjcBTS5dNy6egwkYtOt8EIHK-oEsKYtZRaa8Z7MOZ7UGxGIMvEmxrGCPeJa14slv2-gaqK0kEThkaSqdYw0FkQZF.ER7MWJZ1FBI_NKvn7Zb1Lw';
 
     var decrypted;
-    jwe.decryt(jweString, jwk, log, (error, decrypted_token) => { decrypted = decrypted_token; });
+    jwe.decrypt(jweString, jwk, log, (error, decrypted_token) => { decrypted = decrypted_token; });
 
     expect(decrypted).to.equal('You can trust us to stick with you through thick and thin–to the bitter end. And you can trust us to keep any secret of yours–closer than you keep it yourself. But you cannot trust us to let you face trouble alone, and go off without a word. We are your friends, Frodo.');
     done();
@@ -70,7 +70,7 @@ describe('positive test', function() {
       XFBoMYUZodetZdvTiFvSkQ";
 
     var decrypted;
-    jwe.decryt(jweString, jwk, log, (error, decrypted_token) => { decrypted = decrypted_token; });
+    jwe.decrypt(jweString, jwk, log, (error, decrypted_token) => { decrypted = decrypted_token; });
 
     expect(decrypted).to.equal('The true sign of intelligence is not knowledge but imagination.');
     done();
@@ -120,7 +120,7 @@ describe('positive test', function() {
       9hH0vgRfYgPnAHOd8stkvw";
 
     var decrypted;
-    jwe.decryt(jweString, jwk, log, (error, decrypted_token) => { decrypted = decrypted_token; });
+    jwe.decrypt(jweString, jwk, log, (error, decrypted_token) => { decrypted = decrypted_token; });
 
     expect(decrypted).to.equal('Live long and prosper.');
     done();
@@ -135,7 +135,7 @@ describe('positive test', function() {
       U0m_YmjN04DJvceFICbCVQ';
 
     var decrypted;
-    jwe.decryt(jweString, jwk, log, (error, decrypted_token) => { decrypted = decrypted_token; });
+    jwe.decrypt(jweString, jwk, log, (error, decrypted_token) => { decrypted = decrypted_token; });
 
     expect(decrypted).to.equal('Live long and prosper.');
     done();
@@ -159,7 +159,7 @@ describe('negative test', function() {
     var jweString = '1.2.3.4';
 
     var err;
-    jwe.decryt(jweString, null, log, (error, decrypted_token) => { err = error; });
+    jwe.decrypt(jweString, null, log, (error, decrypted_token) => { err = error; });
 
     expect(err.message).to.equal('In jwe.decrypt: invalid JWE string, it has 4 parts instead of 5');
     done();
@@ -169,7 +169,7 @@ describe('negative test', function() {
     var jweString = '1.2.3.4.5';
 
     var err;
-    jwe.decryt(jweString, null, log, (error, decrypted_token) => { err = error; });
+    jwe.decrypt(jweString, null, log, (error, decrypted_token) => { err = error; });
 
     expect(err.message).to.equal('In jwe.decrypt: failed to parse JWE header');
     done();
@@ -179,9 +179,9 @@ describe('negative test', function() {
     var jweString = header + '..' + iv + '.' + cipherText + '.' + authTag; 
 
     var err;
-    jwe.decryt(jweString, jwk, log, (error, decrypted_token) => { err = error; });
+    jwe.decrypt(jweString, jwk, log, (error, decrypted_token) => { err = error; });
 
-    expect(err.message).to.equal('tried all keys to decryt cek but none of them works');
+    expect(err.message).to.equal('tried all keys to decrypt cek but none of them works');
     done();
   });
 
@@ -189,7 +189,7 @@ describe('negative test', function() {
     var jweString = header + '.' + encrypted_key + '..' + cipherText + '.' + authTag; 
 
     var err;
-    jwe.decryt(jweString, jwk, log, (error, decrypted_token) => { err = error; });
+    jwe.decrypt(jweString, jwk, log, (error, decrypted_token) => { err = error; });
 
     expect(err.message).to.equal('In decrypt_AES_CBC_HMAC_SHA2: iv has size 0, it must have size 16');
     done();
@@ -199,7 +199,7 @@ describe('negative test', function() {
     var jweString = header + '.' + encrypted_key + '.' + iv +'.' + cipherText + '.'; 
 
     var err;
-    jwe.decryt(jweString, jwk, log, (error, decrypted_token) => { err = error; });
+    jwe.decrypt(jweString, jwk, log, (error, decrypted_token) => { err = error; });
 
     expect(err.message).to.equal('In decrypt_AES_CBC_HMAC_SHA2: invalid authentication tag');
     done();
