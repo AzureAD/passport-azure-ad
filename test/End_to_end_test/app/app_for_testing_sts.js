@@ -86,51 +86,66 @@ module.exports = function(strategyOptions) {
   });
 
   var testList = {
-    's1': { 'JWE_alg': 'RSA1_5', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A128CBC-HS256'},
-    's2': { 'JWE_alg': 'RSA-OAEP', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A128CBC-HS256'},
-    's3': { 'JWE_alg': 'A128KW', 'JWE_alg_key_kid': 'sym_key_128', 'JWE_enc': 'A128CBC-HS256'},
-    's4': { 'JWE_alg': 'A256KW', 'JWE_alg_key_kid': 'sym_key_256', 'JWE_enc': 'A128CBC-HS256'},
-    's5': { 'JWE_alg': 'dir', 'JWE_alg_key_kid': 'sym_key_256', 'JWE_enc': 'A128CBC-HS256'},
-
-    's6': { 'JWE_alg': 'RSA1_5', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A256CBC-HS512'},
-    's7': { 'JWE_alg': 'RSA-OAEP', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A256CBC-HS512'},
-    's8': { 'JWE_alg': 'A128KW', 'JWE_alg_key_kid': 'sym_key_128', 'JWE_enc': 'A256CBC-HS512'},
-    's9': { 'JWE_alg': 'A256KW', 'JWE_alg_key_kid': 'sym_key_256', 'JWE_enc': 'A256CBC-HS512'},
-    's10': { 'JWE_alg': 'dir', 'JWE_alg_key_kid': 'sym_key_512', 'JWE_enc': 'A256CBC-HS512'},
-
-    's11': { 'JWE_alg': 'RSA1_5', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A192CBC-HS384'},
-    's12': { 'JWE_alg': 'RSA-OAEP', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A192CBC-HS384'},
-    's13': { 'JWE_alg': 'A128KW', 'JWE_alg_key_kid': 'sym_key_128', 'JWE_enc': 'A192CBC-HS384'},
-    's14': { 'JWE_alg': 'A256KW', 'JWE_alg_key_kid': 'sym_key_256', 'JWE_enc': 'A192CBC-HS384'},
-    's15': { 'JWE_alg': 'dir', 'JWE_alg_key_kid': 'sym_key_384', 'JWE_enc': 'A192CBC-HS384'},
-
-    'f1': { 'JWE_alg': 'RSA1_5', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A128CBC-HS256', 'id_token_JWE_invalid_authTag': true },
-    'f2': { 'JWE_alg': 'RSA1_5', 'JWE_alg_key_kid': 'rsa_key', 'JWE_enc': 'A256CBC-HS512', 'id_token_JWE_invalid_authTag': true },
+    "alg1":"e2lkX3Rva2VuX2FsZ19ub25lOiB0cnVlfQ",
+    "iss1": "e2lkX3Rva2VuX21pc3NpbmdfaXNzOiB0cnVlfQ",
+    "iss2": "e2lkX3Rva2VuX2ludmFsaWRfaXNzOiB0cnVlfQ",
+    "aud1": "e2lkX3Rva2VuX21pc3NpbmdfYXVkOiB0cnVlfQ",
+    "aud2": "e2lkX3Rva2VuX2ludmFsaWRfYXVkOiB0cnVlfQ",
+    "sub1": "eyJpZF90b2tlbl9taXNzaW5nX3N1YiI6IHRydWV9",
+    "sub2": "eyJpZF90b2tlbl9pbnZhbGlkX3N1YiI6IHRydWV9",
+    "exp1": "e2lkX3Rva2VuX21pc3NpbmdfZXhwOiB0cnVlfQ",
+    "exp2": "e2lkX3Rva2VuX2V4cGlyZWQ6IHRydWV9",
+    "iat1": "e2lkX3Rva2VuX21pc3NpbmdfaWF0OiB0cnVlfQ",
+    "nonce1": "e2lkX3Rva2VuX21pc3Npbmdfbm9uY2U6IHRydWV9",
+    "nonce2": "e2lkX3Rva2VuX2ludmFsaWRfbm9uY2U6IHRydWV9",
+    "azp1": "e2lkX3Rva2VuX211bHRpcGxlX2F1ZF9ub19henA6IHRydWV9",
+    "azp2": "e2lkX3Rva2VuX211bHRpcGxlX2F1ZF9pbnZhbGlkX2F6cDogdHJ1ZX0",
+    "nbf1": "e2lkX3Rva2VuX2Z1dHVyZV9uYmY6IHRydWV9",
+    "sig1": "e2lkX3Rva2VuX21pc3Npbmdfc2lnbmF0dXJlOiB0cnVlfQ",
+    "sig2": "e2lkX3Rva2VuX2ludmFsaWRfc2lnbmF0dXJlOiB0cnVlfQ",
+    "at_hash1": "e2lkX3Rva2VuX21pc3NpbmdfYXRfaGFzaDogdHJ1ZX0",
+    "at_hash2": "e2lkX3Rva2VuX2ludmFsaWRfYXRfaGFzaDogdHJ1ZX0",
+    "c_hash1": "e2lkX3Rva2VuX21pc3NpbmdfY19oYXNoOiB0cnVlfQ",
+    "c_hash2": "e2lkX3Rva2VuX2ludmFsaWRfY19oYXNoOiB0cnVlfQ",
+    "state1": "e2F1dGhfcmVzcG9uc2VfbWlzc2luZ19zdGF0ZTogdHJ1ZX0",
+    "state2": "e2F1dGhfcmVzcG9uc2VfaW52YWxpZF9zdGF0ZTogdHJ1ZX0",
+    "code1": "e2F1dGhfcmVzcG9uc2VfbWlzc2luZ19jb2RlOiB0cnVlfQ",
+    "code2": "e2F1dGhfcmVzcG9uc2VfaW52YWxpZF9jb2RlOiB0cnVlfQ",
+    "id_token_authResp": "e2F1dGhfcmVzcG9uc2VfbWlzc2luZ19pZF90b2tlbjogdHJ1ZX0",
+    "access_token_authResp": "e2F1dGhfcmVzcG9uc2VfbWlzc2luZ19hY2Nlc3NfdG9rZW46IHRydWV9",
+    "denied": "e2F1dGhfcmVzcG9uc2VfYWNjZXNzX2RlbmllZDogdHJ1ZX0",
+    "id_token_tokenResp": "e3Rva2VuX3Jlc3BvbnNlX21pc3NpbmdfaWRfdG9rZW46IHRydWV9",
+    "access_token_tokenResp": "e3Rva2VuX3Jlc3BvbnNlX21pc3NpbmdfYWNjZXNzX3Rva2VuOiB0cnVlfQ",
+    "access_token_expired": "eyJ0b2tlbl9yZXNwb25zZV9leHBpcmVkX2FjY2Vzc190b2tlbiI6IHRydWV9"
   };
 
-  app.get('/t/:id', (req, res, next) => {
+  var extraTokenReqQueryParams = null;
+
+  app.get('/auth/:id', (req, res, next) => {
     req.logout();
+
     var id = req.params['id'];
-    var tParams = base64url.encode(JSON.stringify(testList[id]));
-    passport.authenticate('azuread-openidconnect', { extraAuthReqQueryParams: { 'tParams': tParams }, failureRedirect: '/result' })(req, res, next);
+    extraTokenReqQueryParams = null;
+
+    passport.authenticate('azuread-openidconnect', { extraAuthReqQueryParams: { 'tParams': testList[id] }, failureRedirect: '/result' })(req, res, next);
   }, (req, res) => {
     res.render('apiResult', { result: 'succeeded' });
   });
 
-  app.get('/t_no_kid/:id', (req, res, next) => {
+  app.get('/token/:id', (req, res, next) => {
     req.logout();
+
     var id = req.params['id'];
-    var json = JSON.parse(JSON.stringify(testList[id]));  // make a copy
-    json['id_token_JWE_header_no_kid'] = true;
-    var tParams = base64url.encode(JSON.stringify(json));
-    passport.authenticate('azuread-openidconnect', { extraAuthReqQueryParams: { 'tParams': tParams }, failureRedirect: '/result' })(req, res, next);
+    extraTokenReqQueryParams = { 'tParams': testList[id] };
+
+    passport.authenticate('azuread-openidconnect', { failureRedirect: '/result' })(req, res, next);
   }, (req, res) => {
     res.render('apiResult', { result: 'succeeded' });
   });
 
-  app.post('/auth/openid/return', 
-    passport.authenticate('azuread-openidconnect', { failureRedirect: '/result'}),
-    (req, res) => {
+  app.post('/auth/openid/return', (req, res, next) => {
+      passport.authenticate('azuread-openidconnect', { extraTokenReqQueryParams: extraTokenReqQueryParams, failureRedirect: '/result'})(req, res, next);
+    }, (req, res) => {
       res.render('apiResult', { result: 'succeeded' });
     }
   );
