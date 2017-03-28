@@ -86,37 +86,130 @@ module.exports = function(strategyOptions) {
   });
 
   var testList = {
-    "alg1":"e2lkX3Rva2VuX2FsZ19ub25lOiB0cnVlfQ",
-    "iss1": "e2lkX3Rva2VuX21pc3NpbmdfaXNzOiB0cnVlfQ",
-    "iss2": "e2lkX3Rva2VuX2ludmFsaWRfaXNzOiB0cnVlfQ",
-    "aud1": "e2lkX3Rva2VuX21pc3NpbmdfYXVkOiB0cnVlfQ",
-    "aud2": "e2lkX3Rva2VuX2ludmFsaWRfYXVkOiB0cnVlfQ",
-    "sub1": "eyJpZF90b2tlbl9taXNzaW5nX3N1YiI6IHRydWV9",
-    "sub2": "eyJpZF90b2tlbl9pbnZhbGlkX3N1YiI6IHRydWV9",
-    "exp1": "e2lkX3Rva2VuX21pc3NpbmdfZXhwOiB0cnVlfQ",
-    "exp2": "e2lkX3Rva2VuX2V4cGlyZWQ6IHRydWV9",
-    "iat1": "e2lkX3Rva2VuX21pc3NpbmdfaWF0OiB0cnVlfQ",
-    "nonce1": "e2lkX3Rva2VuX21pc3Npbmdfbm9uY2U6IHRydWV9",
-    "nonce2": "e2lkX3Rva2VuX2ludmFsaWRfbm9uY2U6IHRydWV9",
-    "azp1": "e2lkX3Rva2VuX211bHRpcGxlX2F1ZF9ub19henA6IHRydWV9",
-    "azp2": "e2lkX3Rva2VuX211bHRpcGxlX2F1ZF9pbnZhbGlkX2F6cDogdHJ1ZX0",
-    "nbf1": "e2lkX3Rva2VuX2Z1dHVyZV9uYmY6IHRydWV9",
-    "sig1": "e2lkX3Rva2VuX21pc3Npbmdfc2lnbmF0dXJlOiB0cnVlfQ",
-    "sig2": "e2lkX3Rva2VuX2ludmFsaWRfc2lnbmF0dXJlOiB0cnVlfQ",
-    "at_hash1": "e2lkX3Rva2VuX21pc3NpbmdfYXRfaGFzaDogdHJ1ZX0",
-    "at_hash2": "e2lkX3Rva2VuX2ludmFsaWRfYXRfaGFzaDogdHJ1ZX0",
-    "c_hash1": "e2lkX3Rva2VuX21pc3NpbmdfY19oYXNoOiB0cnVlfQ",
-    "c_hash2": "e2lkX3Rva2VuX2ludmFsaWRfY19oYXNoOiB0cnVlfQ",
-    "state1": "e2F1dGhfcmVzcG9uc2VfbWlzc2luZ19zdGF0ZTogdHJ1ZX0",
-    "state2": "e2F1dGhfcmVzcG9uc2VfaW52YWxpZF9zdGF0ZTogdHJ1ZX0",
-    "code1": "e2F1dGhfcmVzcG9uc2VfbWlzc2luZ19jb2RlOiB0cnVlfQ",
-    "code2": "e2F1dGhfcmVzcG9uc2VfaW52YWxpZF9jb2RlOiB0cnVlfQ",
-    "id_token_authResp": "e2F1dGhfcmVzcG9uc2VfbWlzc2luZ19pZF90b2tlbjogdHJ1ZX0",
-    "access_token_authResp": "e2F1dGhfcmVzcG9uc2VfbWlzc2luZ19hY2Nlc3NfdG9rZW46IHRydWV9",
-    "denied": "e2F1dGhfcmVzcG9uc2VfYWNjZXNzX2RlbmllZDogdHJ1ZX0",
-    "id_token_tokenResp": "e3Rva2VuX3Jlc3BvbnNlX21pc3NpbmdfaWRfdG9rZW46IHRydWV9",
-    "access_token_tokenResp": "e3Rva2VuX3Jlc3BvbnNlX21pc3NpbmdfYWNjZXNzX3Rva2VuOiB0cnVlfQ",
-    "access_token_expired": "eyJ0b2tlbl9yZXNwb25zZV9leHBpcmVkX2FjY2Vzc190b2tlbiI6IHRydWV9"
+    "alg1": {
+      "original": "{id_token_alg_none: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX2FsZ19ub25lOiB0cnVlfQ"
+    },
+    "iss1": {
+      "original": "{id_token_missing_iss: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX21pc3NpbmdfaXNzOiB0cnVlfQ"
+    },
+    "iss2": {
+      "original": "{id_token_invalid_iss: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX2ludmFsaWRfaXNzOiB0cnVlfQ"
+    },
+    "sub1": {
+      "original": "{id_token_missing_sub: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX21pc3Npbmdfc3ViOiB0cnVlfQ"
+    },
+    "sub2": {
+      "original": "{id_token_invalid_sub: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX2ludmFsaWRfc3ViOiB0cnVlfQ"
+    },
+    "aud1": {
+      "original": "{id_token_missing_aud: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX21pc3NpbmdfYXVkOiB0cnVlfQ"
+    },
+    "aud2": {
+      "original": "{id_token_invalid_aud: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX2ludmFsaWRfYXVkOiB0cnVlfQ"
+    },
+    "exp1": {
+      "original": "{id_token_missing_exp: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX21pc3NpbmdfZXhwOiB0cnVlfQ"
+    },
+    "exp2": {
+      "original": "{id_token_expired: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX2V4cGlyZWQ6IHRydWV9"
+    },
+    "iat1": {
+      "original": "{id_token_missing_iat: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX21pc3NpbmdfaWF0OiB0cnVlfQ"
+    },
+    "nonce1": {
+      "original": "{id_token_missing_nonce: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX21pc3Npbmdfbm9uY2U6IHRydWV9"
+    },
+    "nonce2": {
+      "original": "{id_token_invalid_nonce: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX2ludmFsaWRfbm9uY2U6IHRydWV9"
+    },
+    "azp1": {
+      "original": "{id_token_multiple_aud_no_azp: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX211bHRpcGxlX2F1ZF9ub19henA6IHRydWV9"
+    },
+    "azp2": {
+      "original": "{id_token_multiple_aud_invalid_azp: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX211bHRpcGxlX2F1ZF9pbnZhbGlkX2F6cDogdHJ1ZX0"
+    },
+    "nbf1": {
+      "original": "{id_token_future_nbf: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX2Z1dHVyZV9uYmY6IHRydWV9"
+    },
+    "sig1": {
+      "original": "{id_token_missing_signature: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX21pc3Npbmdfc2lnbmF0dXJlOiB0cnVlfQ"
+    },
+    "sig2": {
+      "original": "{id_token_invalid_signature: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX2ludmFsaWRfc2lnbmF0dXJlOiB0cnVlfQ"
+    },
+    "at_hash1": {
+      "original": "{id_token_missing_at_hash: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX21pc3NpbmdfYXRfaGFzaDogdHJ1ZX0"
+    },
+    "at_hash2": {
+      "original": "{id_token_invalid_at_hash: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX2ludmFsaWRfYXRfaGFzaDogdHJ1ZX0"
+    },
+    "c_hash1": {
+      "original": "{id_token_missing_c_hash: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX21pc3NpbmdfY19oYXNoOiB0cnVlfQ"
+    },
+    "c_hash2": {
+      "original": "{id_token_invalid_c_hash: true}",
+      "base64urlEncoded": "e2lkX3Rva2VuX2ludmFsaWRfY19oYXNoOiB0cnVlfQ"
+    },
+    "state1": {
+      "original": "{auth_response_missing_state: true}",
+      "base64urlEncoded": "e2F1dGhfcmVzcG9uc2VfbWlzc2luZ19zdGF0ZTogdHJ1ZX0"
+    },
+    "state2": {
+      "original": "{auth_response_invalid_state: true}",
+      "base64urlEncoded": "e2F1dGhfcmVzcG9uc2VfaW52YWxpZF9zdGF0ZTogdHJ1ZX0"
+    },
+    "code1": {
+      "original": "{auth_response_missing_code: true}",
+      "base64urlEncoded": "e2F1dGhfcmVzcG9uc2VfbWlzc2luZ19jb2RlOiB0cnVlfQ"
+    },
+    "code2": {
+      "original": "{auth_response_invalid_code: true}",
+      "base64urlEncoded": "e2F1dGhfcmVzcG9uc2VfaW52YWxpZF9jb2RlOiB0cnVlfQ"
+    },
+    "id_token_authResp": {
+      "original": "{auth_response_missing_id_token: true}",
+      "base64urlEncoded": "e2F1dGhfcmVzcG9uc2VfbWlzc2luZ19pZF90b2tlbjogdHJ1ZX0"
+    },
+    "access_token_authResp": {
+      "original": "{auth_response_missing_access_token: true}",
+      "base64urlEncoded": "e2F1dGhfcmVzcG9uc2VfbWlzc2luZ19hY2Nlc3NfdG9rZW46IHRydWV9"
+    },
+    "denied": {
+      "original": "{auth_response_access_denied: true}",
+      "base64urlEncoded": "e2F1dGhfcmVzcG9uc2VfYWNjZXNzX2RlbmllZDogdHJ1ZX0"
+    },
+    "id_token_tokenResp": {
+      "original": "{token_response_missing_id_token: true}",
+      "base64urlEncoded": "e3Rva2VuX3Jlc3BvbnNlX21pc3NpbmdfaWRfdG9rZW46IHRydWV9"
+    },
+    "access_token_tokenResp": {
+      "original": "{token_response_missing_access_token: true}",
+      "base64urlEncoded": "e3Rva2VuX3Jlc3BvbnNlX21pc3NpbmdfYWNjZXNzX3Rva2VuOiB0cnVlfQ"
+    },
+    "access_token_expired": {
+      "original": "{token_response_expired_access_token: true}",
+      "base64urlEncoded": "e3Rva2VuX3Jlc3BvbnNlX2V4cGlyZWRfYWNjZXNzX3Rva2VuOiB0cnVlfQ"
+    }
   };
 
   var extraTokenReqQueryParams = null;
@@ -127,7 +220,7 @@ module.exports = function(strategyOptions) {
     var id = req.params['id'];
     extraTokenReqQueryParams = null;
 
-    passport.authenticate('azuread-openidconnect', { extraAuthReqQueryParams: { 'tParams': testList[id] }, failureRedirect: '/result' })(req, res, next);
+    passport.authenticate('azuread-openidconnect', { extraAuthReqQueryParams: { 'tParams': testList[id]["base64urlEncoded"] }, failureRedirect: '/result' })(req, res, next);
   }, (req, res) => {
     res.render('apiResult', { result: 'succeeded' });
   });
@@ -136,7 +229,7 @@ module.exports = function(strategyOptions) {
     req.logout();
 
     var id = req.params['id'];
-    extraTokenReqQueryParams = { 'tParams': testList[id] };
+    extraTokenReqQueryParams = { 'tParams': testList[id]["base64urlEncoded"] };
 
     passport.authenticate('azuread-openidconnect', { failureRedirect: '/result' })(req, res, next);
   }, (req, res) => {
