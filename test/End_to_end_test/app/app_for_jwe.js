@@ -112,7 +112,7 @@ module.exports = function(strategyOptions) {
     req.logout();
     var id = req.params['id'];
     var tParams = base64url.encode(JSON.stringify(testList[id]));
-    passport.authenticate('azuread-openidconnect', { extraReqQueryParams: { 'tParams': tParams }, failureRedirect: '/result' })(req, res, next);
+    passport.authenticate('azuread-openidconnect', { extraAuthReqQueryParams: { 'tParams': tParams }, failureRedirect: '/result' })(req, res, next);
   }, (req, res) => {
     res.render('apiResult', { result: 'succeeded' });
   });
@@ -123,7 +123,7 @@ module.exports = function(strategyOptions) {
     var json = JSON.parse(JSON.stringify(testList[id]));  // make a copy
     json['id_token_JWE_header_no_kid'] = true;
     var tParams = base64url.encode(JSON.stringify(json));
-    passport.authenticate('azuread-openidconnect', { extraReqQueryParams: { 'tParams': tParams }, failureRedirect: '/result' })(req, res, next);
+    passport.authenticate('azuread-openidconnect', { extraAuthReqQueryParams: { 'tParams': tParams }, failureRedirect: '/result' })(req, res, next);
   }, (req, res) => {
     res.render('apiResult', { result: 'succeeded' });
   });
