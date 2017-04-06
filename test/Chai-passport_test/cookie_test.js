@@ -53,6 +53,15 @@ var countCookie = function() {
   return number;
 };
 
+var getFirstPassportCookie = function() {
+  for (var cookie in req.cookies) {
+    if (req.cookies.hasOwnProperty(cookie) & cookie.startsWith('passport-aad.'))
+      return cookie;
+  }
+
+  return null;
+};
+
 describe('cookie test', function() {
   this.timeout(TEST_TIMEOUT);
 
@@ -66,6 +75,11 @@ describe('cookie test', function() {
     // set the first cookie
     handler.add(req, res, { state: '1', nonce: 'some nonce' });
     expect(countCookie()).to.equal(1);
+
+    // check the cookie is encrypted
+    var cookie = getFirstPassportCookie();
+    // skip the passport-aad prefix and timestamp, check the encrypted content and authTag
+    expect(cookie.substring(27)).equal('6ba133e675492c0c4fef3d2fb4bb2166fb246d29ed9f03372e7e647119de7676766e.f79b7a90af7173b807da797994f46be7');
 
     // set the second cookie
     handler.add(req, res, { state: '2', nonce: 'some nonce' });

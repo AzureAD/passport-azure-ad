@@ -37,7 +37,7 @@ var base64url = require('base64url');
 var chai = require('chai');
 var expect = chai.expect;
 
-const TEST_TIMEOUT = 500000; // 30 seconds
+const TEST_TIMEOUT = 500000; // 500 seconds
 const LOGIN_WAITING_TIME = 1000; // 1 second
 
 /******************************************************************************
@@ -112,7 +112,7 @@ describe('authorization code flow test', function() {
 describe('implicit flow test', function() {
   this.timeout(TEST_TIMEOUT);
 
-  it('start app for authorization code flow', function(done) {
+  it('start app for implicit flow', function(done) {
     if (!driver)
       driver = chromedriver.get_driver();
 
@@ -132,7 +132,7 @@ describe('implicit flow test', function() {
 describe('hybrid flow test', function() {
   this.timeout(TEST_TIMEOUT);
 
-  it('start app for authorization code flow', function(done) {
+  it('start app for hybrid flow', function(done) {
     if (!driver)
       driver = chromedriver.get_driver();
 
