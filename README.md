@@ -65,6 +65,9 @@ passport.use(new OIDCStrategy({
     scope: config.creds.scope,
     loggingLevel: config.creds.loggingLevel,
     nonceLifetime: config.creds.nonceLifetime,
+    nonceMaxAmount: config.creds.nonceMaxAmount,
+    useCookieInsteadOfSession: config.creds.useCookieInsteadOfSession,
+    cookieEncryptionKeys: config.creds.cookieEncryptionKeys,
     clockSkew: config.creds.clockSkew,
   },
   function(iss, sub, profile, accessToken, refreshToken, done) {
@@ -174,6 +177,17 @@ passport.use(new OIDCStrategy({
   This option is required if you want to accept and decrypt id_token in JWE Compact Serialization format. See 
   section 5.1.1.4 for more details.
 
+* `useCookieInsteadOfSession`  (Conditional)
+  
+  Passport-azure-ad saves state and nonce in session by default for validation purpose. If `useCookieInsteadOfSession` is set to true, passport-azure-ad will encrypt the state/nonce and
+  put them into cookie instead. This is helpful when we want to be completely session-free, in other words, when you use { session: false } option in passport.authenticate function.
+  If `useCookieInsteadOfSession` is set to true, you must provide `cookieEncryptionKeys` for cookie encryption and decryption.
+
+* `cookieEncryptionKeys`  (Conditional)
+
+  If `useCookieInsteadOfSession` is set to true, you must provide `cookieEncryptionKeys`. It is an array of the following format: [ {key: '...', 'iv': '...' }, {key: '...', 'iv': '...' }, ...]. key could be any string of length 32, and iv could be any string of length 12. We always use the first set of key/iv to encrypt cookie, but we try all the key/iv to decrypt cookie.
+  This is helpful if you want to do key rollover. The encryption/decryption algorithm we use is aes-256-gcm. You can limit the cookie amount and expiration using `nonceLifetime` and `nonceMaxAmount` options. 
+
 * `scope`  (Optional)
 
   List of scope values besides `openid` indicating the required scope of the access token for accessing the requested resource. For example, ['email', 'profile']. If you need refresh_token for v2 endpoint, then you have to include the 'offline_access' scope.
@@ -185,6 +199,10 @@ passport.use(new OIDCStrategy({
 * `nonceLifetime`  (Optional)
   
   The lifetime of nonce in session in seconds. The default value is 3600 seconds.
+
+* `nonceMaxAmount`  (Optional)
+  
+  The max amount of nonce you want to keep in session or cookies. The default number is 10. The oldest nonce(s) will be removed if the total number exceeds. (You can keep this number very small because nonce will be removed from session or cookies after validation. This mainly handles the case when user opens more than one login tabs at once and wants to go back to the first login page to type user credentials. Each login tab results in a nonce in session or cookie, so we only honor the most recent nonceMaxAmount many login tabs.)
 
 * `clockSkew`  (Optional)
 
@@ -357,12 +375,38 @@ the strategy.
 
 * `prompt`: v1 and v2 endpoint support `login`, `consent` and `admin_conset`; B2C endpoint only supports `login`. 
 
+* `response`: this is required if you want to use cookie instead of session to save state/nonce. See section 5.1.4.
+
 Example:
 
 ```
   passport.authenticate('azuread-openidconnect', { failureRedirect: '/', session: false, customState: 'my_state', resourceURL: 'https://graph.microsoft.com/mail.send'});
   
   passport.authenticate('azuread-openidconnect', { tenantIdOrName: 'contoso.onmicrosoft.com' });
+```
+
+#### 5.1.4 Session free support
+
+Passport framework uses session to keep a persistent login session. As a plug in, we also use session to store state and nonce by default, regardless whether you use { session: false } option in passport.authenticate or not. To be completely session free, you must configure passport-azure-ad to create state/nonce cookie instead of saving them in session. Please follow the following example:
+
+```
+  passport.use(new OIDCStrategy({
+    ...
+    nonceLifetime: 600,  // state/nonce cookie expiration in seconds
+    nonceMaxAmount: 5,   // max amount of state/nonce cookie you want to keep (cookie is deleted after validation so this can be very small)
+    useCookieInsteadOfSession: true,  // use cookie, not session
+    cookieEncryptionKeys: [ { key: '12345678901234567890123456789012', 'iv': '123456789012' }],  // encrypt/decrypt key and iv, see `cookieEncryptionKeys` instruction in section 5.1.1.2
+  },
+    // any supported verify callback
+    function(iss, sub, profile, accessToken, refreshToken, done) {
+    ...
+  });
+
+  // must pass the response object to passport.authenticate, since we will use response object to set cookie
+  app.get('/login', function(req, res, next) => {
+    passport.authenticate('azuread-openidconnect', { session: false, response: res })(req, res, next);
+  });
+
 ```
 
 ### 5.2 BearerStrategy

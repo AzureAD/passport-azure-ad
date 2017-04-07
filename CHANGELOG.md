@@ -1,4 +1,18 @@
-<a name="3.0.5"></a>
+<a name="3.0.6"></a>
+# 3.0.6
+
+## OIDCStrategy
+
+### New features
+
+* [#285](https://github.com/AzureAD/passport-azure-ad/issues/285) express-session free support
+
+  We used to save state etc in express session, so you cannot be session free even if `{ session : fase }`
+  option is used in `passport.authenticate`. Now we provide an option to save state etc in cookie via 
+  encryption and decryption, so OIDCStrategy no longer relies on express session.
+
+  More details can be found in README.md, section 5.1.4.
+
 # 3.0.5
 
 ## OIDCStrategy
