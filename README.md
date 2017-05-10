@@ -431,6 +431,7 @@ var options = {
   audience: config.creds.audience,
   loggingLevel: config.creds.loggingLevel,
   clockSkew: config.creds.clockSkew,
+  scope: config.creds.scope
 };
 
 var bearerStrategy = new BearerStrategy(options,
@@ -508,6 +509,11 @@ var bearerStrategy = new BearerStrategy(options,
 * `allowMultiAudiencesInToken`  (Conditional)
 
   Required if you allow access_token whose `aud` claim contains multiple values.
+
+* `scope`  (Optional)
+
+  This value is an array of scopes you accept. If this value is provided, we will check if the token contains one of
+  these accepted scopes. If this value is not provided, we won't check token scopes.
   
 * `audience`  (Optional)
 
@@ -608,6 +614,11 @@ following:
   * Application claims: 'Email Addresses', 'Given Name', 'Users Object ID'
 
 You will also need to click the 'Run now' button in the 'B2C_1_signup' blade to create an user.
+
+For B2C application, you will also need to create at least one scope and provide it to test parameters. See [how to create scope for B2C access token](https://azure.microsoft.com/en-us/blog/azure-ad-b2c-access-tokens-now-in-public-preview/). In the bearer_b2c_test, We will use OIDCStrategy to get a B2C
+access token for the scope, and use BearerStrategy to validate the scope. Note for scope we use the full url in
+ `b2c_params.scopeForOIDC` but only the name in `b2c_params.scopeForBearer`. For example, 
+ `b2c_params.scopeForOIDC=['https://sijun1b2c.onmicrosoft.com/oidc-b2c/read']` and `b2c_params.scopeForBearer=['read']`. 
 
 #### 6.2.2. Fill the test parameters 
 

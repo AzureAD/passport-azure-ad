@@ -45,6 +45,7 @@ const LOGIN_WAITING_TIME = 3000; // 3 second
 var test_parameters = {};
 
 var client_config, server_config,  server_config_with_req, server_config_allow_multiAud,
+server_config_with_scope, server_config_with_wrong_scope,
 server_config_wrong_issuer, server_config_wrong_policyName, server_config_wrong_identityMetadata,
 server_config_wrong_audience, server_config_wrong_issuer_no_validateIssuer = {};
 
@@ -82,7 +83,7 @@ var apply_test_parameters = (done) => {
     isB2C: true,
     issuer: ['https://login.microsoftonline.com/' + test_parameters.tenantID + '/v2.0/'],
     passReqToCallback: false,
-    scope: ['offline_access', test_parameters.clientID],
+    scope: ['offline_access'].concat(test_parameters.scopeForOIDC),
     loggingLevel: null,
     nonceLifetime: null,
   };
@@ -105,6 +106,12 @@ var apply_test_parameters = (done) => {
 
   server_config_allow_multiAud = JSON.parse(JSON.stringify(server_config));
   server_config_allow_multiAud.allowMultiAudiencesInToken = false;
+
+  server_config_with_scope = JSON.parse(JSON.stringify(server_config));
+  server_config_with_scope.scope = ['some_irrelevent_scope', test_parameters.scopeForBearer[0]];
+
+  server_config_with_wrong_scope = JSON.parse(JSON.stringify(server_config));
+  server_config_with_wrong_scope.scope = ['some_irrelevent_scope'];
 
   server_config_wrong_issuer = JSON.parse(JSON.stringify(server_config));
   server_config_wrong_issuer.issuer = 'wrong_issuer';
@@ -187,6 +194,14 @@ describe('bearer b2c test', function() {
 
   it('should succeed', function(done) {
     checkResult(server_config_wrong_issuer_no_validateIssuer, 'succeeded', done);
+  });
+
+  it('should succeed', function(done) {
+    checkResult(server_config_with_scope, 'succeeded', done);
+  });
+
+  it('should fail with wrong scope', function(done) {
+    checkResult(server_config_with_wrong_scope, 'Unauthorized', done);
   });
 
   it('should fail with wrong audience', function(done) {
