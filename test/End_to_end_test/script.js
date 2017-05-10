@@ -156,7 +156,9 @@ exports.set_test_parameters = (callback) => {
         clientSecret: b2c_client_secret,
         username: 'lsj31415926@gmail.com',
         password: b2c_password,
-        oid: '7a61aaa0-6510-4e5c-b3ba-f31e5b7c7642'
+        oid: '7a61aaa0-6510-4e5c-b3ba-f31e5b7c7642',
+        scopeForBearer: ['read', 'write'],
+        scopeForOIDC: ['https://sijun1b2c.onmicrosoft.com/oidc-b2c/read', 'https://sijun1b2c.onmicrosoft.com/oidc-b2c/write']
       };
 
       return callback(test_parameters);  
