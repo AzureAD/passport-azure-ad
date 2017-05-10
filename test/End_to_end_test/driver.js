@@ -29,7 +29,7 @@ var path = require('chromedriver').path;
 
 var chromeCapabilities = webdriver.Capabilities.chrome();
 var chromeOptions = {
-  'args': ['--no-sandbox']
+  'args': ['--no-sandbox', 'disable-infobars']
 };
 chromeCapabilities.set('chromeOptions', chromeOptions);
 

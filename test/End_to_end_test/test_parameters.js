@@ -50,7 +50,9 @@ var test_parameters = {
     clientSecret: '<fill-in>',
     username: '<fill-in>',
     password: '<fill-in>',
-    oid: '<fill-in>'
+    oid: '<fill-in>',
+    scopeForBearer: '<fill-in>',
+    scopeForOIDC: '<fill-in>'
   }
 };
 
