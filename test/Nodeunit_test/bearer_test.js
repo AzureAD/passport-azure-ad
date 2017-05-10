@@ -64,7 +64,7 @@ function setConfig(metadataURL, validateIssuer, callback) {
 
 exports.bearer = {
   'validateIssuer tests': (test) => {
-    test.expect(14);
+    test.expect(15);
 
     setConfig(commonMetadataURL, true, (bearerConfig) => {
       test.throws(() => { 
@@ -137,6 +137,19 @@ exports.bearer = {
         },
         Error,
         'Should throw for using B2C if scope is not an array'
+      );
+    });
+
+    setConfig(nonCommonMetadataURL, null, (bearerConfig) => {
+      test.throws(() => {
+          bearerConfig.isB2C = true;
+          bearerConfig.policyName = 'b2c_1_signin';
+          bearerConfig.validateIssuer = false; 
+          bearerConfig.scope = [];
+          new BearerStrategy(bearerConfig, noop);
+        },
+        Error,
+        'Should throw for using B2C if scope is an empty array'
       );
     });
 
