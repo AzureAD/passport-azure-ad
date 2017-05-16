@@ -45,8 +45,10 @@ const LOGIN_WAITING_TIME = 3000; // 3 second
 var test_parameters = {};
 
 var client_config, server_config,  server_config_with_req, server_config_allow_multiAud,
-server_config_with_scope, server_config_with_wrong_scope,
-server_config_wrong_issuer, server_config_wrong_policyName, server_config_wrong_identityMetadata,
+server_config_with_scope, server_config_with_wrong_scope, 
+server_config_with_policyName, server_config_with_policyName_array,
+server_config_without_policyName, server_config_wrong_policyName, server_config_wrong_policyNameArray,
+server_config_wrong_issuer, server_config_wrong_identityMetadata,
 server_config_wrong_audience, server_config_wrong_issuer_no_validateIssuer = {};
 
 var driver;
@@ -100,34 +102,52 @@ var apply_test_parameters = (done) => {
     allowMultiAudiencesInToken: false,
     loggingLevel: null,
   };
-
+ 
+  // req
   server_config_with_req = JSON.parse(JSON.stringify(server_config));
   server_config_with_req.passReqToCallback = true;
 
+  // aud
   server_config_allow_multiAud = JSON.parse(JSON.stringify(server_config));
   server_config_allow_multiAud.allowMultiAudiencesInToken = false;
 
+  server_config_wrong_audience = JSON.parse(JSON.stringify(server_config));
+  server_config_wrong_audience.audience = 'wrong_audience';
+
+  // policyName
+  server_config_with_policyName = JSON.parse(JSON.stringify(server_config));
+  server_config_with_policyName.policyName = 'b2c_1_signin';
+
+  server_config_with_policyName_array = JSON.parse(JSON.stringify(server_config));
+  server_config_with_policyName_array.policyName = ['b2c_1_signin', 'b2c_1_updateprofile'];
+
+  server_config_without_policyName = JSON.parse(JSON.stringify(server_config));
+  server_config_without_policyName.policyName = null;
+
+  server_config_wrong_policyName = JSON.parse(JSON.stringify(server_config));
+  server_config_wrong_policyName.policyName = 'b2c_1_wrong_policy';
+
+  server_config_wrong_policyNameArray = JSON.parse(JSON.stringify(server_config));
+  server_config_wrong_policyNameArray.policyName = ['b2c_1_wrong_policy'];
+
+  // scope
   server_config_with_scope = JSON.parse(JSON.stringify(server_config));
   server_config_with_scope.scope = ['some_irrelevent_scope', test_parameters.scopeForBearer[0]];
 
   server_config_with_wrong_scope = JSON.parse(JSON.stringify(server_config));
   server_config_with_wrong_scope.scope = ['some_irrelevent_scope'];
 
+  // issuer
   server_config_wrong_issuer = JSON.parse(JSON.stringify(server_config));
   server_config_wrong_issuer.issuer = 'wrong_issuer';
-
-  server_config_wrong_policyName = JSON.parse(JSON.stringify(server_config));
-  server_config_wrong_policyName.policyName = 'b2c_1_wrong_policy';
-
-  server_config_wrong_identityMetadata = JSON.parse(JSON.stringify(server_config));
-  server_config_wrong_identityMetadata.identityMetadata = 'https://login.microsoftonline.com/wrongTenant/v2.0/.well-known/openid-configuration';
-
-  server_config_wrong_audience = JSON.parse(JSON.stringify(server_config));
-  server_config_wrong_audience.audience = 'wrong_audience';
 
   server_config_wrong_issuer_no_validateIssuer = JSON.parse(JSON.stringify(server_config));
   server_config_wrong_issuer_no_validateIssuer.issuer = 'wrong_issuer';
   server_config_wrong_issuer_no_validateIssuer.validateIssuer = false;
+
+  // metadata
+  server_config_wrong_identityMetadata = JSON.parse(JSON.stringify(server_config));
+  server_config_wrong_identityMetadata.identityMetadata = 'https://login.microsoftonline.com/wrongTenant/v2.0/.well-known/openid-configuration';
 
   done();   
 };
@@ -200,16 +220,32 @@ describe('bearer b2c test', function() {
     checkResult(server_config_with_scope, 'succeeded', done);
   });
 
+  it('should succeed', function(done) {
+    checkResult(server_config_without_policyName, 'succeeded', done);
+  });
+
+  it('should succeed', function(done) {
+    checkResult(server_config_with_policyName, 'succeeded', done);
+  });
+
+  it('should succeed', function(done) {
+    checkResult(server_config_with_policyName_array, 'succeeded', done);
+  });
+
+  it('should fail with wrong policyName', function(done) {
+    checkResult(server_config_wrong_policyName, 'Unauthorized', done);
+  });
+
+  it('should fail with wrong policyName array', function(done) {
+    checkResult(server_config_wrong_policyNameArray, 'Unauthorized', done);
+  });
+
   it('should fail with wrong scope', function(done) {
     checkResult(server_config_with_wrong_scope, 'Unauthorized', done);
   });
 
   it('should fail with wrong audience', function(done) {
     checkResult(server_config_wrong_audience, 'Unauthorized', done);
-  });
-
-  it('should fail with wrong policyName', function(done) {
-    checkResult(server_config_wrong_policyName, 'Unauthorized', done);
   });
 
   it('should fail with wrong issuer', function(done) {
