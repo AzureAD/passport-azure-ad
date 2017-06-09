@@ -108,8 +108,8 @@ var apply_test_parameters = (done) => {
     validateIssuer: true,
     issuer: ['https://login.microsoftonline.com/' + test_parameters.tenantID + '/v2.0'],
     passReqToCallback: false,
-    scope: null,
-    loggingLevel: null,
+    scope: ['user.read'],
+    loggingLevel: 'info',
     nonceLifetime: null,
   };
 
