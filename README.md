@@ -631,7 +631,7 @@ For `thumbprint` and `privatePEMKey` parameters, you need to specify a certifica
 Type the following commands to run the tests:
 
 ```
-    $ cd test/End_to_end_test/app
+    $ cd test/End_to_end_test
     $ npm install
     $ npm install grunt -g
     $ grunt run_tests_with_e2e
