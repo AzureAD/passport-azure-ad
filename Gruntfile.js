@@ -15,42 +15,11 @@ module.exports = function loadGrunt(grunt) {
         },
         src: ['test/Chai-passport_test/*_test.js'],
       },
-    },
-    eslint: {
-      options: {},
-      gruntfile: {
-        src: 'Gruntfile.js',
-      },
-      lib: {
-        src: ['lib/**/*.js'],
-      },
-      examples: {
-        src: ['examples/*/*.js'],
-      },
-      test: {
-        src: ['test/**/*.js'],
-      },
-    },
-    watch: {
-      gruntfile: {
-        files: '<%= eslint.gruntfile.src %>',
-        tasks: ['eslint:gruntfile'],
-      },
-      lib: {
-        files: '<%= eslint.lib.src %>',
-        tasks: ['eslint:lib', 'nodeunit', 'mochaTest'],
-      },
-      test: {
-        files: '<%= eslint.test.src %>',
-        tasks: ['eslint:test', 'nodeunit', 'mochaTest'],
-      },
-    },
+    }
   });
 
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
-  grunt.loadNpmTasks('grunt-eslint');
-  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-mocha-test');
 
   grunt.registerTask('printMsg_nodeunit', () => {
