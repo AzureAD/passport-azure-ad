@@ -49,10 +49,10 @@ var credentials = new azureKeyVault.KeyVaultCredentials(authenticator);
 var client = new azureKeyVault.KeyVaultClient(credentials);
 
 // Key vault uri for ADAL testing
-var vaultUri = 'https://ADALTestInfo.vault.azure.net';
+var vaultUri = 'https://msidlab5.vault.azure.net';
 
 // The secrets we want to get from the key vault
-var v1_v2_kv_name = 'MSIDLAB5-manNonMFA1';
+var v1_v2_kv_name = 'manNonMFA1';
 var v1_v2_password;
 var b2c_kv_name = 'PassportB2C-lsj31415926atgmaildotcom';
 var b2c_password;
@@ -143,7 +143,7 @@ exports.set_test_parameters = (callback) => {
         tenantID: 'd34a1bb7-3481-4d5f-8b94-f3cc27bf8eac',
         clientID: 'fa300e1e-ba08-4717-b97f-af77a9f65199',
         clientSecret: v2_client_secret,
-        thumbprint: 'IjDSnLDGTTqGCFOgfMURlYtKMro',
+        thumbprint: 'uW2guEHq4k/5Rr/UhhBcoIl0ERk=',
         privatePEMKey: v2_private_pem_key,
         username: 'manNonMFA1@msidlab5.onmicrosoft.com',
         password: v1_v2_password,
@@ -156,7 +156,9 @@ exports.set_test_parameters = (callback) => {
         clientSecret: b2c_client_secret,
         username: 'lsj31415926@gmail.com',
         password: b2c_password,
-        oid: '7a61aaa0-6510-4e5c-b3ba-f31e5b7c7642'
+        oid: '7a61aaa0-6510-4e5c-b3ba-f31e5b7c7642',
+        scopeForBearer: ['read', 'write'],
+        scopeForOIDC: ['https://sijun1b2c.onmicrosoft.com/oidc-b2c/read', 'https://sijun1b2c.onmicrosoft.com/oidc-b2c/write']
       };
 
       return callback(test_parameters);  

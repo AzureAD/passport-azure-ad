@@ -16,7 +16,7 @@ and with [Microsoft Active Directory Federation Services](http://en.wikipedia.or
 _passport-azure-ad_ has a known security vulnerability affecting versions <1.4.6 and 2.0.0. Please update to >=1.4.6 or >=2.0.1 immediately. For more details, see the [security notice](https://github.com/AzureAD/passport-azure-ad/blob/master/SECURITY-NOTICE.MD).
 
 ## 2. Versions
-Current version - 3.0.4  
+Current version - 3.0.7  
 Minimum  recommended version - 1.4.6  
 You can find the changes for each version in the [change log](https://github.com/AzureAD/passport-azure-ad/blob/master/CHANGELOG.md).
 
@@ -431,6 +431,7 @@ var options = {
   audience: config.creds.audience,
   loggingLevel: config.creds.loggingLevel,
   clockSkew: config.creds.clockSkew,
+  scope: config.creds.scope
 };
 
 var bearerStrategy = new BearerStrategy(options,
@@ -508,6 +509,11 @@ var bearerStrategy = new BearerStrategy(options,
 * `allowMultiAudiencesInToken`  (Conditional)
 
   Required if you allow access_token whose `aud` claim contains multiple values.
+
+* `scope`  (Optional)
+
+  This value is an array of scopes you accept. If this value is provided, we will check if the token contains one of
+  these accepted scopes. If this value is not provided, we won't check token scopes.
   
 * `audience`  (Optional)
 
@@ -609,6 +615,11 @@ following:
 
 You will also need to click the 'Run now' button in the 'B2C_1_signup' blade to create an user.
 
+For B2C application, you will also need to create at least one scope and provide it to test parameters. See [how to create scope for B2C access token](https://azure.microsoft.com/en-us/blog/azure-ad-b2c-access-tokens-now-in-public-preview/). In the bearer_b2c_test, We will use OIDCStrategy to get a B2C
+access token for the scope, and use BearerStrategy to validate the scope. Note for scope we use the full url in
+ `b2c_params.scopeForOIDC` but only the name in `b2c_params.scopeForBearer`. For example, 
+ `b2c_params.scopeForOIDC=['https://sijun1b2c.onmicrosoft.com/oidc-b2c/read']` and `b2c_params.scopeForBearer=['read']`. 
+
 #### 6.2.2. Fill the test parameters 
 
 Open `test/End_to_end_test/script.js`, set `is_test_parameters_completed` parameter to true. For `test_parameters` variable, fill in the tenant id/client id/client secret of your applications, and the username/password of your application user. The 'oid' value is the object id of your application user. To find the 'oid' value, go to your tenant, click 'Users and groups', find your user and click it. The Object ID value will show up in the new blade.
@@ -620,7 +631,7 @@ For `thumbprint` and `privatePEMKey` parameters, you need to specify a certifica
 Type the following commands to run the tests:
 
 ```
-    $ cd test/End_to_end_test/app
+    $ cd test/End_to_end_test
     $ npm install
     $ npm install grunt -g
     $ grunt run_tests_with_e2e

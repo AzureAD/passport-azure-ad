@@ -23,39 +23,34 @@
 
 'use strict';
 
-var test_parameters = {
-  v1_params: {
-    tenantID: '<fill-in>',
-    clientID: '<fill-in>',
-    clientSecret: '<fill-in>',
-    thumbprint: '<fill-in>',
-    privatePEMKey: '<fill-in>',
-    username: '<fill-in>',
-    password: '<fill-in>',
-    oid: '<fill-in>',
-  },
-  v2_params: {
-    tenantID: '<fill-in>',
-    clientID: '<fill-in>',
-    clientSecret: '<fill-in>',
-    thumbprint: '<fill-in>',
-    privatePEMKey: '<fill-in>',
-    username: '<fill-in>',
-    password: '<fill-in>',
-    oid: '<fill-in>',
-  },
-  b2c_params: {
-    tenantID: '<fill-in>',
-    clientID: '<fill-in>',
-    clientSecret: '<fill-in>',
-    username: '<fill-in>',
-    password: '<fill-in>',
-    oid: '<fill-in>',
-    scopeForBearer: '<fill-in>',
-    scopeForOIDC: '<fill-in>'
-  }
-};
+var chai = require('chai');
+var expect = chai.expect;
+var aadutils = require('../../lib/aadutils');
 
-exports.is_test_parameters_completed = false;
+const TEST_TIMEOUT = 1000000; // 1000 seconds
 
-exports.test_parameters = test_parameters;
+describe('uid test', function() {
+  this.timeout(TEST_TIMEOUT);
+
+  it('should return an id with the required length and no url unsafe characters', function(done) {
+    // generate and test uid 10 times
+    
+    for (let i = 0; i < 10; i++) {
+      let uid = aadutils.uid(32);
+      let uid_url_safe = uid.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+
+      expect(uid.length).to.equal(32);
+      expect(uid).to.equal(uid_url_safe);
+    }
+
+    for (let i = 0; i < 10; i++) {
+      let uid = aadutils.uid(24);
+      let uid_url_safe = uid.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+
+      expect(uid.length).to.equal(24);
+      expect(uid).to.equal(uid_url_safe);
+    }
+
+    done();
+  });
+});

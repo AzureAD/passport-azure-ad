@@ -1,4 +1,26 @@
-<a name="3.0.6"></a>
+<a name="3.0.7"></a>
+# 3.0.7
+
+## OIDCStrategy
+
+### Bug fixes
+
+* [#301](https://github.com/AzureAD/passport-azure-ad/issues/301) Error: a key with kid %s cannot be found
+
+* [#309](https://github.com/AzureAD/passport-azure-ad/issues/309) "State" gets encoded and causes invalid state error
+
+* [#317](https://github.com/AzureAD/passport-azure-ad/issues/317) Undefined "token_type"
+
+## BearerStrategy
+
+### New features
+
+* [#296](https://github.com/AzureAD/passport-azure-ad/issues/296) scope validation for BearerStrategy
+
+### Bug fixes
+
+* [#301](https://github.com/AzureAD/passport-azure-ad/issues/301) Error: a key with kid %s cannot be found
+
 # 3.0.6
 
 ## OIDCStrategy
