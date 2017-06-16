@@ -64,7 +64,7 @@ function setConfig(metadataURL, validateIssuer, callback) {
 
 exports.bearer = {
   'validateIssuer tests': (test) => {
-    test.expect(15);
+    test.expect(16);
 
     setConfig(commonMetadataURL, true, (bearerConfig) => {
       test.throws(() => { 
@@ -124,6 +124,18 @@ exports.bearer = {
         },
         Error,
         'Should throw for using B2C with wrong policy name'
+      );
+    });
+
+    setConfig(nonCommonMetadataURL, null, (bearerConfig) => {
+      test.throws(() => {
+          bearerConfig.isB2C = true;
+          bearerConfig.policyName = ['signin', 'B2C_1_signin'];
+          bearerConfig.validateIssuer = false; 
+          new BearerStrategy(bearerConfig, noop);
+        },
+        Error,
+        'Should throw for using B2C with wrong policy name in an array'
       );
     });
 

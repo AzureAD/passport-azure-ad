@@ -493,10 +493,6 @@ var bearerStrategy = new BearerStrategy(options,
 * `isB2C`  (Conditional)
 
   Required to set to true if you are using B2C tenant.
-  
-* `policyName`  (Conditional)
-
-  Required if you are using B2C tenant. It is a string starting with 'B2C_1_' (case insensitive).
 
 * `validateIssuer`  (Conditional)
   
@@ -509,6 +505,11 @@ var bearerStrategy = new BearerStrategy(options,
 * `allowMultiAudiencesInToken`  (Conditional)
 
   Required if you allow access_token whose `aud` claim contains multiple values.
+
+* `policyName`  (Optional)
+
+  You can provide a policy string or an array of policy strings for B2C. Policy string must start with 'B2C_1_' (case insensitive). We will check if the token is corresponding to one of the provided policies. If this option is not
+  provided, we accept any policy used in the token.
 
 * `scope`  (Optional)
 
