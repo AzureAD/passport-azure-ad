@@ -211,7 +211,7 @@ var checkResult = (test_app_config, done) => {
   driver.get('http://localhost:3000/login?p=b2c_1_signup')
   .then(() => {
     if (first_time) {
-      driver.wait(until.titleIs('User Details'), 10000);
+      driver.wait(until.titleIs('User details'), 10000);
     }
   })
   .then(() => {
@@ -237,11 +237,11 @@ var checkResult = (test_app_config, done) => {
   })
   .then(() => {
     driver.get('http://localhost:3000/login?p=b2c_1_resetpassword');
-    driver.wait(until.titleIs('User Details'), 10000);
+    driver.wait(until.titleIs('User details'), 10000);
   })
   .then(() => {
     driver.get('http://localhost:3000/login?p=b2c_1_updateprofile');
-    driver.wait(until.titleIs('Update Profile'), 10000);
+    driver.wait(until.titleIs('Update profile'), 10000);
   })
   .then(() => {
     server.shutdown(done); 
