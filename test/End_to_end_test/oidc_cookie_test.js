@@ -60,7 +60,7 @@ var code_config = {
   validateIssuer: true,
   passReqToCallback: false,
   scope: null,
-  loggingLevel: 'info',
+  loggingLevel: null,
   useCookieInsteadOfSession: true,
   nonceLifetime: null,
   nonceMaxAmount: 5,  
