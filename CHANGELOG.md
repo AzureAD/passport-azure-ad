@@ -1,4 +1,14 @@
-<a name="3.0.7"></a>
+<a name="3.0.8"></a>
+# 3.0.8
+
+## OIDCStrategy
+
+### Bug fixes
+
+* [#328](https://github.com/AzureAD/passport-azure-ad/issues/328) OIDC session key fails to serialize for certain session middleware options
+
+* Support advanced policy name with prefix b2c_1a_
+
 # 3.0.7
 
 ## OIDCStrategy

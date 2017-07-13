@@ -86,7 +86,7 @@ var code_config = {
   validateIssuer: false,
   passReqToCallback: false,
   scope: null,
-  loggingLevel: 'info',
+  loggingLevel: null,
   nonceLifetime: null,
   jweKeyStore: [ 
     { 'kid': 'sym_key_128', 'kty': 'oct', 'k': 'GawgguFyGrWKav7AX4VKUg'}, 

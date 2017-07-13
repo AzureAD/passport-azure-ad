@@ -41,6 +41,11 @@ describe('policy checking', function() {
     expect(CONSTANTS.POLICY_REGEX.test('B2C_1_My.SIGNIN')).to.equal(true);
     expect(CONSTANTS.POLICY_REGEX.test('B2C_1_My_SIGNIN')).to.equal(true);
     expect(CONSTANTS.POLICY_REGEX.test('B2C_1_My-SIGNIN')).to.equal(true);
+    expect(CONSTANTS.POLICY_REGEX.test('b2c_1a_signin')).to.equal(true);
+    expect(CONSTANTS.POLICY_REGEX.test('B2C_1a_SIGNIN')).to.equal(true);
+    expect(CONSTANTS.POLICY_REGEX.test('B2C_1a_My.SIGNIN')).to.equal(true);
+    expect(CONSTANTS.POLICY_REGEX.test('B2C_1A_My_SIGNIN')).to.equal(true);
+    expect(CONSTANTS.POLICY_REGEX.test('B2C_1A_My-SIGNIN')).to.equal(true);
     done();
   });
 
@@ -49,6 +54,10 @@ describe('policy checking', function() {
     expect(CONSTANTS.POLICY_REGEX.test('b2c_SIGNIN')).to.equal(false);
     expect(CONSTANTS.POLICY_REGEX.test('b2c_1_')).to.equal(false);
     expect(CONSTANTS.POLICY_REGEX.test('b2c_1_*SIGNIN')).to.equal(false);
+    expect(CONSTANTS.POLICY_REGEX.test('signin')).to.equal(false);
+    expect(CONSTANTS.POLICY_REGEX.test('b2c_a_SIGNIN')).to.equal(false);
+    expect(CONSTANTS.POLICY_REGEX.test('b2c_1A_')).to.equal(false);
+    expect(CONSTANTS.POLICY_REGEX.test('b2c_1A_*SIGNIN')).to.equal(false);
     done();
   });
 });

@@ -399,6 +399,7 @@ var checkResultForPromptAndHint = (test_app_config, authenticate_opt, done) => {
         var usernamebox = driver.findElement(By.name('login'));
         usernamebox.sendKeys(test_parameters.username);
       }
+      
       var passwordbox = driver.findElement(By.name('passwd'));
       passwordbox.sendKeys(test_parameters.password);
       driver.sleep(LOGIN_WAITING_TIME);
