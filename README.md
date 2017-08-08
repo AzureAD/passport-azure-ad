@@ -373,7 +373,7 @@ the strategy.
 
 * `login_hint`: if you want to prefill the username with a given value in the login page. The value should be the `upn` of an user, not the email (most times they are the same though). 
 
-* `prompt`: v1 and v2 endpoint support `login`, `consent` and `admin_conset`; B2C endpoint only supports `login`. 
+* `prompt`: v1 and v2 endpoint support `login`, `consent` and `admin_consent`; B2C endpoint only supports `login`. 
 
 * `response`: this is required if you want to use cookie instead of session to save state/nonce. See section 5.1.4.
 
