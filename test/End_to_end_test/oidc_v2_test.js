@@ -40,7 +40,7 @@ var expect = chai.expect;
 var fs = require('fs');
 
 const TEST_TIMEOUT = 1000000; // 1000 seconds
-const LOGIN_WAITING_TIME = 3000; // 3 second
+const LOGIN_WAITING_TIME = 1000; // 1 second
 
 /******************************************************************************
  *  Configurations needed
@@ -219,6 +219,8 @@ var apply_test_parameters = (done) => {
   done();
 };
 
+var client_already_logged_in = false;
+
 var checkResult = (test_app_config, done) => { 
   var server = create_app(test_app_config, {}, 8);
 
@@ -227,20 +229,22 @@ var checkResult = (test_app_config, done) => {
 
   driver.get('http://localhost:3000/login')
   .then(() => {
-    driver.getTitle().then((title) => {
-      if (title === 'Sign in to your account') {
-        driver.findElement(By.xpath('//*[@id="' + username_id_on_page + '"]/table/tbody/tr/td[2]/div[1]')).then((element) => {
-          element.click();
-        }, (err) => {
-          var usernamebox = driver.findElement(By.name('login'));
-          usernamebox.sendKeys(test_parameters.username);
-          var passwordbox = driver.findElement(By.name('passwd'));
-          passwordbox.sendKeys(test_parameters.password);
-          driver.sleep(LOGIN_WAITING_TIME);
-          passwordbox.sendKeys(webdriver.Key.ENTER);
-        });
-      }
-    });
+    if (!client_already_logged_in) {
+      driver.wait(until.titleIs('Sign in to your account'), 10000); 
+      var usernamebox = driver.findElement(By.name('loginfmt'));
+      usernamebox.sendKeys(test_parameters.username);
+      usernamebox.sendKeys(webdriver.Key.ENTER);
+      var passwordbox = driver.findElement(By.name('passwd'));
+      passwordbox.sendKeys(test_parameters.password);
+      driver.sleep(LOGIN_WAITING_TIME);
+      passwordbox = driver.findElement(By.name('passwd'));
+      passwordbox.sendKeys(webdriver.Key.ENTER);
+      client_already_logged_in = true;
+    } else {
+      driver.findElement(By.xpath('//*[@id="i0281"]/div[1]/div/div[1]/div[2]/div/div/div[2]/div[1]/div')).then((element) => {
+        element.click();
+      }, (err) => {});
+    }
   }).then(() => {
     driver.wait(until.titleIs('result'), 10000);
     driver.findElement(By.id('status')).getText().then((text) => { 
@@ -274,17 +278,21 @@ var checkInvalidResult = (test_app_config, done) => {
   driver.get('http://localhost:3000/login')
   .then(() => {
     driver.getTitle().then((title) => {
-      if (title === 'Sign in to your account') {
-        driver.findElement(By.xpath('//*[@id="' + username_id_on_page + '"]/table/tbody/tr/td[2]/div[1]')).then((element) => {
+      if (!client_already_logged_in) {
+        driver.wait(until.titleIs('Sign in to your account'), 10000); 
+        var usernamebox = driver.findElement(By.name('loginfmt'));
+        usernamebox.sendKeys(test_parameters.username);
+        usernamebox.sendKeys(webdriver.Key.ENTER);
+        var passwordbox = driver.findElement(By.name('passwd'));
+        passwordbox.sendKeys(test_parameters.password);
+        driver.sleep(LOGIN_WAITING_TIME);
+        passwordbox = driver.findElement(By.name('passwd'));
+        passwordbox.sendKeys(webdriver.Key.ENTER);
+        client_already_logged_in = true;
+      } else {
+        driver.findElement(By.xpath('//*[@id="i0281"]/div[1]/div/div[1]/div[2]/div/div/div[2]/div[1]/div')).then((element) => {
           element.click();
-        }, (err) => {
-          var usernamebox = driver.findElement(By.name('login'));
-          usernamebox.sendKeys(test_parameters.username);
-          var passwordbox = driver.findElement(By.name('passwd'));
-          passwordbox.sendKeys(test_parameters.password);
-          driver.sleep(LOGIN_WAITING_TIME);
-          passwordbox.sendKeys(webdriver.Key.ENTER);
-        });
+        }, (err) => {});
       }
     });
   })
@@ -401,9 +409,9 @@ describe('oidc v2 positive test', function() {
     checkResult(implicit_config_common_endpoint, done);
   }); 
 
-  /***************************************************************************
+  /**************************************************************************
    *  Test issuer and validateIssuers for both tenant specific and common endpoint
-   **************************************************************************/
+   *************************************************************************/
 
   // tenant specific endpoint
   it('should succeed', function(done) {

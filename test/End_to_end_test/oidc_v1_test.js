@@ -40,7 +40,7 @@ var expect = chai.expect;
 var fs = require('fs');
 
 const TEST_TIMEOUT = 1000000; // 1000 seconds
-const LOGIN_WAITING_TIME = 3000; // 3 second
+const LOGIN_WAITING_TIME = 1000; // 1 second
 
 /******************************************************************************
  *  Configurations needed
@@ -232,11 +232,13 @@ var checkResult = (test_app_config, arity, done) => {
   .then(() => {
     if (first_time) {
       driver.wait(until.titleIs('Sign in to your account'), 10000);  
-      var usernamebox = driver.findElement(By.name('login'));
+      var usernamebox = driver.findElement(By.name('loginfmt'));
       usernamebox.sendKeys(test_parameters.username);
+      usernamebox.sendKeys(webdriver.Key.ENTER);
       var passwordbox = driver.findElement(By.name('passwd'));
       passwordbox.sendKeys(test_parameters.password);
       driver.sleep(LOGIN_WAITING_TIME);
+      passwordbox = driver.findElement(By.name('passwd'));
       passwordbox.sendKeys(webdriver.Key.ENTER);
       first_time = false;
     }
@@ -275,83 +277,6 @@ var checkResult = (test_app_config, arity, done) => {
   });
 };
 
-var checkResultTwoTabs = (test_app_config, arity, done) => {
-  var server = create_app(test_app_config, {}, arity);
-
-  if (!driver1)
-    driver1 = chromedriver.get_driver();
-  if (!driver2)
-    driver2 = chromedriver.get_driver();
-
-  driver1.get('http://localhost:3000/login')
-  .then(() => {
-    // go to login page at tab1
-    driver1.wait(until.titleIs('Sign in to your account'), 10000); 
-    driver2.get('http://localhost:3000/login');
-  })
-  .then(() => {
-    // go to login page at tab2
-    driver2.wait(until.titleIs('Sign in to your account'), 10000); 
-    var usernamebox = driver1.findElement(By.name('login'));
-    usernamebox.sendKeys(test_parameters.username);
-    var passwordbox = driver1.findElement(By.name('passwd'));
-    passwordbox.sendKeys(test_parameters.password);
-    driver1.sleep(LOGIN_WAITING_TIME);
-    passwordbox.sendKeys(webdriver.Key.ENTER);
-  })
-  .then(() => {
-    // check the result on tab1
-    driver1.wait(until.titleIs('result'), 10000);
-    driver1.findElement(By.id('status')).getText().then((text) => { 
-      expect(text).to.equal('succeeded');
-    });
-    driver1.findElement(By.id('oid')).getText().then((text) => { 
-      expect(text).to.equal(test_parameters.oid);
-    });
-    driver1.findElement(By.id('upn')).getText().then((text) => {
-        expect(text).to.equal(test_parameters.username);
-    });
-    driver1.findElement(By.id('access_token')).getText().then((text) => { 
-        expect(text).to.equal('exists');
-    });
-    driver1.findElement(By.id('refresh_token')).getText().then((text) => { 
-        expect(text).to.equal('exists');
-    })
-  })
-  .then(() => {
-    // switch to tab2
-    var usernamebox = driver2.findElement(By.name('login'));
-    usernamebox.sendKeys(test_parameters.username);
-    var passwordbox = driver2.findElement(By.name('passwd'));
-    passwordbox.sendKeys(test_parameters.password);
-    driver2.sleep(LOGIN_WAITING_TIME);
-    passwordbox.sendKeys(webdriver.Key.ENTER);
-  })
-  .then(() => {
-    // check result on tab2
-    driver2.wait(until.titleIs('result'), 10000);
-    driver2.findElement(By.id('status')).getText().then((text) => { 
-      expect(text).to.equal('succeeded');
-    });
-    driver2.findElement(By.id('oid')).getText().then((text) => { 
-      expect(text).to.equal(test_parameters.oid);
-    });
-    driver2.findElement(By.id('upn')).getText().then((text) => {
-        expect(text).to.equal(test_parameters.username);
-    });
-    driver2.findElement(By.id('access_token')).getText().then((text) => { 
-        expect(text).to.equal('exists');
-    });
-    driver2.findElement(By.id('refresh_token')).getText().then((text) => { 
-      expect(text).to.equal('exists');
-      driver1.manage().deleteAllCookies();
-      driver2.manage().deleteAllCookies();
-      driver1.quit(); driver2.quit();
-      server.shutdown(done); 
-    });
-  });
-};
-
 var checkInvalidResult = (test_app_config, done) => {
   var server = create_app(test_app_config, {}, 8);
 
@@ -362,11 +287,13 @@ var checkInvalidResult = (test_app_config, done) => {
   .then(() => {
     if (first_time) {
       driver.wait(until.titleIs('Sign in to your account'), 10000);  
-      var usernamebox = driver.findElement(By.name('login'));
+      var usernamebox = driver.findElement(By.name('loginfmt'));
       usernamebox.sendKeys(test_parameters.username);
+      usernamebox.sendKeys(webdriver.Key.ENTER);
       var passwordbox = driver.findElement(By.name('passwd'));
       passwordbox.sendKeys(test_parameters.password);
       driver.sleep(LOGIN_WAITING_TIME);
+      passwordbox = driver.findElement(By.name('passwd'));
       passwordbox.sendKeys(webdriver.Key.ENTER);
       first_time = false;
     }
@@ -540,9 +467,9 @@ describe('oidc v1 positive other test', function() {
     checkResult(implicit_config_common_endpoint, 2, done);
   }); 
 
-  /***************************************************************************
+  /**************************************************************************
    *  Test issuer and validateIssuers for both tenant specific and common endpoint
-   **************************************************************************/
+   *************************************************************************/
 
   // tenant specific endpoint
   it('should succeed', function(done) {
@@ -580,14 +507,6 @@ describe('oidc v1 positive other test', function() {
   // common endpoint
   it('should succeed', function(done) {
     checkResult(code_config_common_endpoint_query, 2, done);
-  });
-
-  /****************************************************************************
-   *  Test login from two tabs
-   ***************************************************************************/
-
-  it('should succeed with arity 8 for verify function', function(done) {
-    checkResultTwoTabs(hybrid_config, 8, done);
   });
 });
 
