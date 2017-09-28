@@ -58,7 +58,7 @@ describe('uid test', function() {
 describe('concatUrl test', function() {
   it('should generate a valid url if a query parameter is already in place', function(done) {
     const currentUrl = 'http://example.com?foo=bar';
-    const newUrl = aadutils.concatUrl(currentUrl, 'bar=foo');
+    const newUrl = aadutils.concatUrl(currentUrl, ['bar=foo']);
     expect(newUrl).to.equal(`${currentUrl}&bar=foo`);
     done();
   });
@@ -72,13 +72,13 @@ describe('concatUrl test', function() {
   
   it('should return the bare url if no additional arguments are present', function(done) {
     const currentUrl = 'http://example.com';
-    const newUrl = currentUrl;
+    const newUrl = aadutils.concatUrl(currentUrl);
     expect(newUrl).to.equal(currentUrl);
     done();
   });
   
   it('should return parseable query parameters if no url is present', function(done) {
-    const parameters = 'bar=foo&foo=bar';
+    const parameters = ['bar=foo&foo=bar'];
     const newUrl = aadutils.concatUrl(undefined, parameters)
     expect(newUrl).to.equal(`?${parameters}`);
     done();
