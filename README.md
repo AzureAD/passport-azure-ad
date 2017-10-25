@@ -371,7 +371,7 @@ the strategy.
 
 * `domain_hint`: if you want to specify the domain that the user should use to sign in. This option is not supported for B2C tenant.
 
-* `login_hint`: if you want to prefill the username with a given value in the login page. The value should be the `upn` of an user, not the email (most times they are the same though). 
+* `login_hint`: if you want to prefill the username with a given value in the login page. The value should be the `upn` of a user, not the email (most times they are the same though). 
 
 * `prompt`: v1 and v2 endpoint support `login`, `consent` and `admin_consent`; B2C endpoint only supports `login`. 
 
