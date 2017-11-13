@@ -240,10 +240,16 @@ var checkResult = (test_app_config, done) => {
       passwordbox = driver.findElement(By.name('passwd'));
       passwordbox.sendKeys(webdriver.Key.ENTER);
       client_already_logged_in = true;
-    } else {
-      driver.findElement(By.xpath('//*[@id="i0281"]/div[1]/div/div[1]/div[2]/div/div/div[2]/div[1]/div')).then((element) => {
-        element.click();
-      }, (err) => {});
+      driver.findElement(By.id('idBtn_Back')).then((element)=>{element.click();}, () => {});
+    }
+  }).then(() => {
+    if (test_app_config.identityMetadata && test_app_config.identityMetadata.indexOf('common')!= -1) {
+      driver.getTitle().then((title) => {
+        if (title == 'Sign in to your account') {
+          var selectAccoutButton = driver.wait(until.elementLocated(By.xpath('//*[@id="i0281"]/div[1]/div/div[1]/div[2]/div/div/div[2]/div[1]/div/div[2]')), 5000);
+          driver.wait(until.elementIsVisible(selectAccoutButton), 5000).click();
+        }
+      });
     }
   }).then(() => {
     driver.wait(until.titleIs('result'), 10000);
@@ -290,7 +296,7 @@ var checkInvalidResult = (test_app_config, done) => {
         passwordbox.sendKeys(webdriver.Key.ENTER);
         client_already_logged_in = true;
       } else {
-        driver.findElement(By.xpath('//*[@id="i0281"]/div[1]/div/div[1]/div[2]/div/div/div[2]/div[1]/div')).then((element) => {
+        driver.findElement(By.xpath('//*[@id="i0281"]/div[1]/div/div[1]/div[2]/div/div/div[2]/div[1]/div/div[2]')).then((element) => {
           element.click();
         }, (err) => {});
       }

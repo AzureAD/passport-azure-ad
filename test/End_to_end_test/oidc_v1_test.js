@@ -243,6 +243,8 @@ var checkResult = (test_app_config, arity, done) => {
       first_time = false;
     }
   }).then(() => {
+    driver.findElement(By.id('idBtn_Back')).then((element)=>{element.click();}, () => {});
+  }).then(() => {
     driver.wait(until.titleIs('result'), 10000);
     driver.findElement(By.id('status')).getText().then((text) => { 
       expect(text).to.equal('succeeded');

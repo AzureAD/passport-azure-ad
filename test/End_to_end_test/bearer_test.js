@@ -175,7 +175,10 @@ var get_token_for_resource = (resource, done) => {
       client_already_logged_in = true;
     }
   }).then(() => {
-    done();
+    driver.wait(until.titleIs('Sign in to your account'), 5000).then(
+      ()=>{ driver.findElement(By.id('idBtn_Back')).click().then(()=>{done();}); },
+      ()=>{ done();}
+    );
   });
 };
 
