@@ -340,7 +340,7 @@ var checkResultForPromptAndHint = (test_app_config, authenticate_opt, done) => {
     } else {
       if (authenticate_opt.prompt === 'consent') {
         // consent
-        driver.findElement(By.id('cred_accept_button')).click();
+        driver.findElement(By.id('idSIButton9')).click();
       }
       driver.wait(until.titleIs('result'), 10000);
       driver.findElement(By.id('status')).getText().then((text) => { 
