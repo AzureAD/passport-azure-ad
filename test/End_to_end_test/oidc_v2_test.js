@@ -311,47 +311,6 @@ var checkInvalidResult = (test_app_config, done) => {
   });
 };
 
-var checkResultForPromptAndHint = (test_app_config, authenticate_opt, done) => { 
-  var server = create_app(test_app_config, authenticate_opt, 8);
-
-  if (!driver)
-    driver = chromedriver.get_driver();
-
-  driver.get('http://localhost:3000/login')
-  .then(() => {
-    if (authenticate_opt.domain_hint === 'live.com') {
-      // we should have come to the login page for live.com
-      driver.wait(until.titleIs('Sign in to your Microsoft account'), 10000);
-    } else if (authenticate_opt.prompt) {
-      // without domain_hint, we will come to the generic login page
-      driver.wait(until.titleIs('Sign in to your account'), 10000);
-      if (!authenticate_opt.login_hint) {
-        // if there is no login_hint, then we have to fill the username portion  
-        var usernamebox = driver.findElement(By.name('login'));
-        usernamebox.sendKeys(test_parameters.username);
-      }
-      var passwordbox = driver.findElement(By.name('passwd'));
-      passwordbox.sendKeys(test_parameters.password);
-      driver.sleep(LOGIN_WAITING_TIME);
-      passwordbox.sendKeys(webdriver.Key.ENTER);
-    }
-  }).then(() => {
-    if (authenticate_opt.domain_hint === 'live.com') {
-      server.shutdown(done);
-    } else {
-      if (authenticate_opt.prompt === 'consent') {
-        // consent
-        driver.findElement(By.id('idSIButton9')).click();
-      }
-      driver.wait(until.titleIs('result'), 10000);
-      driver.findElement(By.id('status')).getText().then((text) => { 
-        expect(text).to.equal('succeeded');
-        server.shutdown(done); 
-      });
-    }
-  });
-};
-
 /******************************************************************************
  *  The test cases
  *****************************************************************************/
@@ -456,26 +415,6 @@ describe('oidc v2 positive test', function() {
   it('should succeed', function(done) {
     checkResult(hybrid_config_common_endpoint_with_scope, done);
   });
-});
-
-describe('oidc v2 login/domain hint and prompt test', function() {
-  this.timeout(TEST_TIMEOUT);
-
-  it('should succeed with login page showing up and username prefilled', function(done) {
-    checkResultForPromptAndHint(hybrid_config, { login_hint: test_parameters.username, prompt: 'login' }, done);
-  }); 
-
-  it('should succeed with login page showing up and username prefilled and consent page showing up later', function(done) {
-    checkResultForPromptAndHint(hybrid_config, { login_hint: test_parameters.username, prompt: 'consent' }, done);
-  }); 
-
-  it('should succeed without login page showing up', function(done) {
-    checkResultForPromptAndHint(hybrid_config, { login_hint: test_parameters.username }, done);
-  }); 
-
-  it('should succeed with live.com login page showing up', function(done) {
-    checkResultForPromptAndHint(hybrid_config, { domain_hint: 'live.com' }, done);
-  }); 
 });
 
 describe('oidc v2 negative test', function() {
