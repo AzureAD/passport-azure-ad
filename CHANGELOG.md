@@ -1,4 +1,22 @@
-<a name="3.0.8"></a>
+<a name="3.0.9"></a>
+# 3.0.9
+
+## OIDCStrategy
+
+### Bug fixes
+
+* [#338](https://github.com/AzureAD/passport-azure-ad/issues/338) Allow query parameters in the identityMetadata config key
+
+* [#346](https://github.com/AzureAD/passport-azure-ad/pull/346) Fix: Cannot set cookie on the response 
+
+## BearerStrategy
+
+### Bug fixes
+
+* [#333](https://github.com/AzureAD/passport-azure-ad/issues/333) jwt should not check sub for access token 
+
+* [#338](https://github.com/AzureAD/passport-azure-ad/issues/338) Allow query parameters in the identityMetadata config key
+
 # 3.0.8
 
 ## OIDCStrategy

@@ -29,9 +29,6 @@ var CONSTANTS = require('../../lib/constants');
 
 const TEST_TIMEOUT = 1000000; // 1000 seconds
 
-CONSTANTS.TENANTNAME_REGEX = /^[0-9a-zA-Z]+.onmicrosoft.com$/;
-CONSTANTS.TENANTID_REGEX = /^[0-9a-zA-Z-]+$/;
-
 describe('policy checking', function() {
   this.timeout(TEST_TIMEOUT);
 
@@ -61,36 +58,3 @@ describe('policy checking', function() {
     done();
   });
 });
-
-describe('tenant name checking', function() {
-  this.timeout(TEST_TIMEOUT);
-
-  it('should pass with good tenant name', function(done) {
-    expect(CONSTANTS.TENANTNAME_REGEX.test('contoso123COMPANY.onmicrosoft.com')).to.equal(true);
-    done();
-  });
-
-  it('should fail with bad tenant name', function(done) {
-    expect(CONSTANTS.TENANTNAME_REGEX.test('contoso.onmicrosoft.comm')).to.equal(false);
-    expect(CONSTANTS.TENANTNAME_REGEX.test('contoso123COMPANY')).to.equal(false);
-    expect(CONSTANTS.TENANTNAME_REGEX.test('.onmicrosoft.com')).to.equal(false);
-    expect(CONSTANTS.TENANTNAME_REGEX.test('contoso123COMPANY.ONMICROSOFT.com')).to.equal(false);
-    expect(CONSTANTS.TENANTNAME_REGEX.test('contoso_company.onmicrosoft.com')).to.equal(false);
-    done();
-  });
-});
-
-describe('tenant id checking', function() {
-  this.timeout(TEST_TIMEOUT);
-  
-  it('should pass with good tenant id', function(done) {
-    expect(CONSTANTS.TENANTID_REGEX.test('683eAd13-3193-43f0-9677-d727c25a588f')).to.equal(true);
-    done();
-  });
-
-  it('should fail with bad tenant id', function(done) {
-    expect(CONSTANTS.TENANTID_REGEX.test('23_12')).to.equal(false);
-    done();
-  });
-});
-

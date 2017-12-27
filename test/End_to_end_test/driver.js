@@ -24,8 +24,10 @@
 'use strict';
 
 var webdriver = require('selenium-webdriver');
+var chai = require('chai');
 var chrome = require('selenium-webdriver/chrome');
 var path = require('chromedriver').path;
+var expect = chai.expect;
 
 var chromeCapabilities = webdriver.Capabilities.chrome();
 var chromeOptions = {
@@ -34,6 +36,12 @@ var chromeOptions = {
 chromeCapabilities.set('chromeOptions', chromeOptions);
 
 exports = module.exports = {
+  error_handler: (ex, server, done) => {
+    server.shutdown(() => {
+      expect(ex).to.equal(null);
+      done();
+    });
+  },
   get_service: () => { 
   	var service = new chrome.ServiceBuilder(path).build();
     chrome.setDefaultService(service);

@@ -40,7 +40,7 @@ var expect = chai.expect;
 var fs = require('fs');
 
 const TEST_TIMEOUT = 1000000; // 1000 seconds
-const LOGIN_WAITING_TIME = 3000; // 3 second
+const LOGIN_WAITING_TIME = 1000; // 1 second
 
 /******************************************************************************
  *  Configurations needed
@@ -219,6 +219,8 @@ var apply_test_parameters = (done) => {
   done();
 };
 
+var client_already_logged_in = false;
+
 var checkResult = (test_app_config, done) => { 
   var server = create_app(test_app_config, {}, 8);
 
@@ -227,27 +229,32 @@ var checkResult = (test_app_config, done) => {
 
   driver.get('http://localhost:3000/login')
   .then(() => {
-    driver.getTitle().then((title) => {
-      if (title === 'Sign in to your account') {
-        driver.findElement(By.xpath('//*[@id="' + username_id_on_page + '"]/table/tbody/tr/td[2]/div[1]')).then((element) => {
-          element.click();
-        }, (err) => {
-          var usernamebox = driver.findElement(By.name('login'));
-          usernamebox.sendKeys(test_parameters.username);
-          var passwordbox = driver.findElement(By.name('passwd'));
-          passwordbox.sendKeys(test_parameters.password);
-          driver.sleep(LOGIN_WAITING_TIME);
-          passwordbox.sendKeys(webdriver.Key.ENTER);
-        });
-      }
-    });
+    if (!client_already_logged_in) {
+      driver.wait(until.titleIs('Sign in to your account'), 10000); 
+      var usernamebox = driver.findElement(By.name('loginfmt'));
+      usernamebox.sendKeys(test_parameters.username);
+      usernamebox.sendKeys(webdriver.Key.ENTER);
+      var passwordbox = driver.findElement(By.name('passwd'));
+      passwordbox.sendKeys(test_parameters.password);
+      driver.sleep(LOGIN_WAITING_TIME);
+      passwordbox = driver.findElement(By.name('passwd'));
+      passwordbox.sendKeys(webdriver.Key.ENTER);
+      client_already_logged_in = true;
+      driver.findElement(By.id('idBtn_Back')).then((element)=>{element.click();}, () => {});
+    }
+  }).then(() => {
+    if (test_app_config.identityMetadata && test_app_config.identityMetadata.indexOf('common')!= -1) {
+      driver.getTitle().then((title) => {
+        if (title == 'Sign in to your account') {
+          var selectAccoutButton = driver.wait(until.elementLocated(By.xpath('//*[@id="i0281"]/div[1]/div/div[1]/div[2]/div/div/div[2]/div[1]/div/div[2]')), 5000);
+          driver.wait(until.elementIsVisible(selectAccoutButton), 5000).click();
+        }
+      });
+    }
   }).then(() => {
     driver.wait(until.titleIs('result'), 10000);
     driver.findElement(By.id('status')).getText().then((text) => { 
       expect(text).to.equal('succeeded');
-    });
-    driver.findElement(By.id('oid')).getText().then((text) => { 
-      expect(text).to.equal(test_parameters.oid);
     });
     driver.findElement(By.id('access_token')).getText().then((text) => {
       if (test_app_config.responseType !== 'id_token' && test_app_config.scope.length > 6)  // if we have scope besides 'openid'
@@ -274,17 +281,21 @@ var checkInvalidResult = (test_app_config, done) => {
   driver.get('http://localhost:3000/login')
   .then(() => {
     driver.getTitle().then((title) => {
-      if (title === 'Sign in to your account') {
-        driver.findElement(By.xpath('//*[@id="' + username_id_on_page + '"]/table/tbody/tr/td[2]/div[1]')).then((element) => {
+      if (!client_already_logged_in) {
+        driver.wait(until.titleIs('Sign in to your account'), 10000); 
+        var usernamebox = driver.findElement(By.name('loginfmt'));
+        usernamebox.sendKeys(test_parameters.username);
+        usernamebox.sendKeys(webdriver.Key.ENTER);
+        var passwordbox = driver.findElement(By.name('passwd'));
+        passwordbox.sendKeys(test_parameters.password);
+        driver.sleep(LOGIN_WAITING_TIME);
+        passwordbox = driver.findElement(By.name('passwd'));
+        passwordbox.sendKeys(webdriver.Key.ENTER);
+        client_already_logged_in = true;
+      } else {
+        driver.findElement(By.xpath('//*[@id="i0281"]/div[1]/div/div[1]/div[2]/div/div/div[2]/div[1]/div/div[2]')).then((element) => {
           element.click();
-        }, (err) => {
-          var usernamebox = driver.findElement(By.name('login'));
-          usernamebox.sendKeys(test_parameters.username);
-          var passwordbox = driver.findElement(By.name('passwd'));
-          passwordbox.sendKeys(test_parameters.password);
-          driver.sleep(LOGIN_WAITING_TIME);
-          passwordbox.sendKeys(webdriver.Key.ENTER);
-        });
+        }, (err) => {});
       }
     });
   })
@@ -294,47 +305,6 @@ var checkInvalidResult = (test_app_config, done) => {
       expect(text).to.equal('failed');
       server.shutdown(done);
     });
-  });
-};
-
-var checkResultForPromptAndHint = (test_app_config, authenticate_opt, done) => { 
-  var server = create_app(test_app_config, authenticate_opt, 8);
-
-  if (!driver)
-    driver = chromedriver.get_driver();
-
-  driver.get('http://localhost:3000/login')
-  .then(() => {
-    if (authenticate_opt.domain_hint === 'live.com') {
-      // we should have come to the login page for live.com
-      driver.wait(until.titleIs('Sign in to your Microsoft account'), 10000);
-    } else if (authenticate_opt.prompt) {
-      // without domain_hint, we will come to the generic login page
-      driver.wait(until.titleIs('Sign in to your account'), 10000);
-      if (!authenticate_opt.login_hint) {
-        // if there is no login_hint, then we have to fill the username portion  
-        var usernamebox = driver.findElement(By.name('login'));
-        usernamebox.sendKeys(test_parameters.username);
-      }
-      var passwordbox = driver.findElement(By.name('passwd'));
-      passwordbox.sendKeys(test_parameters.password);
-      driver.sleep(LOGIN_WAITING_TIME);
-      passwordbox.sendKeys(webdriver.Key.ENTER);
-    }
-  }).then(() => {
-    if (authenticate_opt.domain_hint === 'live.com') {
-      server.shutdown(done);
-    } else {
-      if (authenticate_opt.prompt === 'consent') {
-        // consent
-        driver.findElement(By.id('cred_accept_button')).click();
-      }
-      driver.wait(until.titleIs('result'), 10000);
-      driver.findElement(By.id('status')).getText().then((text) => { 
-        expect(text).to.equal('succeeded');
-        server.shutdown(done); 
-      });
-    }
   });
 };
 
@@ -401,9 +371,9 @@ describe('oidc v2 positive test', function() {
     checkResult(implicit_config_common_endpoint, done);
   }); 
 
-  /***************************************************************************
+  /**************************************************************************
    *  Test issuer and validateIssuers for both tenant specific and common endpoint
-   **************************************************************************/
+   *************************************************************************/
 
   // tenant specific endpoint
   it('should succeed', function(done) {
@@ -442,26 +412,6 @@ describe('oidc v2 positive test', function() {
   it('should succeed', function(done) {
     checkResult(hybrid_config_common_endpoint_with_scope, done);
   });
-});
-
-describe('oidc v2 login/domain hint and prompt test', function() {
-  this.timeout(TEST_TIMEOUT);
-
-  it('should succeed with login page showing up and username prefilled', function(done) {
-    checkResultForPromptAndHint(hybrid_config, { login_hint: test_parameters.username, prompt: 'login' }, done);
-  }); 
-
-  it('should succeed with login page showing up and username prefilled and consent page showing up later', function(done) {
-    checkResultForPromptAndHint(hybrid_config, { login_hint: test_parameters.username, prompt: 'consent' }, done);
-  }); 
-
-  it('should succeed without login page showing up', function(done) {
-    checkResultForPromptAndHint(hybrid_config, { login_hint: test_parameters.username }, done);
-  }); 
-
-  it('should succeed with live.com login page showing up', function(done) {
-    checkResultForPromptAndHint(hybrid_config, { domain_hint: 'live.com' }, done);
-  }); 
 });
 
 describe('oidc v2 negative test', function() {

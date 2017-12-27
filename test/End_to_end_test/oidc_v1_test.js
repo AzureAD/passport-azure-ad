@@ -40,7 +40,7 @@ var expect = chai.expect;
 var fs = require('fs');
 
 const TEST_TIMEOUT = 1000000; // 1000 seconds
-const LOGIN_WAITING_TIME = 3000; // 3 second
+const LOGIN_WAITING_TIME = 1000; // 1 second
 
 /******************************************************************************
  *  Configurations needed
@@ -232,32 +232,22 @@ var checkResult = (test_app_config, arity, done) => {
   .then(() => {
     if (first_time) {
       driver.wait(until.titleIs('Sign in to your account'), 10000);  
-      var usernamebox = driver.findElement(By.name('login'));
+      var usernamebox = driver.findElement(By.name('loginfmt'));
       usernamebox.sendKeys(test_parameters.username);
+      usernamebox.sendKeys(webdriver.Key.ENTER);
       var passwordbox = driver.findElement(By.name('passwd'));
       passwordbox.sendKeys(test_parameters.password);
       driver.sleep(LOGIN_WAITING_TIME);
+      passwordbox = driver.findElement(By.name('passwd'));
       passwordbox.sendKeys(webdriver.Key.ENTER);
       first_time = false;
     }
   }).then(() => {
+    driver.findElement(By.id('idBtn_Back')).then((element)=>{element.click();}, () => {});
+  }).then(() => {
     driver.wait(until.titleIs('result'), 10000);
     driver.findElement(By.id('status')).getText().then((text) => { 
       expect(text).to.equal('succeeded');
-    });
-    driver.findElement(By.id('oid')).getText().then((text) => {
-      // arity 3 means we are using function(iss, sub, done), so there is no profile.oid
-      if (arity !== 3)  
-        expect(text).to.equal(test_parameters.oid);
-      else
-        expect(text).to.equal('none');
-    });
-    driver.findElement(By.id('upn')).getText().then((text) => {
-      // arity 3 means we are using function(iss, sub, done), so there is no profile.displayName
-      if (arity !== 3) 
-        expect(text).to.equal(test_parameters.username);
-      else
-        expect(text).to.equal('none');
     });
     driver.findElement(By.id('access_token')).getText().then((text) => { 
       if (arity >= 6)
@@ -275,83 +265,6 @@ var checkResult = (test_app_config, arity, done) => {
   });
 };
 
-var checkResultTwoTabs = (test_app_config, arity, done) => {
-  var server = create_app(test_app_config, {}, arity);
-
-  if (!driver1)
-    driver1 = chromedriver.get_driver();
-  if (!driver2)
-    driver2 = chromedriver.get_driver();
-
-  driver1.get('http://localhost:3000/login')
-  .then(() => {
-    // go to login page at tab1
-    driver1.wait(until.titleIs('Sign in to your account'), 10000); 
-    driver2.get('http://localhost:3000/login');
-  })
-  .then(() => {
-    // go to login page at tab2
-    driver2.wait(until.titleIs('Sign in to your account'), 10000); 
-    var usernamebox = driver1.findElement(By.name('login'));
-    usernamebox.sendKeys(test_parameters.username);
-    var passwordbox = driver1.findElement(By.name('passwd'));
-    passwordbox.sendKeys(test_parameters.password);
-    driver1.sleep(LOGIN_WAITING_TIME);
-    passwordbox.sendKeys(webdriver.Key.ENTER);
-  })
-  .then(() => {
-    // check the result on tab1
-    driver1.wait(until.titleIs('result'), 10000);
-    driver1.findElement(By.id('status')).getText().then((text) => { 
-      expect(text).to.equal('succeeded');
-    });
-    driver1.findElement(By.id('oid')).getText().then((text) => { 
-      expect(text).to.equal(test_parameters.oid);
-    });
-    driver1.findElement(By.id('upn')).getText().then((text) => {
-        expect(text).to.equal(test_parameters.username);
-    });
-    driver1.findElement(By.id('access_token')).getText().then((text) => { 
-        expect(text).to.equal('exists');
-    });
-    driver1.findElement(By.id('refresh_token')).getText().then((text) => { 
-        expect(text).to.equal('exists');
-    })
-  })
-  .then(() => {
-    // switch to tab2
-    var usernamebox = driver2.findElement(By.name('login'));
-    usernamebox.sendKeys(test_parameters.username);
-    var passwordbox = driver2.findElement(By.name('passwd'));
-    passwordbox.sendKeys(test_parameters.password);
-    driver2.sleep(LOGIN_WAITING_TIME);
-    passwordbox.sendKeys(webdriver.Key.ENTER);
-  })
-  .then(() => {
-    // check result on tab2
-    driver2.wait(until.titleIs('result'), 10000);
-    driver2.findElement(By.id('status')).getText().then((text) => { 
-      expect(text).to.equal('succeeded');
-    });
-    driver2.findElement(By.id('oid')).getText().then((text) => { 
-      expect(text).to.equal(test_parameters.oid);
-    });
-    driver2.findElement(By.id('upn')).getText().then((text) => {
-        expect(text).to.equal(test_parameters.username);
-    });
-    driver2.findElement(By.id('access_token')).getText().then((text) => { 
-        expect(text).to.equal('exists');
-    });
-    driver2.findElement(By.id('refresh_token')).getText().then((text) => { 
-      expect(text).to.equal('exists');
-      driver1.manage().deleteAllCookies();
-      driver2.manage().deleteAllCookies();
-      driver1.quit(); driver2.quit();
-      server.shutdown(done); 
-    });
-  });
-};
-
 var checkInvalidResult = (test_app_config, done) => {
   var server = create_app(test_app_config, {}, 8);
 
@@ -362,11 +275,13 @@ var checkInvalidResult = (test_app_config, done) => {
   .then(() => {
     if (first_time) {
       driver.wait(until.titleIs('Sign in to your account'), 10000);  
-      var usernamebox = driver.findElement(By.name('login'));
+      var usernamebox = driver.findElement(By.name('loginfmt'));
       usernamebox.sendKeys(test_parameters.username);
+      usernamebox.sendKeys(webdriver.Key.ENTER);
       var passwordbox = driver.findElement(By.name('passwd'));
       passwordbox.sendKeys(test_parameters.password);
       driver.sleep(LOGIN_WAITING_TIME);
+      passwordbox = driver.findElement(By.name('passwd'));
       passwordbox.sendKeys(webdriver.Key.ENTER);
       first_time = false;
     }
@@ -377,48 +292,6 @@ var checkInvalidResult = (test_app_config, done) => {
       expect(text).to.equal('failed');
       server.shutdown(done);
     });
-  });
-};
-
-var checkResultForPromptAndHint = (test_app_config, authenticate_opt, done) => {
-  var server = create_app(test_app_config, authenticate_opt, 8);
-
-  if (!driver)
-    driver = chromedriver.get_driver(); 
-
-  driver.get('http://localhost:3000/login')
-  .then(() => {
-    if (authenticate_opt.domain_hint === 'live.com') {
-      // we should have come to the login page for live.com
-      driver.wait(until.titleIs('Sign in to your Microsoft account'), 10000);
-    } else if (authenticate_opt.prompt) {
-      // without domain_hint, we will come to the generic login page
-      driver.wait(until.titleIs('Sign in to your account'), 10000);
-      if (!authenticate_opt.login_hint) {
-        // if there is no login_hint, then we have to fill the username portion  
-        var usernamebox = driver.findElement(By.name('login'));
-        usernamebox.sendKeys(test_parameters.username);
-      }
-      
-      var passwordbox = driver.findElement(By.name('passwd'));
-      passwordbox.sendKeys(test_parameters.password);
-      driver.sleep(LOGIN_WAITING_TIME);
-      passwordbox.sendKeys(webdriver.Key.ENTER);
-    }
-  }).then(() => {
-    if (authenticate_opt.domain_hint === 'live.com') {
-      server.shutdown(done);
-    } else {
-      if (authenticate_opt.prompt === 'consent') {
-        // consent
-        driver.findElement(By.id('cred_accept_button')).click();
-      }
-      driver.wait(until.titleIs('result'), 10000);
-      driver.findElement(By.id('status')).getText().then((text) => { 
-        expect(text).to.equal('succeeded');
-        server.shutdown(done); 
-      });
-    }
   });
 };
 
@@ -540,9 +413,9 @@ describe('oidc v1 positive other test', function() {
     checkResult(implicit_config_common_endpoint, 2, done);
   }); 
 
-  /***************************************************************************
+  /**************************************************************************
    *  Test issuer and validateIssuers for both tenant specific and common endpoint
-   **************************************************************************/
+   *************************************************************************/
 
   // tenant specific endpoint
   it('should succeed', function(done) {
@@ -581,34 +454,6 @@ describe('oidc v1 positive other test', function() {
   it('should succeed', function(done) {
     checkResult(code_config_common_endpoint_query, 2, done);
   });
-
-  /****************************************************************************
-   *  Test login from two tabs
-   ***************************************************************************/
-
-  it('should succeed with arity 8 for verify function', function(done) {
-    checkResultTwoTabs(hybrid_config, 8, done);
-  });
-});
-
-describe('oidc v1 login/domain hint and prompt test', function() {
-  this.timeout(TEST_TIMEOUT);
-
-  it('should succeed with login page showing up and username prefilled', function(done) {
-    checkResultForPromptAndHint(hybrid_config, { login_hint: test_parameters.username, prompt: 'login' }, done);
-  }); 
-
-  it('should succeed with login page showing up and username prefilled and consent page showing up later', function(done) {
-    checkResultForPromptAndHint(hybrid_config, { login_hint: test_parameters.username, prompt: 'consent' }, done);
-  }); 
-
-  it('should succeed without login page showing up', function(done) {
-    checkResultForPromptAndHint(hybrid_config, { login_hint: test_parameters.username }, done);
-  }); 
-
-  it('should succeed with live.com login page showing up', function(done) {
-    checkResultForPromptAndHint(hybrid_config, { domain_hint: 'live.com' }, done);
-  }); 
 });
 
 describe('oidc v1 negative test', function() {

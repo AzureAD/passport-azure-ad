@@ -54,3 +54,33 @@ describe('uid test', function() {
     done();
   });
 });
+
+describe('concatUrl test', function() {
+  it('should generate a valid url if a query parameter is already in place', function(done) {
+    const currentUrl = 'http://example.com?foo=bar';
+    const newUrl = aadutils.concatUrl(currentUrl, ['bar=foo']);
+    expect(newUrl).to.equal(`${currentUrl}&bar=foo`);
+    done();
+  });
+
+  it('should generate a valid url if no query parameter is present', function(done) {
+    const currentUrl = 'http://example.com';
+    const newUrl = aadutils.concatUrl(currentUrl, 'bar=foo');
+    expect(newUrl).to.equal(`${currentUrl}?bar=foo`);
+    done();
+  });
+  
+  it('should return the bare url if no additional arguments are present', function(done) {
+    const currentUrl = 'http://example.com';
+    const newUrl = aadutils.concatUrl(currentUrl);
+    expect(newUrl).to.equal(currentUrl);
+    done();
+  });
+  
+  it('should return parseable query parameters if no url is present', function(done) {
+    const parameters = ['bar=foo&foo=bar'];
+    const newUrl = aadutils.concatUrl(undefined, parameters)
+    expect(newUrl).to.equal(`?${parameters}`);
+    done();
+  });
+})

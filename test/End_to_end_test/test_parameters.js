@@ -31,8 +31,7 @@ var test_parameters = {
     thumbprint: '<fill-in>',
     privatePEMKey: '<fill-in>',
     username: '<fill-in>',
-    password: '<fill-in>',
-    oid: '<fill-in>',
+    password: '<fill-in>'
   },
   v2_params: {
     tenantID: '<fill-in>',
@@ -41,8 +40,7 @@ var test_parameters = {
     thumbprint: '<fill-in>',
     privatePEMKey: '<fill-in>',
     username: '<fill-in>',
-    password: '<fill-in>',
-    oid: '<fill-in>',
+    password: '<fill-in>'
   },
   b2c_params: {
     tenantID: '<fill-in>',
@@ -50,7 +48,6 @@ var test_parameters = {
     clientSecret: '<fill-in>',
     username: '<fill-in>',
     password: '<fill-in>',
-    oid: '<fill-in>',
     scopeForBearer: '<fill-in>',
     scopeForOIDC: '<fill-in>'
   }

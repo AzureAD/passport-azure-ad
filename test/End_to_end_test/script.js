@@ -135,8 +135,7 @@ exports.set_test_parameters = (callback) => {
         thumbprint: 'Z2mGlF+IHL49Q9a66mDQLWG/lfs=',
         privatePEMKey: v1_private_pem_key,
         username: 'manNonMFA1@msidlab5.onmicrosoft.com',
-        password: v1_v2_password,
-        oid: 'a9590750-7562-45f5-af5b-41f504843766'
+        password: v1_v2_password
       };
 
       test_parameters.v2_params = {
@@ -146,8 +145,7 @@ exports.set_test_parameters = (callback) => {
         thumbprint: 'uW2guEHq4k/5Rr/UhhBcoIl0ERk=',
         privatePEMKey: v2_private_pem_key,
         username: 'manNonMFA1@msidlab5.onmicrosoft.com',
-        password: v1_v2_password,
-        oid: 'a9590750-7562-45f5-af5b-41f504843766'
+        password: v1_v2_password
       };
 
       test_parameters.b2c_params = {
@@ -156,7 +154,6 @@ exports.set_test_parameters = (callback) => {
         clientSecret: b2c_client_secret,
         username: 'lsj31415926@gmail.com',
         password: b2c_password,
-        oid: '7a61aaa0-6510-4e5c-b3ba-f31e5b7c7642',
         scopeForBearer: ['read', 'write'],
         scopeForOIDC: ['https://sijun1b2c.onmicrosoft.com/oidc-b2c/read', 'https://sijun1b2c.onmicrosoft.com/oidc-b2c/write']
       };
