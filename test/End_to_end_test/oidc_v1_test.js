@@ -249,20 +249,6 @@ var checkResult = (test_app_config, arity, done) => {
     driver.findElement(By.id('status')).getText().then((text) => { 
       expect(text).to.equal('succeeded');
     });
-    driver.findElement(By.id('oid')).getText().then((text) => {
-      // arity 3 means we are using function(iss, sub, done), so there is no profile.oid
-      if (arity !== 3)  
-        expect(text).to.equal(test_parameters.oid);
-      else
-        expect(text).to.equal('none');
-    });
-    driver.findElement(By.id('upn')).getText().then((text) => {
-      // arity 3 means we are using function(iss, sub, done), so there is no profile.displayName
-      if (arity !== 3) 
-        expect(text).to.equal(test_parameters.username);
-      else
-        expect(text).to.equal('none');
-    });
     driver.findElement(By.id('access_token')).getText().then((text) => { 
       if (arity >= 6)
         expect(text).to.equal('exists');

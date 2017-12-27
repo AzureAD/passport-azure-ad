@@ -256,9 +256,6 @@ var checkResult = (test_app_config, done) => {
     driver.findElement(By.id('status')).getText().then((text) => { 
       expect(text).to.equal('succeeded');
     });
-    driver.findElement(By.id('oid')).getText().then((text) => { 
-      expect(text).to.equal(test_parameters.oid);
-    });
     driver.findElement(By.id('access_token')).getText().then((text) => {
       if (test_app_config.responseType !== 'id_token' && test_app_config.scope.length > 6)  // if we have scope besides 'openid'
         expect(text).to.equal('exists');

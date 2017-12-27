@@ -580,8 +580,7 @@ First you need to register one application in v1 tenant, one in v2 tenant and on
 
 For the v2 application, you should register it at https://apps.dev.microsoft.com/ instead of Azure Portal.
 
-For the B2C application, create four policies named 'B2C_1_signin', 'B2C_1_signup', 'B2C_1_updateprofile', 
-'B2C_1_resetpassword'. For each policy, select 'Local Account' as the identity provider, and select the
+For the B2C application, create policies named 'B2C_1_signin', 'B2C_1_signup'. For each policy, select 'Local Account' as the identity provider, and select the
 following:
 
 * 'B2C_1_signup': 
@@ -590,25 +589,9 @@ following:
 
   * Application claims: 'Display Name', Email Addresses', 'Given Name', 'Identity Provider', 'Surname', 'Users Object ID'
 
-* 'B2C_1_updateprofile': 
-
-  * Profile attributes: 'Display Name', 'Given Name', 'Surname'
-
-  * Application claims: 'Display Name', Email Addresses', 'Given Name', 'Identity Provider', 'Surname', 'Users Object ID'
-
 * 'B2C_1_signin': 
 
   * Application claims: 'Display Name', Email Addresses', 'Given Name', 'Identity Provider', 'Surname', 'Users Object ID'
-
-* 'B2C_1_signin_acr': 
-
-  * Application claims: 'Display Name', Email Addresses', 'Given Name', 'Identity Provider', 'Surname', 'Users Object ID'
-
-  * After creating this policy, go the blade of this policy, click 'Edit' and then 'Token, session & SSO config'. Now switch the 'Claim representing policy ID' from 'tfp' to 'acr' and save the change.
-
-* 'B2C_1_resetpassword': 
-
-  * Application claims: 'Email Addresses', 'Given Name', 'Users Object ID'
 
 You will also need to click the 'Run now' button in the 'B2C_1_signup' blade to create an user.
 
@@ -619,7 +602,7 @@ access token for the scope, and use BearerStrategy to validate the scope. Note f
 
 #### 6.2.2. Fill the test parameters 
 
-Open `test/End_to_end_test/script.js`, set `is_test_parameters_completed` parameter to true. For `test_parameters` variable, fill in the tenant id/client id/client secret of your applications, and the username/password of your application user. The 'oid' value is the object id of your application user. To find the 'oid' value, go to your tenant, click 'Users and groups', find your user and click it. The Object ID value will show up in the new blade.
+Open `test/End_to_end_test/script.js`, set `is_test_parameters_completed` parameter to true. For `test_parameters` variable, fill in the tenant id/client id/client secret of your applications, and the username/password of your application user. 
 
 For `thumbprint` and `privatePEMKey` parameters, you need to specify a certificate for your app and register the public key in Azure Active Directory. `thumbprint` is the base64url format of the thumbprint of the public key, and `privatePEMKey` is the private pem key string. For a v1 tenant, you can follow [this post](http://www.andrewconnell.com/blog/user-app-app-only-permissions-client-credentials-grant-flow-in-azure-ad-office-365-apis) to generate a certificate and register the public key. For a v2 tenant, you can go to your application page in the [v2 portal](https://apps.dev.microsoft.com) and click `Generate New Key Pair`. A certificate will be generated for you to download. The corresponding public key is automatically registered in this case.  
 

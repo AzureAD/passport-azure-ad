@@ -176,12 +176,6 @@ var resultPageValidation = (test_app_config, driver) => {
   driver.findElement(By.id('status')).getText().then((text) => { 
     expect(text).to.equal('succeeded');
   });
-  driver.findElement(By.id('oid')).getText().then((text) => { 
-    expect(text).to.equal(test_parameters.oid);
-  });
-  driver.findElement(By.id('emails')).getText().then((text) => { 
-    expect(text).to.equal(test_parameters.username);
-  });
   driver.findElement(By.id('access_token')).getText().then((text) => { 
     if (test_app_config.scope.length > 6)
       expect(text).to.equal('exists');
@@ -208,15 +202,7 @@ var checkResult = (test_app_config, done) => {
   else
     server = require('./app/app')(test_app_config, {}, 8);
   
-  driver.get('http://localhost:3000/login?p=b2c_1_signup')
-  .then(() => {
-    if (first_time) {
-      driver.wait(until.titleIs('User details'), 10000);
-    }
-  })
-  .then(() => {
-    driver.get('http://localhost:3000/login?p=b2c_1_signin');
-  })
+  driver.get('http://localhost:3000/login?p=b2c_1_signin')
   .then(() => {
     if (first_time) {
       driver.wait(until.titleIs('Sign in to your account'), 10000);
@@ -231,17 +217,6 @@ var checkResult = (test_app_config, done) => {
   })
   .then(() => {
     resultPageValidation(test_app_config, driver);
-  })
-  .then(() => {
-    driver.get('http://localhost:3000/login?p=b2c_1_signin_acr');
-  })
-  .then(() => {
-    driver.get('http://localhost:3000/login?p=b2c_1_resetpassword');
-    driver.wait(until.titleIs('User details'), 10000);
-  })
-  .then(() => {
-    driver.get('http://localhost:3000/login?p=b2c_1_updateprofile');
-    driver.wait(until.titleIs('Update profile'), 10000);
   })
   .then(() => {
     server.shutdown(done); 
@@ -261,43 +236,6 @@ var checkInvalidResult = (test_app_config, tenantIdOrName, done) => {
       expect(text).to.equal('failed');
       server.shutdown(done);
     });
-  });
-};
-
-var checkResultForPromptAndHint = (test_app_config, authenticate_opt, done) => {
-  var server = create_app(test_app_config, authenticate_opt, 8);
-
-  if (!driver)
-    driver = chromedriver.get_driver(); 
-
-  driver.get('http://localhost:3000/login?p=b2c_1_signin')
-  .then(() => {
-    if (authenticate_opt.domain_hint === 'live.com') {
-      // we should have come to the login page for live.com
-      driver.wait(until.titleIs('Sign in to your Microsoft account'), 10000);
-    } else if (authenticate_opt.prompt === 'login') {
-      // without domain_hint, we will come to the generic login page
-      driver.wait(until.titleIs('Sign in to your account'), 10000);
-      if (!authenticate_opt.login_hint) {
-        // if there is no login_hint, then we have to fill the username portion  
-        var usernamebox = driver.findElement(By.name('login'));
-        usernamebox.sendKeys(test_parameters.username);
-      }
-      var passwordbox = driver.findElement(By.name('passwd'));
-      passwordbox.sendKeys(test_parameters.password);
-      driver.sleep(LOGIN_WAITING_TIME);
-      passwordbox.sendKeys(webdriver.Key.ENTER);
-    }
-  }).then(() => {
-    if (authenticate_opt.domain_hint === 'live.com') {
-      server.shutdown(done);
-    } else {
-      driver.wait(until.titleIs('result'), 10000);
-      driver.findElement(By.id('status')).getText().then((text) => { 
-        expect(text).to.equal('succeeded');
-        server.shutdown(done); 
-      });
-    }
   });
 };
 
@@ -396,29 +334,12 @@ describe('oidc b2c positive other test', function() {
   });
 });
 
-describe('oidc b2c login_hint and prompt test', function() {
-  this.timeout(TEST_TIMEOUT);
-
-  it('should succeed with login page showing up and username prefilled', function(done) {
-    checkResultForPromptAndHint(hybrid_config, { login_hint: test_parameters.username, prompt: 'login' }, done);
-  }); 
-
-  it('should succeed without login page showing up', function(done) {
-    checkResultForPromptAndHint(hybrid_config, { login_hint: test_parameters.username }, done);
-  }); 
-});
-
 describe('oidc b2c negative test', function() {
   this.timeout(TEST_TIMEOUT);
 
   // Wrong clientSecret
   it('should fail with wrong client secret', function(done) {
     checkInvalidResult(hybrid_config_common_endpoint_wrong_secret, test_parameters.tenantID, done);
-  });
-
-  // invalid tenant id or name
-  it('should fail with invalid identityMetadata', function(done) {
-    checkInvalidResult(config_template_common_endpoint, 'invalid_tenant', done);
   });
 
   it('close service', function(done) {
