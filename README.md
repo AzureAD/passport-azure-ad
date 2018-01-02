@@ -1,6 +1,7 @@
 
 # Microsoft Azure Active Directory Passport.js Plug-In
-=============
+
+---
 
 _passport-azure-ad_ is a collection of [Passport](http://passportjs.org/) Strategies 
 to help you integrate with Azure Active Directory. It includes OpenID Connect, 
