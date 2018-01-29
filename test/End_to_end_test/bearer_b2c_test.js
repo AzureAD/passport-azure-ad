@@ -45,7 +45,7 @@ const LOGIN_WAITING_TIME = 3000; // 3 second
 var test_parameters = {};
 
 var client_config, server_config,  server_config_with_req, server_config_allow_multiAud,
-server_config_with_scope, server_config_with_wrong_scope,
+server_config_common_endpoint_dynamic_tenant, server_config_with_scope, server_config_with_wrong_scope,
 server_config_wrong_issuer, server_config_wrong_policyName, server_config_wrong_identityMetadata,
 server_config_wrong_audience, server_config_wrong_issuer_no_validateIssuer = {};
 
@@ -109,6 +109,10 @@ var apply_test_parameters = (done) => {
 
   server_config_with_scope = JSON.parse(JSON.stringify(server_config));
   server_config_with_scope.scope = ['some_irrelevent_scope', test_parameters.scopeForBearer[0]];
+
+  server_config_common_endpoint_dynamic_tenant = JSON.parse(JSON.stringify(server_config));
+  server_config_common_endpoint_dynamic_tenant.identityMetadata = 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration';
+  server_config_common_endpoint_dynamic_tenant.tenantIdOrName = test_parameters.tenantID;
 
   server_config_with_wrong_scope = JSON.parse(JSON.stringify(server_config));
   server_config_with_wrong_scope.scope = ['some_irrelevent_scope'];
@@ -198,6 +202,10 @@ describe('bearer b2c test', function() {
 
   it('should succeed', function(done) {
     checkResult(server_config_with_scope, 'succeeded', done);
+  });
+
+  it('should succeed', function(done) {
+    checkResult(server_config_common_endpoint_dynamic_tenant, 'succeeded', done);
   });
 
   it('should fail with wrong scope', function(done) {
