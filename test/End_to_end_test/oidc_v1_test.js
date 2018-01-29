@@ -51,8 +51,7 @@ var test_parameters = {};
 // tenant specific endpoint configurations
 var config_template, hybrid_config, hybrid_config_alternative, code_config,
 implicit_config, code_config_query, hybrid_config_noIssuer, hybrid_config_with_scope,
-hybrid_config_passReqToCallback, 
-hybrid_config_clientAssertion, code_config_clientAssertion = {};
+hybrid_config_passReqToCallback = {};
 
 // common endpoint configurations
 var config_template_common_endpoint, hybrid_config_common_endpoint, 
@@ -63,10 +62,7 @@ hybrid_config_common_endpoint_with_scope = {};
 // invalid configurations
 var hybrid_config_common_endpoint_wrong_issuer, 
 hybrid_config_common_endpoint_short_lifetime, 
-hybrid_config_common_endpoint_wrong_secret, 
-hybrid_config_clientAssertion_invalid_pemKey,
-hybrid_config_clientAssertion_unregistered_pemKey,
-hybrid_config_clientAssertion_wrong_thumbprint = {};
+hybrid_config_common_endpoint_wrong_secret = {};
 
 // drivers needed for the tests
 var driver;
@@ -146,18 +142,6 @@ var apply_test_parameters = (done) => {
   hybrid_config_passReqToCallback = JSON.parse(JSON.stringify(config_template));
   hybrid_config_passReqToCallback.passReqToCallback = true;
 
-  // 6. Hybird flow using client assertion
-  hybrid_config_clientAssertion = JSON.parse(JSON.stringify(hybrid_config));
-  hybrid_config_clientAssertion.thumbprint = test_parameters.thumbprint;
-  hybrid_config_clientAssertion.privatePEMKey = test_parameters.privatePEMKey;
-  hybrid_config_clientAssertion.clientSecret = null;
-
-  // 7. Code flow using client assertion
-  code_config_clientAssertion = JSON.parse(JSON.stringify(code_config));
-  code_config_clientAssertion.thumbprint = test_parameters.thumbprint;
-  code_config_clientAssertion.privatePEMKey = test_parameters.privatePEMKey;
-  code_config_clientAssertion.clientSecret = null;  
-
   /****************************************************************************
    *  Tenant specific endpoint configurations
    ***************************************************************************/
@@ -203,22 +187,6 @@ var apply_test_parameters = (done) => {
   // 2. common endpoint with wrong client secret
   hybrid_config_common_endpoint_wrong_secret = JSON.parse(JSON.stringify(config_template_common_endpoint));
   hybrid_config_common_endpoint_wrong_secret.clientSecret = 'wrong_secret';  
-  // 3. Hybird flow using client assertion with invalid privatePEMKey
-  hybrid_config_clientAssertion_invalid_pemKey = JSON.parse(JSON.stringify(hybrid_config));
-  hybrid_config_clientAssertion_invalid_pemKey.thumbprint = test_parameters.thumbprint;
-  hybrid_config_clientAssertion_invalid_pemKey.privatePEMKey = 'invalid private pem key';
-  hybrid_config_clientAssertion_invalid_pemKey.clientSecret = null;
-  // 4. hybrid flow using client assertion with wrong thumbprint
-  hybrid_config_clientAssertion_wrong_thumbprint = JSON.parse(JSON.stringify(hybrid_config));
-  hybrid_config_clientAssertion_wrong_thumbprint.thumbprint = 'wrongThumbprint';
-  hybrid_config_clientAssertion_wrong_thumbprint.privatePEMKey = test_parameters.privatePEMKey;
-  hybrid_config_clientAssertion_wrong_thumbprint.clientSecret = null;
-  // 5. hybrid flow using client assertion with unregistered privatePEMKey
-  var unregistered_privatePEMKey = fs.readFileSync(__dirname + '/../resource/private.pem', 'utf8');
-  hybrid_config_clientAssertion_unregistered_pemKey = JSON.parse(JSON.stringify(hybrid_config));
-  hybrid_config_clientAssertion_unregistered_pemKey.thumbprint = test_parameters.thumbprint;
-  hybrid_config_clientAssertion_unregistered_pemKey.privatePEMKey = unregistered_privatePEMKey;
-  hybrid_config_clientAssertion_unregistered_pemKey.clientSecret = null;
   done();  
 };
 
@@ -241,6 +209,7 @@ var checkResult = (test_app_config, arity, done) => {
       passwordbox = driver.findElement(By.name('passwd'));
       passwordbox.sendKeys(webdriver.Key.ENTER);
       first_time = false;
+      driver.findElement(By.id('idSIButton9')).then((element)=>{element.click();}, () => {});
     }
   }).then(() => {
     driver.findElement(By.id('idBtn_Back')).then((element)=>{element.click();}, () => {});
@@ -248,18 +217,6 @@ var checkResult = (test_app_config, arity, done) => {
     driver.wait(until.titleIs('result'), 10000);
     driver.findElement(By.id('status')).getText().then((text) => { 
       expect(text).to.equal('succeeded');
-    });
-    driver.findElement(By.id('access_token')).getText().then((text) => { 
-      if (arity >= 6)
-        expect(text).to.equal('exists');
-      else
-        expect(text).to.equal('none');
-    });
-    driver.findElement(By.id('refresh_token')).getText().then((text) => { 
-      if (arity >= 6)
-        expect(text).to.equal('exists');
-      else
-        expect(text).to.equal('none');
       server.shutdown(done); 
     });
   });
@@ -381,20 +338,6 @@ describe('oidc v1 positive other test', function() {
   }); 
 
   /****************************************************************************
-   *  Test client assertion
-   ***************************************************************************/
-  
-  // hybrid flow using client assertion
-  it('should succeed', function(done) {
-    checkResult(hybrid_config_clientAssertion, 8, done);
-  }); 
-
-  // code flow using client assertion
-  it('should succeed', function(done) {
-    checkResult(code_config_clientAssertion, 8, done);
-  }); 
-
-  /****************************************************************************
    *  Test various response type for common endpoint
    ***************************************************************************/
 
@@ -472,21 +415,6 @@ describe('oidc v1 negative test', function() {
   // Wrong clientSecret
   it('should fail with wrong client secret', function(done) {
     checkInvalidResult(hybrid_config_common_endpoint_wrong_secret, done);
-  });
-
-  // invalid privatePEMKey
-  it('should fail with invalid privatePEMKey', function(done) {
-    checkInvalidResult(hybrid_config_clientAssertion_invalid_pemKey, done);
-  });
-
-  // wrong thumbprint
-  it('should fail with wrong thumbprint', function(done) {
-    checkInvalidResult(hybrid_config_clientAssertion_wrong_thumbprint, done);
-  });
-
-  // unregistered privatePEMKey
-  it('should fail with unregistered privatePEMKey', function(done) {
-    checkInvalidResult(hybrid_config_clientAssertion_unregistered_pemKey, done);
   });
 
   it('close service', function(done) {

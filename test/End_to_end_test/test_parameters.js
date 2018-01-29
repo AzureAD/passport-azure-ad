@@ -27,9 +27,7 @@ var test_parameters = {
   v1_params: {
     tenantID: '<fill-in>',
     clientID: '<fill-in>',
-    clientSecret: '<fill-in>',
-    thumbprint: '<fill-in>',
-    privatePEMKey: '<fill-in>',
+    clientSecret: '<fill-in>=',
     username: '<fill-in>',
     password: '<fill-in>'
   },
@@ -37,8 +35,6 @@ var test_parameters = {
     tenantID: '<fill-in>',
     clientID: '<fill-in>',
     clientSecret: '<fill-in>',
-    thumbprint: '<fill-in>',
-    privatePEMKey: '<fill-in>',
     username: '<fill-in>',
     password: '<fill-in>'
   },
@@ -48,8 +44,8 @@ var test_parameters = {
     clientSecret: '<fill-in>',
     username: '<fill-in>',
     password: '<fill-in>',
-    scopeForBearer: '<fill-in>',
-    scopeForOIDC: '<fill-in>'
+    scopeForBearer: ['<fill-in>'],
+    scopeForOIDC: ['<fill-in>']
   }
 };
 

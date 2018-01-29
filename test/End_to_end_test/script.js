@@ -49,23 +49,18 @@ var credentials = new azureKeyVault.KeyVaultCredentials(authenticator);
 var client = new azureKeyVault.KeyVaultClient(credentials);
 
 // Key vault uri for ADAL testing
-var vaultUri = 'https://msidlab5.vault.azure.net';
-var vaultUri2 = 'https://msidlabs.vault.azure.net';
+var vaultUri = 'https://jse2ekeyvault.vault.azure.net';
 
 // The secrets we want to get from the key vault
-var v1_v2_kv_name = 'msidlab5';
-var v1_v2_password;
-var b2c_kv_name = 'PassportB2C-lsj31415926atgmaildotcom';
-var b2c_password;
-var v1_client_secret_kv_name = 'PassportV1ClientSecret';
+var v1_v2_user_password_kv_name = 'v1v2UserPassword';
+var v1_v2_user_password;
+var b2c_user_password_kv_name = 'b2cUserPassword';
+var b2c_user_password;
+var v1_client_secret_kv_name = 'v1ClientSecret';
 var v1_client_secret;
-var v1_private_pem_key_kv_name = 'PassportV1PrivatePEMKey';
-var v1_private_pem_key;
-var v2_client_secret_kv_name = 'PassportV2ClientSecret';
+var v2_client_secret_kv_name = 'v2ClientSecret';
 var v2_client_secret;
-var v2_private_pem_key_kv_name = 'PassportV2PrivatePEMKey';
-var v2_private_pem_key;
-var b2c_client_secret_kv_name = 'PassportB2CClientSecret';
+var b2c_client_secret_kv_name = 'b2cClientSecret';
 var b2c_client_secret;
 
 exports.set_test_parameters = (callback) => {
@@ -73,17 +68,17 @@ exports.set_test_parameters = (callback) => {
 
   async.waterfall([
     (next) => {
-      client.getSecret(vaultUri2 + '/secrets/' + v1_v2_kv_name, function (err, result) {
+      client.getSecret(vaultUri + '/secrets/' + v1_v2_user_password_kv_name, function (err, result) {
         if (err) throw err;
-        v1_v2_password = result.value;
+        v1_v2_user_password = result.value;
         return next();
       });
     },
 
     (next) => {
-      client.getSecret(vaultUri + '/secrets/' + b2c_kv_name, function (err, result) {
+      client.getSecret(vaultUri + '/secrets/' + b2c_user_password_kv_name, function (err, result) {
         if (err) throw err;
-        b2c_password = result.value;
+        b2c_user_password = result.value;
         return next();
       });    
     },
@@ -105,22 +100,6 @@ exports.set_test_parameters = (callback) => {
     },
 
     (next) => {
-      client.getSecret(vaultUri + '/secrets/' + v1_private_pem_key_kv_name, function (err, result) {
-        if (err) throw err;
-        v1_private_pem_key = result.value.replace(/\\n/g, '\n');
-        return next();
-      });
-    },
-
-    (next) => {
-      client.getSecret(vaultUri + '/secrets/' + v2_private_pem_key_kv_name, function (err, result) {
-        if (err) throw err;
-        v2_private_pem_key = result.value.replace(/\\n/g, '\n');
-        return next();
-      });    
-    },
-
-    (next) => {
       client.getSecret(vaultUri + '/secrets/' + b2c_client_secret_kv_name, function (err, result) {
         if (err) throw err;
         b2c_client_secret = result.value;
@@ -130,23 +109,19 @@ exports.set_test_parameters = (callback) => {
 
     (next) => {
       test_parameters.v1_params = {
-        tenantID: 'd34a1bb7-3481-4d5f-8b94-f3cc27bf8eac',
-        clientID: '53d378fd-9c04-4e99-bb8e-6c9f144fe440',
+        tenantID: '268da1a1-9db4-48b9-b1fe-683250ba90cc',
+        clientID: 'a8600356-09b7-4ca5-aee1-04aa7841a05b',
         clientSecret: v1_client_secret,
-        thumbprint: 'Z2mGlF+IHL49Q9a66mDQLWG/lfs=',
-        privatePEMKey: v1_private_pem_key,
-        username: 'manNonMFA1@msidlab5.onmicrosoft.com',
-        password: v1_v2_password
+        username: 'robot@sijun.onmicrosoft.com',
+        password: v1_v2_user_password
       };
 
       test_parameters.v2_params = {
-        tenantID: 'd34a1bb7-3481-4d5f-8b94-f3cc27bf8eac',
-        clientID: 'fa300e1e-ba08-4717-b97f-af77a9f65199',
+        tenantID: '268da1a1-9db4-48b9-b1fe-683250ba90cc',
+        clientID: '186104ca-b7a3-4462-ac54-43b60161243f',
         clientSecret: v2_client_secret,
-        thumbprint: 'uW2guEHq4k/5Rr/UhhBcoIl0ERk=',
-        privatePEMKey: v2_private_pem_key,
-        username: 'manNonMFA1@msidlab5.onmicrosoft.com',
-        password: v1_v2_password
+        username: 'robot@sijun.onmicrosoft.com',
+        password: v1_v2_user_password
       };
 
       test_parameters.b2c_params = {
@@ -154,7 +129,7 @@ exports.set_test_parameters = (callback) => {
         clientID: 'f0b6e4eb-2d8c-40b6-b9c6-e26d1074846d',
         clientSecret: b2c_client_secret,
         username: 'lsj31415926@gmail.com',
-        password: b2c_password,
+        password: b2c_user_password,
         scopeForBearer: ['read', 'write'],
         scopeForOIDC: ['https://sijun1b2c.onmicrosoft.com/oidc-b2c/read', 'https://sijun1b2c.onmicrosoft.com/oidc-b2c/write']
       };
