@@ -67,16 +67,16 @@ exports.bearer = {
     test.expect(15);
 
     setConfig(commonMetadataURL, true, (bearerConfig) => {
-      test.throws(() => { 
+      test.doesNotThrow(() => { 
           new BearerStrategy(bearerConfig, noop);
         },
         Error,
-        'Should throw with validateIssuer set true on common endpoint'
+        'Should not throw with validateIssuer set true on common endpoint'
       );
     });
 
     setConfig(commonMetadataURL, undefined, (bearerConfig) => {
-      test.throws(() => { 
+      test.doesNotThrow(() => { 
           new BearerStrategy(bearerConfig, noop);
         },
         Error,
@@ -85,7 +85,7 @@ exports.bearer = {
     });
 
     setConfig(commonMetadataURL, null, (bearerConfig) => {
-      test.throws(() => { 
+      test.doesNotThrow(() => { 
           new BearerStrategy(bearerConfig, noop);
         },
         Error,
@@ -104,7 +104,7 @@ exports.bearer = {
     });
 
     setConfig(commonMetadataURL, null, (bearerConfig) => {
-      test.throws(() => {
+      test.doesNotThrow(() => {
           bearerConfig.isB2C = true;
           bearerConfig.policyName = 'B2C_1_signin';
           bearerConfig.validateIssuer = false; 

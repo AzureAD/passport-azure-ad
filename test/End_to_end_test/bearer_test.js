@@ -51,6 +51,7 @@ server_config_wrong_issuer, server_config_wrong_identityMetadata,
 server_config_wrong_audience, server_config_wrong_issuer_no_validateIssuer,
 server_config_multiple_audience,
 server_config_common_endpoint, server_config_common_endpoint_with_req,
+server_config_common_endpoint_dynamic_tenant,
 server_config_common_endpoint_allow_multiAud, server_config_common_endpoint_wrong_issuer,
 server_config_common_endpoint_wrong_audience,
 server_config_common_endpoint_wrong_issuer_no_validateIssuer = {};
@@ -130,6 +131,10 @@ var apply_test_parameters = (done) => {
   server_config_common_endpoint = JSON.parse(JSON.stringify(server_config));
   server_config_common_endpoint.identityMetadata = 'https://login.microsoftonline.com/common/.well-known/openid-configuration';
   server_config_common_endpoint.issuer = 'https://sts.windows.net/' + test_parameters.tenantID + '/';
+
+  server_config_common_endpoint_dynamic_tenant = JSON.parse(JSON.stringify(server_config));
+  server_config_common_endpoint_dynamic_tenant.identityMetadata = 'https://login.microsoftonline.com/common/.well-known/openid-configuration';
+  server_config_common_endpoint_dynamic_tenant.tenantIdOrName = test_parameters.tenantID;
 
   server_config_common_endpoint_with_req = JSON.parse(JSON.stringify(server_config_common_endpoint));
   server_config_common_endpoint_with_req.passReqToCallback = true;
@@ -251,6 +256,10 @@ describe('bearer test', function() {
 
   it('should succeed', function(done) {
     checkResult(server_config_common_endpoint, 'succeeded', done);
+  });
+
+  it('should succeed', function(done) {
+    checkResult(server_config_common_endpoint_dynamic_tenant, 'succeeded', done);
   });
 
   it('should succeed', function(done) {
