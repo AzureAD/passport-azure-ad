@@ -1,4 +1,13 @@
-<a name="3.0.9"></a>
+<a name="3.0.10"></a>
+
+# 3.0.10
+
+## BearerStrategy
+
+### New features
+
+* [#354](https://github.com/AzureAD/passport-azure-ad/issues/354) Support passing tenant name or id in BearerStrategy
+
 # 3.0.9
 
 ## OIDCStrategy
