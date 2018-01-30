@@ -1,6 +1,7 @@
 
 # Microsoft Azure Active Directory Passport.js Plug-In
-=============
+
+---
 
 _passport-azure-ad_ is a collection of [Passport](http://passportjs.org/) Strategies 
 to help you integrate with Azure Active Directory. It includes OpenID Connect, 
@@ -16,7 +17,7 @@ and with [Microsoft Active Directory Federation Services](http://en.wikipedia.or
 _passport-azure-ad_ has a known security vulnerability affecting versions <1.4.6 and 2.0.0. Please update to >=1.4.6 or >=2.0.1 immediately. For more details, see the [security notice](https://github.com/AzureAD/passport-azure-ad/blob/master/SECURITY-NOTICE.MD).
 
 ## 2. Versions
-Current version - 3.0.9  
+Current version - 3.0.10  
 Minimum  recommended version - 1.4.6  
 You can find the changes for each version in the [change log](https://github.com/AzureAD/passport-azure-ad/blob/master/CHANGELOG.md).
 
@@ -497,7 +498,7 @@ var bearerStrategy = new BearerStrategy(options,
 
 * `validateIssuer`  (Conditional)
   
-  Required to set to false if you don't want to validate issuer, default value is true. We validate the `iss` claim in id_token against user provided `issuer` values and the issuer value we get from tenant-specific endpoint. If you use common endpoint for `identityMetadata` and you want to validate issuer, then you must provide `issuer`.
+  Required to set to false if you don't want to validate issuer, default value is true. We validate the `iss` claim in id_token against user provided `issuer` values and the issuer value we get from tenant-specific endpoint. If you use common endpoint for `identityMetadata` and you want to validate issuer, then you must provide `issuer`, or provide `tenantIdOrName` in passport.authenticate.
   
 * `issuer`  (Conditional)
   
@@ -549,6 +550,8 @@ In the following example, we are using passport to protect '/api/tasks'. User se
 #### 5.2.3 Options available for `passport.authenticate`
 
 * `session`: if you don't want a persistent login session, you can use `session: false`. The default value is true.
+
+* `tenantIdOrName`: if you use common endpoint, you can use this option to dynamically provide the tenant.
 
 Example:
 

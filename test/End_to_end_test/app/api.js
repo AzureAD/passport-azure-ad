@@ -55,7 +55,7 @@ module.exports = function(strategyOptions) {
   app.use(passport.session());
   app.use(app.router);
 
-  app.get('/api', passport.authenticate('oauth-bearer', { session: false }),
+  app.get('/api', passport.authenticate('oauth-bearer', { session: false, tenantIdOrName: strategyOptions.tenantIdOrName }),
     function(req, res) {
       res.send('succeeded');
     }

@@ -142,22 +142,10 @@ var apply_test_parameters = (done) => {
   hybrid_config_noIssuer = JSON.parse(JSON.stringify(config_template));
   hybrid_config_noIssuer.issuer = null;
 
-  // 5. Config with scope values
-  // - hybrid flow with scope value ['email', 'profile', 'offline_access', 'https://graph.microsoft.com/mail.read']
+  // 5. Config with additional scope values
+  // - hybrid flow with scope value ['email', 'profile', 'offline_access']
   hybrid_config_with_scope = JSON.parse(JSON.stringify(config_template));
-  hybrid_config_with_scope.scope = ['email', 'profile', 'offline_access', 'https://graph.microsoft.com/mail.read'];
-
-  // 6. Hybird flow using client assertion
-  hybrid_config_clientAssertion = JSON.parse(JSON.stringify(hybrid_config));
-  hybrid_config_clientAssertion.thumbprint = test_parameters.thumbprint;
-  hybrid_config_clientAssertion.privatePEMKey = test_parameters.privatePEMKey;
-  hybrid_config_clientAssertion.clientSecret = null;
-
-  // 7. Code flow using client assertion
-  code_config_clientAssertion = JSON.parse(JSON.stringify(code_config));
-  code_config_clientAssertion.thumbprint = test_parameters.thumbprint;
-  code_config_clientAssertion.privatePEMKey = test_parameters.privatePEMKey;
-  code_config_clientAssertion.clientSecret = null;  
+  hybrid_config_with_scope.scope = ['email', 'profile', 'offline_access'];
 
   /******************************************************************************
    *  Common endpoint configurations
@@ -188,11 +176,6 @@ var apply_test_parameters = (done) => {
   hybrid_config_common_endpoint_noIssuer.issuer = null;
   hybrid_config_common_endpoint_noIssuer.validateIssuer = false;
 
-  // 4. Config with scope values
-  // - hybrid flow with scope value ['email', 'profile', 'offline_access', 'https://graph.microsoft.com/mail.read']
-  hybrid_config_common_endpoint_with_scope = JSON.parse(JSON.stringify(config_template_common_endpoint));
-  hybrid_config_common_endpoint_with_scope.scope = ['email', 'profile', 'offline_access', 'https://graph.microsoft.com/mail.read'];
-
   /******************************************************************************
    *  Invalid configuration
    *****************************************************************************/
@@ -208,13 +191,6 @@ var apply_test_parameters = (done) => {
   // 3. invalid identityMetadata
   hybrid_config_invalid_identityMetadata = JSON.parse(JSON.stringify(config_template_common_endpoint));
   hybrid_config_invalid_identityMetadata.identityMetadata = 'https://login.microsoftonline.com/common/v2.0/.well-known/wrong';
-
-  // 4. hybrid flow using client assertion with unregistered privatePEMKey
-  var unregistered_privatePEMKey = fs.readFileSync(__dirname + '/../resource/private.pem', 'utf8');
-  hybrid_config_clientAssertion_unregistered_pemKey = JSON.parse(JSON.stringify(hybrid_config));
-  hybrid_config_clientAssertion_unregistered_pemKey.thumbprint = test_parameters.thumbprint;
-  hybrid_config_clientAssertion_unregistered_pemKey.privatePEMKey = unregistered_privatePEMKey;
-  hybrid_config_clientAssertion_unregistered_pemKey.clientSecret = null;
 
   done();
 };
@@ -240,6 +216,7 @@ var checkResult = (test_app_config, done) => {
       passwordbox = driver.findElement(By.name('passwd'));
       passwordbox.sendKeys(webdriver.Key.ENTER);
       client_already_logged_in = true;
+      driver.findElement(By.id('idSIButton9')).then((element)=>{element.click();}, () => {}); // might have 'keep signed in?' button
       driver.findElement(By.id('idBtn_Back')).then((element)=>{element.click();}, () => {});
     }
   }).then(() => {
@@ -251,22 +228,11 @@ var checkResult = (test_app_config, done) => {
         }
       });
     }
+    driver.findElement(By.xpath('//*[@id="i0281"]/div[1]/div/div[1]/div[2]/div/div/div[2]/div[1]/div/div[2]')).then((element)=>{element.click();}, () => {});
   }).then(() => {
     driver.wait(until.titleIs('result'), 10000);
     driver.findElement(By.id('status')).getText().then((text) => { 
       expect(text).to.equal('succeeded');
-    });
-    driver.findElement(By.id('access_token')).getText().then((text) => {
-      if (test_app_config.responseType !== 'id_token' && test_app_config.scope.length > 6)  // if we have scope besides 'openid'
-        expect(text).to.equal('exists');
-      else
-        expect(text).to.equal('none');
-    });
-    driver.findElement(By.id('refresh_token')).getText().then((text) => { 
-      if (test_app_config.responseType !== 'id_token')
-        expect(text).to.equal('exists');
-      else
-        expect(text).to.equal('none');
       server.shutdown(done); 
     });
   });
@@ -337,20 +303,6 @@ describe('oidc v2 positive test', function() {
   it('should succeed', function(done) {
     checkResult(implicit_config, done);
   }); 
-
-  /****************************************************************************
-   *  Test client assertion
-   ***************************************************************************/
-  
-  // hybrid flow using client assertion
-  it('should succeed', function(done) {
-    checkResult(hybrid_config_clientAssertion, done);
-  }); 
-
-  // code flow using client assertion
-  it('should succeed', function(done) {
-    checkResult(code_config_clientAssertion, done);
-  }); 
   
   /***************************************************************************
    *  Test various response type for common endpoint
@@ -407,11 +359,6 @@ describe('oidc v2 positive test', function() {
   it('should succeed', function(done) {
     checkResult(hybrid_config_with_scope, done);
   });
-
-  // common endpoint
-  it('should succeed', function(done) {
-    checkResult(hybrid_config_common_endpoint_with_scope, done);
-  });
 });
 
 describe('oidc v2 negative test', function() {
@@ -425,11 +372,6 @@ describe('oidc v2 negative test', function() {
   // Wrong clientSecret
   it('should fail with wrong client secret', function(done) {
     checkInvalidResult(hybrid_config_common_endpoint_wrong_secret, done);
-  });
-
-  // unregistered privatePEMKey
-  it('should fail with unregistered privatePEMKey', function(done) {
-    checkInvalidResult(hybrid_config_clientAssertion_unregistered_pemKey, done);
   });
   
   it('close service', function(done) {
