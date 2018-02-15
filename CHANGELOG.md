@@ -1,4 +1,18 @@
-<a name="3.0.10"></a>
+<a name="3.0.11"></a>
+
+# 3.0.11
+
+## OIDCStrategy
+
+### Bug fixes
+
+* [#365](https://github.com/AzureAD/passport-azure-ad/issues/365) Metadata caching in Bearer Strategy breaks and cannot be recovered if request fails
+
+## BearerStrategy
+
+### Bug fixes
+
+* [#365](https://github.com/AzureAD/passport-azure-ad/issues/365) Metadata caching in Bearer Strategy breaks and cannot be recovered if request fails
 
 # 3.0.10
 
