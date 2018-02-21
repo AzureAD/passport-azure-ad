@@ -65,6 +65,7 @@ passport.use(new OIDCStrategy({
     passReqToCallback: config.creds.passReqToCallback,
     scope: config.creds.scope,
     loggingLevel: config.creds.loggingLevel,
+    loggingNoPII: config.creds.loggingNoPII,
     nonceLifetime: config.creds.nonceLifetime,
     nonceMaxAmount: config.creds.nonceMaxAmount,
     useCookieInsteadOfSession: config.creds.useCookieInsteadOfSession,
@@ -196,6 +197,10 @@ passport.use(new OIDCStrategy({
 * `loggingLevel`  (Optional)
 
   Logging level. 'info', 'warn' or 'error'.
+
+* `loggingNoPII`  (Optional)
+
+  If this is set to true, no personal information such as tokens and claims will be logged. The default value is false.
   
 * `nonceLifetime`  (Optional)
   
@@ -428,6 +433,7 @@ var options = {
   allowMultiAudiencesInToken: config.creds.allowMultiAudiencesInToken,
   audience: config.creds.audience,
   loggingLevel: config.creds.loggingLevel,
+  loggingNoPII: config.creds.loggingNoPII,
   clockSkew: config.creds.clockSkew,
   scope: config.creds.scope
 };
@@ -520,6 +526,10 @@ var bearerStrategy = new BearerStrategy(options,
 * `loggingLevel`  (Optional)
 
   Logging level. 'info', 'warn' or 'error'.
+
+* `loggingNoPII`  (Optional)
+
+  If this is set to true, no personal information such as tokens and claims will be logged. The default value is false.
 
 * `clockSkew`  (Optional)
 
