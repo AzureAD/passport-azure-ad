@@ -1,4 +1,14 @@
-<a name="3.0.11"></a>
+<a name="3.0.12"></a>
+
+# 3.0.12
+
+## Breaking change
+
+* Added option 'loggingNoPII' to OIDCStrategy and BearerStrategy per Microsoft policy. 
+
+If this is set to true, then Passport-azure-ad won't log anything related to
+personal identification information, such as id_token, claims, etc. The default value is true. If you want the full log as before, you 
+have to explicitly set 'loggingNoPII' to false in the constructor of OIDCStrategy and BearerStrategy.
 
 # 3.0.11
 
