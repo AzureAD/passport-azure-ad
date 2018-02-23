@@ -44,6 +44,7 @@ var options = {
     validateIssuer: true,
     passReqToCallback: false,
     isB2C: true,
+    loggingNoPII: false,
     sessionKey: 'my_key'    //optional sessionKey
 };
 

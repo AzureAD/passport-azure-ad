@@ -200,7 +200,7 @@ passport.use(new OIDCStrategy({
 
 * `loggingNoPII`  (Optional)
 
-  If this is set to true, no personal information such as tokens and claims will be logged. The default value is false.
+  If this is set to true, no personal information such as tokens and claims will be logged. The default value is true.
   
 * `nonceLifetime`  (Optional)
   
@@ -529,7 +529,7 @@ var bearerStrategy = new BearerStrategy(options,
 
 * `loggingNoPII`  (Optional)
 
-  If this is set to true, no personal information such as tokens and claims will be logged. The default value is false.
+  If this is set to true, no personal information such as tokens and claims will be logged. The default value is true.
 
 * `clockSkew`  (Optional)
 
