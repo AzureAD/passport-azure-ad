@@ -165,7 +165,7 @@ describe('OIDCStrategy implicit flow test', function() {
     before(testPrepare(id_token, nonce, [setWrongIssuer]));
 
     it('should fail', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: jwt issuer is invalid. expected: wrong_issuer');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt issuer is invalid');
     });
   });
 
@@ -174,7 +174,7 @@ describe('OIDCStrategy implicit flow test', function() {
     before(testPrepare(id_token, nonce, [rmValidateIssuer, setWrongIssuer]));
 
     it('should fail', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: jwt issuer is invalid. expected: wrong_issuer');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt issuer is invalid');
     });
   });
 });

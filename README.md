@@ -17,7 +17,7 @@ and with [Microsoft Active Directory Federation Services](http://en.wikipedia.or
 _passport-azure-ad_ has a known security vulnerability affecting versions <1.4.6 and 2.0.0. Please update to >=1.4.6 or >=2.0.1 immediately. For more details, see the [security notice](https://github.com/AzureAD/passport-azure-ad/blob/master/SECURITY-NOTICE.MD).
 
 ## 2. Versions
-Current version - 3.0.11  
+Current version - 3.0.12  
 Minimum  recommended version - 1.4.6  
 You can find the changes for each version in the [change log](https://github.com/AzureAD/passport-azure-ad/blob/master/CHANGELOG.md).
 
@@ -65,6 +65,7 @@ passport.use(new OIDCStrategy({
     passReqToCallback: config.creds.passReqToCallback,
     scope: config.creds.scope,
     loggingLevel: config.creds.loggingLevel,
+    loggingNoPII: config.creds.loggingNoPII,
     nonceLifetime: config.creds.nonceLifetime,
     nonceMaxAmount: config.creds.nonceMaxAmount,
     useCookieInsteadOfSession: config.creds.useCookieInsteadOfSession,
@@ -196,6 +197,10 @@ passport.use(new OIDCStrategy({
 * `loggingLevel`  (Optional)
 
   Logging level. 'info', 'warn' or 'error'.
+
+* `loggingNoPII`  (Optional)
+
+  If this is set to true, no personal information such as tokens and claims will be logged. The default value is true.
   
 * `nonceLifetime`  (Optional)
   
@@ -428,6 +433,7 @@ var options = {
   allowMultiAudiencesInToken: config.creds.allowMultiAudiencesInToken,
   audience: config.creds.audience,
   loggingLevel: config.creds.loggingLevel,
+  loggingNoPII: config.creds.loggingNoPII,
   clockSkew: config.creds.clockSkew,
   scope: config.creds.scope
 };
@@ -520,6 +526,10 @@ var bearerStrategy = new BearerStrategy(options,
 * `loggingLevel`  (Optional)
 
   Logging level. 'info', 'warn' or 'error'.
+
+* `loggingNoPII`  (Optional)
+
+  If this is set to true, no personal information such as tokens and claims will be logged. The default value is true.
 
 * `clockSkew`  (Optional)
 

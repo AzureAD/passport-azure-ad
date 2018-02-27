@@ -249,7 +249,7 @@ describe('OIDCStrategy hybrid flow test', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, [setWrongIssuer]));
 
     it('should fail with invalid issuer', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: jwt issuer is invalid. expected: wrong_issuer');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt issuer is invalid');
     });
   });
 
@@ -257,7 +257,7 @@ describe('OIDCStrategy hybrid flow test', function() {
     before(setReqFromAuthRespRedirect(id_token_in_auth_resp, code, nonce, [setWrongAudience]));
 
     it('should fail with invalid audience', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid. expected: wrong_audience,spn:wrong_audience');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid');
     });
   });
 
@@ -359,7 +359,7 @@ describe('OIDCStrategy authorization code flow test', function() {
       [setWrongIssuer]));
 
     it('should fail with invalid issuer', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: jwt issuer is invalid. expected: wrong_issuer');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt issuer is invalid');
     });
   });
 
@@ -368,7 +368,7 @@ describe('OIDCStrategy authorization code flow test', function() {
       [setWrongAudience]));
 
     it('should fail with invalid audience', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid. expected: wrong_audience,spn:wrong_audience');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt audience is invalid');
     });
   });
 

@@ -64,6 +64,7 @@ var options = {
   passReqToCallback: false,
   sessionKey: 'my_key',
   issuer: 'https://sts.windows.net/268da1a1-9db4-48b9-b1fe-683250ba90cc/',
+  loggingNoPII: false
 };
 
 var options_badIssuer = {
@@ -76,6 +77,7 @@ var options_badIssuer = {
   passReqToCallback: false,
   sessionKey: 'my_key',
   issuer: 'https://sts.windows.net/268da1a1-9db4-48b9-b1fe-683250ba90cc/',
+  loggingNoPII: false
 };
 
 var testStrategy = new OIDCStrategy(options, function(profile, done) {
@@ -180,7 +182,7 @@ describe('OIDCStrategy implicit flow test', function() {
     before(testPrepare(id_token, nonce, [setWrongIssuer]));
 
     it('should fail', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: jwt issuer is invalid. expected: wrong_issuer');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt issuer is invalid');
     });
   });
 
@@ -189,7 +191,7 @@ describe('OIDCStrategy implicit flow test', function() {
     before(testPrepare(id_token, nonce, [rmValidateIssuer, setWrongIssuer]));
 
     it('should fail', function() {
-      chai.expect(challenge).to.equal('In _validateResponse: jwt issuer is invalid. expected: wrong_issuer');
+      chai.expect(challenge).to.equal('In _validateResponse: jwt issuer is invalid');
     });
   });
 });

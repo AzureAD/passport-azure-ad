@@ -43,6 +43,7 @@ var options = {
   responseMode: 'form_post',
   validateIssuer: true,
   passReqToCallback: false,
+  loggingNoPII: false,
   sessionKey: 'my_key'    //optional sessionKey
 };
 
@@ -97,7 +98,8 @@ describe('OIDCStrategy dynamic tenant test', function() {
     before(testPrepare(true, null, 'xxx', false));
 
     it('should have replaced common with tenantIdOrName and saved tenantIdOrName in session', function() {
-      chai.expect(challenge.startsWith('In setOptions: Unable to fetch metadata')).to.equal(true);
+      console.log(challenge);
+      chai.expect(challenge.startsWith('Error: 400')).to.equal(true);
     });
   });
 });

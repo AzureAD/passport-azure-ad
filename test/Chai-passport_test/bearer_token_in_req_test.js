@@ -35,7 +35,8 @@ var options = {
   identityMetadata: 'https://login.microsoftonline.com/xxx.onmicrosoft.com/.well-known/openid-configuration', 
   clientID: 'spn:6514a8ca-d9e4-4155-b292-65258398f3aa',
   validateIssuer: true,
-  passReqToCallback: false
+  passReqToCallback: false,
+  loggingNoPII: false
 };
 
 var strategy = new BearerStrategy(options, function(token, done) {
