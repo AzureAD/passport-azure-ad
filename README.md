@@ -632,7 +632,29 @@ Type the following commands to run the tests:
 
 Tests will run automatically and in the terminal you can see how many tests are passing/failing. More details can be found [here](https://github.com/AzureAD/passport-azure-ad/blob/master/contributing.md).
 
-## 7. Samples and Documentation
+## 7. Logging
+#### Personal Identifiable Information (PII) & Organizational Identifiable Information (OII)
+
+By default, passport-azure-ad logging does not capture or log any PII or OII. The library allows app developers to turn this on by configuring `loggingNoPII` in the config options. By turning on PII or OII, the app takes responsibility for safely handling highly-sensitive data and complying with any regulatory requirements.
+
+```javascript
+//PII or OII logging disabled. Default Logger does not capture any PII or OII.
+var options = {
+  ...
+  loggingNoPII: true,
+  ...
+};
+
+//PII or OII logging enabled
+var options = {
+  ...
+  loggingNoPII: false,
+  ...
+};
+```
+
+
+## 8. Samples and Documentation
 
 [We provide a full suite of sample applications and documentation on GitHub](https://azure.microsoft.com/en-us/documentation/samples/?service=active-directory) 
 to help you get started with learning the Azure Identity system. This includes 
@@ -642,7 +664,7 @@ OAuth2, OpenID Connect, Graph API, and other awesome features.
 
 Azure Identity samples for this plug-in can be found in the following links:
 
-### 7.1 Samples for [OpenID connect strategy](https://github.com/AzureAD/passport-azure-ad/blob/master/lib/oidcstrategy.js)
+### 8.1 Samples for [OpenID connect strategy](https://github.com/AzureAD/passport-azure-ad/blob/master/lib/oidcstrategy.js)
 
 * [sample using v1 endpoint](https://github.com/AzureADQuickStarts/WebApp-OpenIDConnect-NodeJS)
 
@@ -650,7 +672,7 @@ Azure Identity samples for this plug-in can be found in the following links:
 
 * [sample using B2C tenant](https://github.com/AzureADQuickStarts/B2C-WebApp-OpenIDConnect-NodeJS)
 
-### 7.2 Samples for [Bearer strategy](https://github.com/AzureAD/passport-azure-ad/blob/master/lib/bearerstrategy.js)
+### 8.2 Samples for [Bearer strategy](https://github.com/AzureAD/passport-azure-ad/blob/master/lib/bearerstrategy.js)
 
 * [sample using v1 endpoint](https://github.com/AzureADQuickStarts/WebAPI-Bearer-NodeJS)
 
@@ -658,34 +680,34 @@ Azure Identity samples for this plug-in can be found in the following links:
 
 * [sample using B2C tenant](https://github.com/AzureADQuickStarts/B2C-WebApi-Nodejs)
 
-## 8. Community Help and Support
+## 9. Community Help and Support
 
 We leverage [Stack Overflow](http://stackoverflow.com/) to work with the community on supporting Azure Active Directory and its SDKs, including this one. We highly recommend you ask your questions on Stack Overflow (we're all on there!) Also browser existing issues to see if someone has had your question before. 
 
 We recommend you use the "adal" tag so we can see it! Here is the latest Q&A on Stack Overflow for ADAL: [http://stackoverflow.com/questions/tagged/adal](http://stackoverflow.com/questions/tagged/adal)
 
-## 9. Security Reporting
+## 10. Security Reporting
 
 If you find a security issue with our libraries or services please report it to [secure@microsoft.com](mailto:secure@microsoft.com) with as much detail as possible. Your submission may be eligible for a bounty through the [Microsoft Bounty](http://aka.ms/bugbounty) program. Please do not post security issues to GitHub Issues or any other public site. We will contact you shortly upon receiving the information. We encourage you to get notifications of when security incidents occur by visiting [this page](https://technet.microsoft.com/en-us/security/dd252948) and subscribing to Security Advisory Alerts.
 
-## 10. Contributing
+## 11. Contributing
 
 All code is licensed under the MIT license and we triage actively on GitHub. We enthusiastically welcome contributions and feedback. You can clone the repo and start contributing now. 
 
 More details [about contribution](https://github.com/AzureAD/passport-azure-ad/blob/master/contributing.md) 
 
-## 11. Releases
+## 12. Releases
 
 Please check the [releases](https://github.com/AzureAD/passport-azure-ad/releases) for updates.
 
-## 12. Acknowledgements
+## 13. Acknowledgements
 
 The code is based on Henri Bergius's [passport-saml](https://github.com/bergie/passport-saml) library and Matias Woloski's [passport-wsfed-saml2](https://github.com/auth0/passport-wsfed-saml2) library as well as Kiyofumi Kondoh's [passport-openid-google](https://github.com/kkkon/passport-google-openidconnect).
 
-## 13. License
+## 14. License
 Copyright (c) Microsoft Corp.  All rights reserved. Licensed under the MIT License;
 
-## 14. Microsoft Open Source Code of Conduct
+## 15. Microsoft Open Source Code of Conduct
 
 We Value and Adhere to the Microsoft Open Source Code of Conduct
 
