@@ -152,7 +152,7 @@ passport.use(new OIDCStrategy({
 
   For non-B2C tenant: If `responseType` is not `id_token`, developer must provide either `clientSecret`, or `thumbprint` and `privatePEMKey`. We use `clientSecret` if it is provided; otherwise we use `thumbprint` and `privatePEMKey` for client assertion flow.
 
-  `clientSecret` is the app key of your app in AAD. For B2C, the app key sometimes contains \, please replace \ with two \\'s in the app key, otherwise \ will be treated as the beginning of an escaping character.
+  `clientSecret` is the app key of your app in AAD. For B2C, the app key sometimes contains \\, please replace \ with two \\'s in the app key, otherwise \ will be treated as the beginning of an escaping character.
 
 * `thumbprint`  (Conditional)
 
