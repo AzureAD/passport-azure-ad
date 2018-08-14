@@ -2,13 +2,9 @@ sudo: required
 dist: trusty
 language: node_js
 node_js:
+  - "10"
+  - "8"
   - "6"
-  - "5"
-  - "5.1"
-  - "4"
-  - "4.2"
-  - "4.1"
-  - "4.0"
 before_install: npm install -g grunt-cli
 install: npm install
   
