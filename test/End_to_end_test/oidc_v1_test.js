@@ -203,6 +203,7 @@ var checkResult = (test_app_config, arity, done) => {
       var usernamebox = driver.findElement(By.name('loginfmt'));
       usernamebox.sendKeys(test_parameters.username);
       usernamebox.sendKeys(webdriver.Key.ENTER);
+      driver.sleep(LOGIN_WAITING_TIME);
       var passwordbox = driver.findElement(By.name('passwd'));
       passwordbox.sendKeys(test_parameters.password);
       driver.sleep(LOGIN_WAITING_TIME);

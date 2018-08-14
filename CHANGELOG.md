@@ -1,4 +1,12 @@
-<a name="3.0.12"></a>
+<a name="4.0.0"></a>
+
+# 4.0.0
+### Breaking change
+* Passport-azure-ad will only support node.js version 6 and above from this release.
+
+### Fixed security vulnerability
+* [#383](https://github.com/AzureAD/passport-azure-ad/issues/383) Update base64url to fix vulnerability
+
 
 # 3.0.12
 

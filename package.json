@@ -1,6 +1,6 @@
 {
   "name": "passport-azure-ad",
-  "version": "3.0.12",
+  "version": "4.0.0",
   "license": "MIT",
   "keywords": [
     "azure active directory",
@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "async": "^1.5.2",
-    "base64url": "^2.0.0",
+    "base64url": "^3.0.0",
     "bunyan": "^1.8.0",
     "cache-manager": "^2.0.0",
     "jws": "^3.1.3",
