@@ -1,6 +1,6 @@
 {
   "name": "passport-azure-ad",
-  "version": "3.0.12",
+  "version": "4.0.0",
   "license": "MIT",
   "keywords": [
     "azure active directory",
