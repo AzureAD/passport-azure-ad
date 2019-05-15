@@ -42,7 +42,7 @@ BearerStrategy uses Bearer Token protocol to protect web resource/api. It works 
 User sends a request to the protected web api which contains an access_token in either the authorization header or body. Passport extracts and validates the access_token, and propagates the claims in access_token to the verify callback and let the framework finish the remaining authentication procedure. On successful authentication, passport adds the user information to `req.user` and passes it to the next middleware, which is usually the business logic of the web resource/api. In case of error, passport sends back an unauthorized response.
 
 
-We support AAD v1, v2 and B2C tenants for both strategies. Please check out section 7 for the samples. You can manage v1 tenants and register applications at https://manage.windowsazure.com. For v2 tenants and applications, you should go to https://apps.dev.microsoft.com. For B2C tenants, go to https://manage.windowsazure.com and click 'Manage B2C settings' to register applications and policies. 
+We support AAD v1, v2 and B2C tenants for both strategies. Please check out [section 8](#8-samples-and-documentation) for the samples. You can manage v1 tenants and register applications at https://manage.windowsazure.com. For v2 tenants and applications, you should go to https://apps.dev.microsoft.com. For B2C tenants, go to https://manage.windowsazure.com and click 'Manage B2C settings' to register applications and policies. 
 
 ### 5.1 OIDCStrategy
 
