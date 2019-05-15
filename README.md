@@ -136,9 +136,9 @@ passport.use(new OIDCStrategy({
   
   Must be a https url string, unless you set `allowHttpForRedirectUrl` to true. This is the reply URL registered in AAD for your app. Production environment should always use https for `redirectUrl`.
 
-* `passReqToCallback`  (Required)
+* `passReqToCallback`  (Conditional)
 
-  Whether you want to use `req` as the first parameter in the verify callback. See section 5.1.1.3 for more details.
+  Required to set to true if using `req` as the first paramter in the verify function, default value is false. See section 5.1.1.3 for more details.
 
 * `allowHttpForRedirectUrl`  (Conditional) 
   
@@ -490,9 +490,9 @@ var bearerStrategy = new BearerStrategy(options,
 
   The client ID of your application in AAD (Azure Active Directory)
 
-* `passReqToCallback`  (Required)
+* `passReqToCallback`  (Conditional)
 
-  Whether you want to use `req` as the first parameter in the verify callback. See section 5.2.1.3 for more details.
+  Required to set to true if using `req` as the first paramter in the verify function, default value is false. See section 5.2.1.3 for more details.
   
 * `isB2C`  (Conditional)
 
