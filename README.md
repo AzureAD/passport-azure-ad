@@ -42,7 +42,7 @@ BearerStrategy uses Bearer Token protocol to protect web resource/api. It works 
 User sends a request to the protected web api which contains an access_token in either the authorization header or body. Passport extracts and validates the access_token, and propagates the claims in access_token to the verify callback and let the framework finish the remaining authentication procedure. On successful authentication, passport adds the user information to `req.user` and passes it to the next middleware, which is usually the business logic of the web resource/api. In case of error, passport sends back an unauthorized response.
 
 
-We support AAD v1, v2 and B2C tenants for both strategies. Please check out section 7 for the samples. You can manage v1 tenants and register applications at https://manage.windowsazure.com. For v2 tenants and applications, you should go to https://apps.dev.microsoft.com. For B2C tenants, go to https://manage.windowsazure.com and click 'Manage B2C settings' to register applications and policies. 
+We support AAD v1, v2 and B2C tenants for both strategies. Please check out [section 8](#8-samples-and-documentation) for the samples. You can manage v1 tenants and register applications at https://manage.windowsazure.com. For v2 tenants and applications, you should go to https://apps.dev.microsoft.com. For B2C tenants, go to https://manage.windowsazure.com and click 'Manage B2C settings' to register applications and policies. 
 
 ### 5.1 OIDCStrategy
 
@@ -136,9 +136,9 @@ passport.use(new OIDCStrategy({
   
   Must be a https url string, unless you set `allowHttpForRedirectUrl` to true. This is the reply URL registered in AAD for your app. Production environment should always use https for `redirectUrl`.
 
-* `passReqToCallback`  (Required)
+* `passReqToCallback`  (Conditional)
 
-  Whether you want to use `req` as the first parameter in the verify callback. See section 5.1.1.3 for more details.
+  Required to set to true if using `req` as the first paramter in the verify function, default value is false. See section 5.1.1.3 for more details.
 
 * `allowHttpForRedirectUrl`  (Conditional) 
   
@@ -152,7 +152,7 @@ passport.use(new OIDCStrategy({
 
   For non-B2C tenant: If `responseType` is not `id_token`, developer must provide either `clientSecret`, or `thumbprint` and `privatePEMKey`. We use `clientSecret` if it is provided; otherwise we use `thumbprint` and `privatePEMKey` for client assertion flow.
 
-  `clientSecret` is the app key of your app in AAD. For B2C, the app key sometimes contains \, please replace \ with two \'s in the app key, otherwise \ will be treated as the beginning of an escaping character.
+  `clientSecret` is the app key of your app in AAD. For B2C, the app key sometimes contains \\, please replace \ with two \\'s in the app key, otherwise \ will be treated as the beginning of an escaping character.
 
 * `thumbprint`  (Conditional)
 
@@ -490,9 +490,9 @@ var bearerStrategy = new BearerStrategy(options,
 
   The client ID of your application in AAD (Azure Active Directory)
 
-* `passReqToCallback`  (Required)
+* `passReqToCallback`  (Conditional)
 
-  Whether you want to use `req` as the first parameter in the verify callback. See section 5.2.1.3 for more details.
+  Required to set to true if using `req` as the first paramter in the verify function, default value is false. See section 5.2.1.3 for more details.
   
 * `isB2C`  (Conditional)
 
