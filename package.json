@@ -29,14 +29,14 @@
     "grunt-contrib-nodeunit": "^1.0.0",
     "grunt-mocha-test": "^0.12.7",
     "mocha": "^3.0.2",
-    "nodeunit": "^0.9.1"
+    "nodeunit": "^0.11.3"
   },
   "dependencies": {
     "async": "^1.5.2",
     "base64url": "^3.0.0",
     "bunyan": "^1.8.0",
     "cache-manager": "^2.0.0",
-    "https-proxy-agent": "^2.1.0",
+    "https-proxy-agent": "^2.2.2",
     "jwk-to-pem": "^1.2.6",
     "jws": "^3.1.3",
     "lodash": "^4.11.2",
