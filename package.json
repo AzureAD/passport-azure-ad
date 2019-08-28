@@ -48,6 +48,6 @@
     "test": "grunt run_tests"
   },
   "engines": {
-    "node": ">= 4.0.1"
+    "node": ">= 8.0.0"
   }
 }
