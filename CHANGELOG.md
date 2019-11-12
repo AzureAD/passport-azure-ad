@@ -1,5 +1,11 @@
 <a name="4.0.0"></a>
 
+# 4.2.0
+### Support for Same Site.
+* Passport now offers support for the cookie attribute `SameSite` for the Oidc Strategy.  Without this cookie attribute set, coookies will not be forwarded back to the server to verify the state and nonce of an id token in Chrome 80+.  To read more about the Same Site changes chrome is making, please see https://www.chromium.org/updates/same-site.
+
+To get the benefit of this, you will need to explicitly opt into the `cookieSameSite` option.  This is opt in because it requires that you validate your webserver accepts the cookie option we set.  For instance Express 3 will not accept the Same Site cookie attribute and will require that you upgrade to Express 4.
+
 # 4.0.0
 ### Breaking change
 * Passport-azure-ad will only support node.js version 6 and above from this release.
@@ -12,10 +18,10 @@
 
 ## Breaking change
 
-* Added option 'loggingNoPII' to OIDCStrategy and BearerStrategy per Microsoft policy. 
+* Added option 'loggingNoPII' to OIDCStrategy and BearerStrategy per Microsoft policy.
 
 If this is set to true, then Passport-azure-ad won't log anything related to
-personal identification information, such as id_token, claims, etc. The default value is true. If you want the full log as before, you 
+personal identification information, such as id_token, claims, etc. The default value is true. If you want the full log as before, you
 have to explicitly set 'loggingNoPII' to false in the constructor of OIDCStrategy and BearerStrategy.
 
 # 3.0.11
@@ -48,13 +54,13 @@ have to explicitly set 'loggingNoPII' to false in the constructor of OIDCStrateg
 
 * [#338](https://github.com/AzureAD/passport-azure-ad/issues/338) Allow query parameters in the identityMetadata config key
 
-* [#346](https://github.com/AzureAD/passport-azure-ad/pull/346) Fix: Cannot set cookie on the response 
+* [#346](https://github.com/AzureAD/passport-azure-ad/pull/346) Fix: Cannot set cookie on the response
 
 ## BearerStrategy
 
 ### Bug fixes
 
-* [#333](https://github.com/AzureAD/passport-azure-ad/issues/333) jwt should not check sub for access token 
+* [#333](https://github.com/AzureAD/passport-azure-ad/issues/333) jwt should not check sub for access token
 
 * [#338](https://github.com/AzureAD/passport-azure-ad/issues/338) Allow query parameters in the identityMetadata config key
 
@@ -99,7 +105,7 @@ have to explicitly set 'loggingNoPII' to false in the constructor of OIDCStrateg
 * [#285](https://github.com/AzureAD/passport-azure-ad/issues/285) express-session free support
 
   We used to save state etc in express session, so you cannot be session free even if `{ session : fase }`
-  option is used in `passport.authenticate`. Now we provide an option to save state etc in cookie via 
+  option is used in `passport.authenticate`. Now we provide an option to save state etc in cookie via
   encryption and decryption, so OIDCStrategy no longer relies on express session.
 
   More details can be found in README.md, section 5.1.4.
@@ -110,9 +116,9 @@ have to explicitly set 'loggingNoPII' to false in the constructor of OIDCStrateg
 
 ### New features
 
-* added support of `id_token` in JWE compact serialization format. 
-  
-  Supported key encryption algorithms (alg) are: 
+* added support of `id_token` in JWE compact serialization format.
+
+  Supported key encryption algorithms (alg) are:
   `RSA1_5`, `RSA-OAEP`, `A128KW`, `A256KW`, `dir`
 
   supported content encryption algorithms (enc) are:
@@ -130,7 +136,7 @@ have to explicitly set 'loggingNoPII' to false in the constructor of OIDCStrateg
 
 * token validation clock skew is now configurable using `clockSkew` option
 
-* added `thumbprint` and `privatePEMKey` options for client assertion support. 
+* added `thumbprint` and `privatePEMKey` options for client assertion support.
 
 ## BearerStrategy
 
@@ -176,7 +182,7 @@ have to explicitly set 'loggingNoPII' to false in the constructor of OIDCStrateg
 
 ### New features
 
-* specify tenant per request 
+* specify tenant per request
 
   Now you can specify the tenant per request, using the `tenantIdOrName` option in `passport.authenticate`. More details on the usage can be found in README.md. `tenantIdOrName` enables two features:
 
@@ -185,7 +191,7 @@ have to explicitly set 'loggingNoPII' to false in the constructor of OIDCStrateg
     Now you can use the B2C common endpoint by specifying the tenant for each login request using the `tenantIdOrName` option. A login request is any request that doesn't contain code or id_token.
 
   * extensive issuer validation on common endpoint
-    
+
     Previously, you had to provide an `issuer` value in configuration to validat the issuer on the common endpoint. Alternatively, you can now specify the tenant for each login request.
 
 ## Bug fixes
@@ -224,10 +230,10 @@ get `emails` claim from B2C tenants.
 #### B2C only
 
 * `identityMetadata` option: common endpoint is no longer allowed for B2C. Tenant-specific endpoint should be used, for instance:
-`https://login.microsoftonline.com/your_B2C_tenant_name.onmicrosoft.com/v2.0/.well-known/openid-configuration` or 
+`https://login.microsoftonline.com/your_B2C_tenant_name.onmicrosoft.com/v2.0/.well-known/openid-configuration` or
 `https://login.microsoftonline.com/your_B2C_tenant_guid/v2.0/.well-known/openid-configuration`.
 
-* `isB2C` option: this is a new option. If you are using a B2C tenant, set this option to true. 
+* `isB2C` option: this is a new option. If you are using a B2C tenant, set this option to true.
 
 * `tenantName`: this option is no longer used.
 
@@ -236,7 +242,7 @@ get `emails` claim from B2C tenants.
 * multiple nonce and state support in OIDCStrategy. Provided `nonceLifetime` option to configure the lifetime of nonce saved in session.
 
 * enabled `issuer` validation against common endpoint. To validate issuer on common endpoint, user must
-specify the allowed issuer(s) in `issuer` option, and set `validateIssuer` option to true. 
+specify the allowed issuer(s) in `issuer` option, and set `validateIssuer` option to true.
 
 * user-provided state support. The usage is as follows:
 
@@ -257,17 +263,17 @@ specify the allowed issuer(s) in `issuer` option, and set `validateIssuer` optio
 #### B2C only
 
 * `identityMetadata`: common endpoint is no longer allowed for B2C. Tenant-specific endpoint should be used, for instance:
-`https://login.microsoftonline.com/your_B2C_tenant_name.onmicrosoft.com/v2.0/.well-known/openid-configuration` or 
+`https://login.microsoftonline.com/your_B2C_tenant_name.onmicrosoft.com/v2.0/.well-known/openid-configuration` or
 `https://login.microsoftonline.com/your_B2C_tenant_guid/v2.0/.well-known/openid-configuration`.
 
-* `isB2C` option: this is a new option. If you are using a B2C tenant, set this option to true. 
+* `isB2C` option: this is a new option. If you are using a B2C tenant, set this option to true.
 
 * `tenantName`: this option is no longer used.
 
 #### New features
 
 * enabled `issuer` validation against common endpoint. To validate issuer on common endpoint, user must
-specify the allowed issuer or array of issuers in `issuer` option, and set `validateIssuer` option to true. 
+specify the allowed issuer or array of issuers in `issuer` option, and set `validateIssuer` option to true.
 
 
 ## Bug fixes
@@ -306,7 +312,7 @@ specify the allowed issuer or array of issuers in `issuer` option, and set `vali
 * Version 2.0.1 fixes a known security vulnerability affecting versions <1.4.6 and 2.0.0. All users should upgrade to 2.0.1 or greater immediately. For more details, see the [Security-Notice](https://github.com/AzureAD/passport-azure-ad/blob/master/SECURITY-NOTICE.MD) for more details.
 
 ### BearerStrategy
-* Metadata is loaded only once in 2.0.0, which happens at the creation time of the strategy. In 2.0.1 we load metadata for each request that requires authentication. We keep the metadata in memory cache for 30 minutes. Whenever we need to load the metadata, we check the memory cache first. If we don't find it we then load the metadata from AAD and save it in memory cache. This way BearerStrategy can automatically handle the key rolling of Azure Active Directory. 
+* Metadata is loaded only once in 2.0.0, which happens at the creation time of the strategy. In 2.0.1 we load metadata for each request that requires authentication. We keep the metadata in memory cache for 30 minutes. Whenever we need to load the metadata, we check the memory cache first. If we don't find it we then load the metadata from AAD and save it in memory cache. This way BearerStrategy can automatically handle the key rolling of Azure Active Directory.
 * The default value of validateIssuer is true.
 
 ### OIDCStrategy
@@ -321,15 +327,15 @@ specify the allowed issuer or array of issuers in `issuer` option, and set `vali
 
 ### Upgrade Notes
 
-1. This patch updates the library that your application runs, but does not change the current state of your users, including any sessions they had open. This applies to malicious users who could have exploited this vulnerability to gain access to your system. If your application has users with existing sessions open, after applying the patch, ensure all these sessions are terminated and users are required to sign in again. 
+1. This patch updates the library that your application runs, but does not change the current state of your users, including any sessions they had open. This applies to malicious users who could have exploited this vulnerability to gain access to your system. If your application has users with existing sessions open, after applying the patch, ensure all these sessions are terminated and users are required to sign in again.
 
 
-2. In previous versions of the Passport-Azure-AD for NodeJS library, the issuer wasn't validated, even if you had set validateIssuer to true in your configuration. This is fixed in versions 1.4.6 and 2.0.1. However, this may mean you get 401s if you are using the common endpoint in the identityMetadata config setting and have validateIssuer to true. If you are using the common endpoint (which looks like "https://login.microsoftonline.com/common/.well-known/openid-configuration"), issuers cannot be validated. You can fix this in two ways: 
+2. In previous versions of the Passport-Azure-AD for NodeJS library, the issuer wasn't validated, even if you had set validateIssuer to true in your configuration. This is fixed in versions 1.4.6 and 2.0.1. However, this may mean you get 401s if you are using the common endpoint in the identityMetadata config setting and have validateIssuer to true. If you are using the common endpoint (which looks like "https://login.microsoftonline.com/common/.well-known/openid-configuration"), issuers cannot be validated. You can fix this in two ways:
 
  - If you are a single-tenant app, you can replace 'common' with your tenantId in the endpoint address. The issuer will be validated. IdentityMetadata set to support a single tenant should look like "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011dddd/.well-known/openid-configuration" with your tenant GUID replaced in the path or "https://login.microsoftonline.com/your-tenant-name.onmicrosoft.com/.well-known/openid-configuration" with your tenant name replaced in the path.
 
- - If you are a multi-tenant app and need to go against the common endpoint, you must set validateIssuer to false. Be aware that the issuer field of the token will not be validated and all issuers will be accepted. 
- 
+ - If you are a multi-tenant app and need to go against the common endpoint, you must set validateIssuer to false. Be aware that the issuer field of the token will not be validated and all issuers will be accepted.
+
 ## Bug fixes in 2.0.1
 * [#71](https://github.com/AzureAD/passport-azure-ad/issues/71) Cryptic error message when the client ID is null/undefined
 * [#90](https://github.com/AzureAD/passport-azure-ad/issues/90) Cannot read property 'keys' of undefined
@@ -366,12 +372,12 @@ specify the allowed issuer or array of issuers in `issuer` option, and set `vali
 
 ### Upgrade Notes
 
-1. This patch updates the library that your application runs, but does not change the current state of your users, including any sessions they had open. This applies to malicious users who could have exploited this vulnerability to gain access to your system. If your application has users with existing sessions open, after applying the patch, ensure all these sessions are terminated and users are required to sign in again. 
+1. This patch updates the library that your application runs, but does not change the current state of your users, including any sessions they had open. This applies to malicious users who could have exploited this vulnerability to gain access to your system. If your application has users with existing sessions open, after applying the patch, ensure all these sessions are terminated and users are required to sign in again.
 
 
-2. In previous versions of the Passport-Azure-AD for NodeJS library, the issuer wasn't validated, even if you had set validateIssuer to true in your configuration. This is fixed in versions 1.4.6 and 2.0.1. However, this may mean you get 401s if you are using the common endpoint in the identityMetadata config setting and have validateIssuer to true. If you are using the common endpoint (which looks like "https://login.microsoftonline.com/common/.well-known/openid-configuration"), issuers cannot be validated. You can fix this in two ways: 
+2. In previous versions of the Passport-Azure-AD for NodeJS library, the issuer wasn't validated, even if you had set validateIssuer to true in your configuration. This is fixed in versions 1.4.6 and 2.0.1. However, this may mean you get 401s if you are using the common endpoint in the identityMetadata config setting and have validateIssuer to true. If you are using the common endpoint (which looks like "https://login.microsoftonline.com/common/.well-known/openid-configuration"), issuers cannot be validated. You can fix this in two ways:
 
  - If you are a single-tenant app, you can replace 'common' with your tenantId in the endpoint address. The issuer will be validated. IdentityMetadata set to support a single tenant should look like "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011dddd/.well-known/openid-configuration" with your tenant GUID replaced in the path or "https://login.microsoftonline.com/your-tenant-name.onmicrosoft.com/.well-known/openid-configuration" with your tenant name replaced in the path.
 
- - If you are a multi-tenant app and need to go against the common endpoint, you must set validateIssuer to false. Be aware that the issuer field of the token will not be validated and all issuers will be accepted. 
- 
+ - If you are a multi-tenant app and need to go against the common endpoint, you must set validateIssuer to false. Be aware that the issuer field of the token will not be validated and all issuers will be accepted.
+

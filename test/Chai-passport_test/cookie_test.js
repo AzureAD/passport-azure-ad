@@ -29,17 +29,19 @@ var CookieContentHandler = require('../../lib/cookieContentHandler').CookieConte
 
 const TEST_TIMEOUT = 1000000; // 1000 seconds
 
-var req = {};
+var req = { get: () => 'test' };
 var res = {};
 
-res.cookie = function(cookieProperty, value) {
+res.cookie = function(cookieProperty, value, options) {
   if (!req.cookies)
     req.cookies = {};
   req.cookies[cookieProperty] = value;
+  req.testOpts = options;
 };
 
 res.clearCookie = function(cookieProperty) {
   delete req.cookies[cookieProperty];
+  delete req.testOpts;
 };
 
 var countCookie = function() {
@@ -67,10 +69,10 @@ describe('cookie test', function() {
 
   it('should pass adding and deleting cookies', function(done) {
     // create a handler
-    var handler = new CookieContentHandler(2, 10, [ { key: '3zTvzr3p67VC61jmV54rIYu1545x4TlY', iv: '60iP0h6vJoEa' }, { key: '12345678901234567890123456789012', iv: '123456789012' } ]);
-    
+    var handler = new CookieContentHandler(2, 10, [ { key: '3zTvzr3p67VC61jmV54rIYu1545x4TlY', iv: '60iP0h6vJoEa' }, { key: '12345678901234567890123456789012', iv: '123456789012' } ], null, true);
+
     // clear request
-    req = {}; 
+    req = { get: () => 'test' };
 
     // set the first cookie
     handler.add(req, res, { state: '1', nonce: 'some nonce' });
@@ -105,11 +107,11 @@ describe('cookie test', function() {
 
   it('should fail if no valid keys', function(done) {
     // create a handler
-    var handler1 = new CookieContentHandler(2, 10, [ { key: '3zTvzr3p67VC61jmV54rIYu1545x4TlY', iv: '60iP0h6vJoEa' } ]);
-    var handler2 = new CookieContentHandler(2, 10, [ { key: '12345678901234567890123456789012', iv: '123456789012' } ]);
+    var handler1 = new CookieContentHandler(2, 10, [ { key: '3zTvzr3p67VC61jmV54rIYu1545x4TlY', iv: '60iP0h6vJoEa' } ], null, true);
+    var handler2 = new CookieContentHandler(2, 10, [ { key: '12345678901234567890123456789012', iv: '123456789012' } ], null, true);
 
     // clear request
-    req = {}; 
+    req = { get: () => 'test' };
 
     // set cookie using handler1
     handler1.add(req, res, { state: '1', nonce: 'some nonce' });
@@ -132,7 +134,7 @@ describe('cookie test', function() {
     // 1. wrong key size (key size != 32)
 
     try {
-      new CookieContentHandler(2, 10, [ { key: '3zTvzr3p67VC61', iv: '60iP0h6vJoEa' }, { key: '12345678901234567890123456789012', iv: '123456789012' } ]);
+      new CookieContentHandler(2, 10, [ { key: '3zTvzr3p67VC61', iv: '60iP0h6vJoEa' }, { key: '12345678901234567890123456789012', iv: '123456789012' } ], null, true);
     } catch(ex) {
       exception = ex;
     }
@@ -142,7 +144,7 @@ describe('cookie test', function() {
     // 2. wrong iv size (key size != 12)
 
     try {
-      new CookieContentHandler(2, 10, [ { key: '3zTvzr3p67VC61jmV54rIYu1545x4TlY', iv: '60iP0h6vJoEa' }, { key: '12345678901234567890123456789012', iv: '123' } ]);
+      new CookieContentHandler(2, 10, [ { key: '3zTvzr3p67VC61jmV54rIYu1545x4TlY', iv: '60iP0h6vJoEa' }, { key: '12345678901234567890123456789012', iv: '123' } ], null, true);
     } catch(ex) {
       exception = ex;
     }
@@ -152,7 +154,7 @@ describe('cookie test', function() {
     // 3. wrong format ( not {key:, iv: } )
 
     try {
-      new CookieContentHandler(2, 10, [ { key: '3zTvzr3p67VC61jmV54rIYu1545x4TlY' }, { key: '12345678901234567890123456789012', iv: '123' } ]);
+      new CookieContentHandler(2, 10, [ { key: '3zTvzr3p67VC61jmV54rIYu1545x4TlY' }, { key: '12345678901234567890123456789012', iv: '123' } ], null, true);
     } catch(ex) {
       exception = ex;
     }
@@ -160,7 +162,7 @@ describe('cookie test', function() {
     expect(exception.message).to.equal('CookieContentHandler: array item 1 in cookieEncryptionKeys must have the form { key: , iv: }');
 
     try {
-      new CookieContentHandler(2, 10, [ { key: '3zTvzr3p67VC61jmV54rIYu1545x4TlY', iv: '60iP0h6vJoEa' }, { iv: '123' } ]);
+      new CookieContentHandler(2, 10, [ { key: '3zTvzr3p67VC61jmV54rIYu1545x4TlY', iv: '60iP0h6vJoEa' }, { iv: '123' } ], null, true);
     } catch(ex) {
       exception = ex;
     }
@@ -170,7 +172,7 @@ describe('cookie test', function() {
     // 4. maxAmount, maxAge not positive number
 
     try {
-      new CookieContentHandler(-1, 10, [ { key: '12345678901234567890123456789012', iv: '123456789012' } ]);
+      new CookieContentHandler(-1, 10, [ { key: '12345678901234567890123456789012', iv: '123456789012' } ], null, true);
     } catch(ex) {
       exception = ex;
     }
@@ -178,12 +180,72 @@ describe('cookie test', function() {
     expect(exception.message).to.equal('CookieContentHandler: maxAmount must be a positive integer');
 
     try {
-      new CookieContentHandler(1, -1, [ { key: '12345678901234567890123456789012', iv: '123456789012' } ]);
+      new CookieContentHandler(1, -1, [ { key: '12345678901234567890123456789012', iv: '123456789012' } ], null, true);
     } catch(ex) {
       exception = ex;
     }
 
     expect(exception.message).to.equal('CookieContentHandler: maxAge must be a positive number');
+
+    done();
+  });
+
+  it('sets samesite cookies when expected', (done) => {
+    // create a handler
+    var handler1 = new CookieContentHandler(2, 10, [ { key: '3zTvzr3p56VC61jmV54rIYu1545x4TlY', iv: '60iP0h6vPoEa' } ], null, true);
+
+    // clear request
+    req = { get: () => 'test' };
+
+    // set cookie using handler1
+    handler1.add(req, res, { state: '1', nonce: 'some nonce' });
+    expect(countCookie()).to.equal(1);
+    expect(req.testOpts.sameSite).to.equal('none');
+
+    // try to find the cookie using handler1, this should work, we should have no cookie left in request
+    const cookie = handler1.findAndDeleteTupleByState(req, res, '1');
+    expect(cookie.state).to.equal('1');
+    expect(countCookie()).to.equal(0);
+
+    done();
+  });
+
+  it('sets samesite cookies when not expected', (done) => {
+    // create a handler
+    var handler1 = new CookieContentHandler(2, 10, [ { key: '4zTvzr3p56VC61jmV54rIYu1545x4TlY', iv: '70iP0h6vPoEa' } ], null, false);
+
+    // clear request
+    req = { get: () => 'test' };
+
+    // set cookie using handler1
+    handler1.add(req, res, { state: '1', nonce: 'some nonce' });
+    expect(countCookie()).to.equal(1);
+    expect(req.testOpts.sameSite).to.be.undefined;
+
+    // try to find the cookie using handler1, this should work, we should have no cookie left in request
+    const cookie = handler1.findAndDeleteTupleByState(req, res, '1');
+    expect(cookie.state).to.equal('1');
+    expect(countCookie()).to.equal(0);
+
+    done();
+  });
+
+  it('sets samesite cookies when not expected because of user agent', (done) => {
+    // create a handler
+    var handler1 = new CookieContentHandler(2, 10, [ { key: '4zTvzr3p56VC61jmV54rIYu1545x4TlY', iv: '70iP0h6vPoEa' } ], null, true);
+
+    // clear request
+    req = { get: () => 'iPad; CPU OS 12' };
+
+    // set cookie using handler1
+    handler1.add(req, res, { state: '1', nonce: 'some nonce' });
+    expect(countCookie()).to.equal(1);
+    expect(req.testOpts.sameSite).to.be.undefined;
+
+    // try to find the cookie using handler1, this should work, we should have no cookie left in request
+    const cookie = handler1.findAndDeleteTupleByState(req, res, '1');
+    expect(cookie.state).to.equal('1');
+    expect(countCookie()).to.equal(0);
 
     done();
   });

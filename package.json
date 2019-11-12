@@ -1,6 +1,6 @@
 {
   "name": "passport-azure-ad",
-  "version": "4.0.0",
+  "version": "4.2.0",
   "license": "MIT",
   "keywords": [
     "azure active directory",
@@ -48,6 +48,6 @@
     "test": "grunt run_tests"
   },
   "engines": {
-    "node": ">= 4.0.1"
+    "node": ">= 8.0.0"
   }
 }
