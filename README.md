@@ -185,7 +185,8 @@ passport.use(new OIDCStrategy({
   Passport-azure-ad saves state and nonce in session by default for validation purpose. If `useCookieInsteadOfSession` is set to true, passport-azure-ad will encrypt the state/nonce and
   put them into cookie instead. This is helpful when we want to be completely session-free, in other words, when you use { session: false } option in passport.authenticate function.
   If `useCookieInsteadOfSession` is set to true, you must provide `cookieEncryptionKeys` for cookie encryption and decryption.
-
+* `cookieSameSite` (Conditional)
+    If set to true, Passport will add the Same-Site: None header to cookies set by the lib, specifically to validate state and nonce. 
 * `cookieEncryptionKeys`  (Conditional)
 
   If `useCookieInsteadOfSession` is set to true, you must provide `cookieEncryptionKeys`. It is an array of the following format: [ {key: '...', 'iv': '...' }, {key: '...', 'iv': '...' }, ...]. key could be any string of length 32, and iv could be any string of length 12. We always use the first set of key/iv to encrypt cookie, but we try all the key/iv to decrypt cookie.
