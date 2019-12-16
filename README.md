@@ -69,7 +69,7 @@ passport.use(new OIDCStrategy({
     nonceLifetime: config.creds.nonceLifetime,
     nonceMaxAmount: config.creds.nonceMaxAmount,
     useCookieInsteadOfSession: config.creds.useCookieInsteadOfSession,
-    coookieSameSite: config.creds.cookieSameSite, // boolean
+    cookieSameSite: config.creds.cookieSameSite, // boolean
     cookieEncryptionKeys: config.creds.cookieEncryptionKeys,
     clockSkew: config.creds.clockSkew,
   },
