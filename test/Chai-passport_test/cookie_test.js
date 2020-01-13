@@ -235,7 +235,7 @@ describe('cookie test', function() {
     var handler1 = new CookieContentHandler(2, 10, [ { key: '4zTvzr3p56VC61jmV54rIYu1545x4TlY', iv: '70iP0h6vPoEa' } ], null, true);
 
     // clear request
-    req = { get: () => 'iPad; CPU OS 12' };
+    req = { get: () => 'iPad; CPU OS 12' };
 
     // set cookie using handler1
     handler1.add(req, res, { state: '1', nonce: 'some nonce' });
