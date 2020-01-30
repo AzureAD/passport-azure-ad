@@ -18,6 +18,7 @@ _passport-azure-ad_ has a known security vulnerability affecting versions <1.4.6
 
 ## 2. Versions
 Current version - 4.0.0  
+Latest version that support's SAML and WSFED - 2.0.3
 Minimum  recommended version - 1.4.6  
 You can find the changes for each version in the [change log](https://github.com/AzureAD/passport-azure-ad/blob/master/CHANGELOG.md).
 
