@@ -35,7 +35,7 @@
     "async": "^1.5.2",
     "base64url": "^3.0.0",
     "bunyan": "^1.8.0",
-    "cache-manager": "^2.0.0",
+    "cache-manager": "2.10.2",
     "jws": "^3.1.3",
     "jwk-to-pem": "^1.2.6",
     "lodash": "^4.11.2",
