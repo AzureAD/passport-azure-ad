@@ -178,8 +178,10 @@ passport.use(new OIDCStrategy({
 
 * `useCookieInsteadOfSession`  (Conditional)
   
-  Passport-azure-ad saves state and nonce in session by default for validation purpose. If `useCookieInsteadOfSession` is set to true, passport-azure-ad will encrypt the state/nonce and
-  put them into cookie instead. This is helpful when we want to be completely session-free, in other words, when you use { session: false } option in passport.authenticate function.
+  Passport-azure-ad saves state and nonce in session by default for validation purpose. Consider regenerating the session
+  after authentication to prevent session fixation attacks when using the default. If `useCookieInsteadOfSession` is set to 
+  true, passport-azure-ad will encrypt the state/nonce and put them into cookie instead. This is helpful when we want to be 
+  completely session-free, in other words, when you use { session: false } option in passport.authenticate function.
   If `useCookieInsteadOfSession` is set to true, you must provide `cookieEncryptionKeys` for cookie encryption and decryption.
 * `cookieSameSite` (Conditional)
     If set to true, Passport will add the Same-Site: None header to cookies set by the lib, specifically to validate state and nonce. 
@@ -339,6 +341,17 @@ app.get('/login',
     res.redirect('/');
 });
 
+function regenerateSessionAfterAuthentication(req, res, next) {
+  var passportInstance = req.session.passport;
+  return req.session.regenerate(function (err){
+    if (err) {
+      return next(err);
+    }
+    req.session.passport = passportInstance;
+    return req.session.save(next);
+  });
+}
+
 // POST /auth/openid/return
 //   Use passport.authenticate() as route middleware to authenticate the
 //   request.  If authentication fails, the user will be redirected back to the
@@ -346,6 +359,7 @@ app.get('/login',
 //   which, in this example, will redirect the user to the home page.
 app.post('/auth/openid/return',
   passport.authenticate('azuread-openidconnect', { failureRedirect: '/' }),
+  regenerateSessionAfterAuthentication,
   function(req, res) { 
     res.redirect('/');
   });
