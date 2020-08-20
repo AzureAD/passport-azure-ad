@@ -67,6 +67,7 @@ passport.use(new OIDCStrategy({
     cookieSameSite: config.creds.cookieSameSite, // boolean
     cookieEncryptionKeys: config.creds.cookieEncryptionKeys,
     clockSkew: config.creds.clockSkew,
+    proxy: { port: 'proxyport', host: 'proxyhost', protocol: 'http' },
   },
   function(iss, sub, profile, accessToken, refreshToken, done) {
     if (!profile.oid) {
@@ -532,6 +533,10 @@ var bearerStrategy = new BearerStrategy(options,
 
   This value is the clock skew (in seconds) allowed in token validation. It must be a positive integer. The default value is 300 seconds.
 
+ * `proxy` (optional)
+
+  This value is the proxy settings object:  { port: 'proxyport', host: 'proxyhost', protocol: 'http' }
+  
 ##### 4.2.1.3 Verify callback
 
 If you set `passReqToCallback` option to false, you can use the following verify callback
