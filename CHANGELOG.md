@@ -1,5 +1,18 @@
 <a name="4.0.0"></a>
 
+# 4.3.0
+
+## Features
+
+- Add proxy support to OIDCStrategy: #435
+
+## Bugs
+
+- Fix sameSiteNotAllowed: #465
+- Fix crash if Bearer token is blank: #474
+- Stringify optionToValidate when logging: #437
+- Properly handle malformed json: #436
+
 #4.2.1
 ### Fix Policy Checker Bug 
 #426 merged 
