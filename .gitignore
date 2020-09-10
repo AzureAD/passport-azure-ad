@@ -5,4 +5,3 @@ test/End_to_end_test/debug.log
 npm-debug.log
 federationmetadata.xml
 *.sublime-workspace
-package-lock.json
