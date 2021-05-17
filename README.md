@@ -213,6 +213,10 @@ passport.use(new OIDCStrategy({
 * `clockSkew`  (Optional)
 
   This value is the clock skew (in seconds) allowed in token validation. It must be a positive integer. The default value is 300 seconds.
+
+* `verifyArity`  (Optional)
+
+  This value forces the signature of the verify callback (see Sec. 4.1.1.3). It must be a positive integer between 2 and 8. The default behavior is to automatically detect the arity (number of arguments) of the verify callback.
   
 ##### 4.1.1.3 Verify callback
 
@@ -237,6 +241,8 @@ If you set `passReqToCallback` option to true, you can use one of the following 
   function(req, iss, sub, done)
   function(req, profile, done)
 ```
+
+The signature of the verify callback can be forced via the option `verifyArity`, for example `verifyArity = 8` forces the first signature. Valid values for `verifyArity` are, respectively, `8`, `7`, `6`, `4`, `3`, `2`.
 
 #### 4.1.1.4 JWE support
 
