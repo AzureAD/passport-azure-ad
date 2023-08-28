@@ -3,6 +3,14 @@
 
 ---
 
+## Node JS validation replacement for passport.js
+Dear Node JS customers, 
+
+We understand that many of you have been frustrated by the lack of a replacement for this deprecated passport.js library. We want you to know that we hear your concerns and are actively working on a solution. In the meantime, we want to assure you that we haven't forgotten about you. Auth validation is very complicated and hard to get right. For this reason, we will leverage [Microsoft.IdentityModel](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet), which has a proven track record over many years, and is hitting impressive perf metrics with the latest improvements in IdentityModel 7x on .NET 8, making [Ahead of Time (AOT)](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/?tabs=net7%2Cwindows) comparable with non-AOT, especially in terms of request per second, which is very promising for our goal of covering all services, regardless of language with Microsoft.IdentityModel.
+
+We are experimenting with a simple wrapper over a shared library in Node JS that will allow you to continue using the Microsoft identity platforms. This wrapper is currently only available to internal Microsoft services, but we're working hard to make it available to all of our customers as soon as possible. Thank you for your patience and understanding as we work to improve our offerings. We'll keep you updated as we make progress on this front. Please follow [this discussion](https://github.com/AzureAD/microsoft-identity-web/discussions/2405) for more details on the progress and to provide us with your feedback/questions/concerns as we go through this process together.
+
+----
 _passport-azure-ad_ is a collection of [Passport](http://passportjs.org/) Strategies 
 to help you integrate with Azure Active Directory. It includes OpenID Connect, 
 WS-Federation, and SAML-P authentication and authorization. These providers let you 
